@@ -1,0 +1,14 @@
+Django==4.2.0
+djangorestframework==3.14.0
+django-cors-headers==3.14.0
+python-decouple==3.8
+Pillow==9.5.0
+django-allauth==0.54.0
+django-crispy-forms==2.0
+crispy-bootstrap5==0.7
+django-debug-toolbar==4.0.0
+psycopg2-binary==2.9.6  # For PostgreSQL
+celery==5.2.7  # For background tasks
+redis==4.5.4
+django-celery-beat==2.5.0
+django-celery-results==2.4.0

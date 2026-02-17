@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SkillBridge & CareerForge | AI-Powered Career Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #7C3AED;
+            --primary-dark: #5B21B6;
+            --secondary: #EC4899;
+            --accent: #06B6D4;
+            --dark: #1E1B4B;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --light-gray: #E2E8F0;
+            --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+            --gradient-secondary: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+            --sidebar-bg: linear-gradient(145deg, #1E2A5A 0%, #2E3B7A 100%); /* deeper bluish */
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f0f1f3 0%, #f6f5f7 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* header with blur effect */
+        .main-header {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            padding: 20px 40px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(124,58,237,0.15);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-text h1 {
+            font-size: 2.2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: none;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(124,58,237,0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(124,58,237,0.1);
+            transform: translateY(-3px);
+        }
+
+        .btn-lg {
+            padding: 14px 36px;
+            font-size: 1.1rem;
+        }
+
+        /* hero */
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #e6f0fe 100%);
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h2 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h2 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-mockup {
+            background: white;
+            border-radius: 30px;
+            padding: 35px 30px;
+            box-shadow: 0 35px 60px rgba(124,58,237,0.2);
+            border: 1px solid rgba(124,58,237,0.2);
+            text-align: center;
+        }
+
+        .dashboard-mockup h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* ===== NEW BLUISH CENTER SIDEBAR PANEL ===== */
+        .bluish-sidebar-panel {
+            background: var(--sidebar-bg);
+            border-radius: 50px 50px 30px 30px;
+            margin: 40px 30px 60px;
+            padding: 50px 40px 60px;
+            box-shadow: 0 40px 50px -15px rgba(25, 40, 90, 0.5);
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(2px);
+            color: white;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .panel-header h2 {
+            font-size: 2.8rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .panel-header h2 i {
+            color: var(--accent);
+            margin-right: 12px;
+            font-size: 2.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .panel-header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 700px;
+            margin: 15px auto 0;
+        }
+
+        /* card grid inside bluish panel */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .module-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+            padding: 28px 25px;
+            border-radius: 30px;
+            box-shadow: 0 20px 30px -8px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            background: rgba(255,255,255,0.18);
+            border-color: var(--accent);
+            box-shadow: 0 30px 45px -8px #1E2A5A;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .module-card h3 {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .module-desc {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .feature-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        /* extra interactive shine */
+        .module-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .module-card:hover::after {
+            opacity: 1;
+        }
+
+        /* stats */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 30px;
+            padding: 50px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 40px;
+            margin: 30px 40px 50px;
+        }
+
+        .main-stat {
+            text-align: center;
+        }
+
+        .main-stat h3 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+        }
+
+        .main-stat p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* cta */
+        .cta-section {
+            padding: 80px 50px;
+            text-align: center;
+            background: linear-gradient(135deg,#ffffff,#e8f0ff);
+            border-radius: 50px;
+            margin: 30px 40px 60px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 50px 30px;
+            border-radius: 40px 40px 0 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo .logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .footer-logo .logo-text span:first-child { color: white; }
+        .footer-logo .logo-text span:last-child { color: var(--accent); }
+
+        .footer-logo p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: white;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient);
+        }
+        .footer-column ul { list-style: none; }
+        .footer-column li { margin-bottom: 12px; }
+        .footer-column a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .footer-column a:hover { color: white; padding-left: 6px; }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* mobile */
+        @media (max-width: 900px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 40px 25px;
+            }
+            .hero-text p { margin-left: auto; margin-right: auto; }
+            .bluish-sidebar-panel { padding: 40px 20px; margin: 20px 15px; }
+            .panel-header h2 { font-size: 2.2rem; }
+            .stats-section { grid-template-columns: 1fr; margin: 20px; }
+            .cta-section { margin: 20px; padding: 50px 20px; }
+            .footer-content { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h2 { font-size: 2.2rem; }
+            .btn-lg { width: 100%; }
+        }
+
+        /* card animation */
+        .module-card {
+            animation: cardGlide 0.5s ease backwards;
+        }
+        @keyframes cardGlide {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <!-- header with auth buttons (django placeholders) -->
+        <header class="main-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>SkillBridge & CareerForge</h1>
+                    <p>Your AI-powered career success platform</p>
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" onclick="location.href='/accounts/login/'">
+                        <i class="fas fa-sign-in-alt"></i> Log In
+                    </button>
+                    <button class="btn btn-primary" onclick="location.href='/accounts/register/'">
+                        <i class="fas fa-rocket"></i> Get Started Free
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- hero section (same as before) -->
+        <section class="hero-section">
+            <div class="hero-text">
+                <h2>Bridge Your <span>Skill Gaps</span>, Forge Your <span>Dream Career</span></h2>
+                <p>An intelligent platform that analyzes your skills, identifies gaps, creates personalized learning paths, and matches you with perfect internships and jobs.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-lg" onclick="location.href='/accounts/register/'">
+                        <i class="fas fa-bolt"></i> Start Free Assessment
+                    </button>
+                    <button class="btn btn-outline btn-lg">
+                        <i class="fas fa-play-circle"></i> Watch Platform Tour
+                    </button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="dashboard-mockup floating">
+                    <h3>✨ AI Dashboard</h3>
+                    <p style="color:var(--gray); margin-top: 10px;">Live skill tracking • smart matches • progress insights</p>
+                    <div style="background: var(--light-gray); height: 8px; width: 80%; margin: 30px auto 15px; border-radius: 10px;"></div>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <span style="background: var(--primary); color:white; padding:6px 18px; border-radius: 30px;">↑ 84% match</span>
+                        <span style="background: var(--accent); color:white; padding:6px 18px; border-radius: 30px;">5 courses ready</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BLUISH SIDEBAR STYLE PANEL (center of page) ===== -->
+        <div class="bluish-sidebar-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-cubes"></i></h2>
+                <p>Everything you need to accelerate your career — from skill profiling to AI interviews.</p>
+            </div>
+
+            <div class="modules-grid">
+                <!-- 10 feature cards (taken from original sidebar) -->
+                <div class="module-card" style="animation-delay: 0.05s;">
+                    <div class="card-icon"><i class="fas fa-brain"></i></div>
+                    <h3>AI Skill Profiling</h3>
+                    <div class="module-desc">Resume parsing, skill extraction & proficiency estimation.</div>
+                    <div class="feature-tags"><span class="feature-tag">Resume parsing</span><span class="feature-tag">NLP</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.1s;">
+                    <div class="card-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Smart Job Matching</h3>
+                    <div class="module-desc">Matches with jobs/internships using AI compatibility scoring.</div>
+                    <div class="feature-tags"><span class="feature-tag">AI matching</span><span class="feature-tag">score</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.15s;">
+                    <div class="card-icon"><i class="fas fa-search-minus"></i></div>
+                    <h3>Skill Gap Analysis</h3>
+                    <div class="module-desc">Pinpoints missing skills for target roles & priority map.</div>
+                    <div class="feature-tags"><span class="feature-tag">gap identifier</span><span class="feature-tag">priority</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.2s;">
+                    <div class="card-icon"><i class="fas fa-road"></i></div>
+                    <h3>Personalized Roadmap</h3>
+                    <div class="module-desc">Step‑by‑step learning paths from beginner to advanced.</div>
+                    <div class="feature-tags"><span class="feature-tag">adaptive</span><span class="feature-tag">timeline</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.25s;">
+                    <div class="card-icon"><i class="fas fa-certificate"></i></div>
+                    <h3>Certification Recommendations</h3>
+                    <div class="module-desc">Relevant certs from Coursera, AWS, Google based on demand.</div>
+                    <div class="feature-tags"><span class="feature-tag">industry certs</span><span class="feature-tag">Coursera</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.3s;">
+                    <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Smart Resume Builder</h3>
+                    <div class="module-desc">ATS‑friendly resumes tailored to roles with scoring.</div>
+                    <div class="feature-tags"><span class="feature-tag">ATS optimized</span><span class="feature-tag">auto‑tailor</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.35s;">
+                    <div class="card-icon"><i class="fas fa-code"></i></div>
+                    <h3>Technical Assessment Engine</h3>
+                    <div class="module-desc">Role‑specific MCQs with difficulty levels & analytics.</div>
+                    <div class="feature-tags"><span class="feature-tag">MCQ bank</span><span class="feature-tag">performance</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.4s;">
+                    <div class="card-icon"><i class="fas fa-calculator"></i></div>
+                    <h3>Aptitude & Reasoning Tests</h3>
+                    <div class="module-desc">Timed quant, logical, verbal tests simulating hiring.</div>
+                    <div class="feature-tags"><span class="feature-tag">timed</span><span class="feature-tag">simulations</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.45s;">
+                    <div class="card-icon"><i class="fas fa-comments"></i></div>
+                    <h3>AI Mock Interview System</h3>
+                    <div class="module-desc">HR, technical & behavioral with feedback.</div>
+                    <div class="feature-tags"><span class="feature-tag">AI interviewer</span><span class="feature-tag">feedback</span></div>
+                </div>
+                <div class="module-card" style="animation-delay: 0.5s;">
+                    <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Progress Tracking & Insights</h3>
+                    <div class="module-desc">Dashboard with skill growth, readiness, career insights.</div>
+                    <div class="feature-tags"><span class="feature-tag">analytics</span><span class="feature-tag">insights</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- stats section -->
+        <section class="stats-section">
+            <div class="main-stat"><h3>50,000+</h3><p>Career Success Stories</p></div>
+            <div class="main-stat"><h3>2,500+</h3><p>Partner Companies</p></div>
+            <div class="main-stat"><h3>96%</h3><p>User Satisfaction Rate</p></div>
+        </section>
+
+        <!-- call to action -->
+        <section class="cta-section">
+            <h2>Ready to Transform Your Career Journey?</h2>
+            <p>Join thousands of students and professionals who've landed their dream opportunities with SkillBridge & CareerForge.</p>
+            <div class="hero-buttons" style="justify-content: center;">
+                <button class="btn btn-primary btn-lg" onclick="location.href='/accounts/register/'"><i class="fas fa-rocket"></i> Start Your Free Trial</button>
+                <button class="btn btn-outline btn-lg"><i class="fas fa-calendar-alt"></i> Book a Demo</button>
+            </div>
+        </section>
+
+        <!-- footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo-text"><span>SkillBridge</span> <span>& CareerForge</span></div>
+                    <p>An intelligent platform that bridges skill gaps and forges career paths through AI‑powered matching and personalized learning.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column"><h3>Platform</h3><ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">Success Stories</a></li></ul></div>
+                    <div class="footer-column"><h3>Resources</h3><ul><li><a href="#">Blog</a></li><li><a href="#">Guides</a></li><li><a href="#">FAQ</a></li></ul></div>
+                    <div class="footer-column"><h3>Company</h3><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy</a></li></ul></div>
+                </div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2025 SkillBridge & CareerForge. All rights reserved.</p></div>
+        </footer>
+    </div>
+
+    <script>
+        // subtle interactive effects for buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.style.transform = 'scale(0.96)';
+                setTimeout(() => this.style.transform = '', 150);
+            });
+        });
+
+        // optional counter animation on stats
+        const stats = document.querySelectorAll('.main-stat h3');
+        const statSection = document.querySelector('.stats-section');
+        let animated = false;
+        window.addEventListener('scroll', () => {
+            if (!statSection || animated) return;
+            const rect = statSection.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 100) {
+                animated = true;
+                stats.forEach(el => {
+                    const target = parseInt(el.innerText.replace(/[+,]/g, ''));
+                    let current = 0;
+                    const step = Math.ceil(target / 50);
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            el.innerText = target.toLocaleString() + '+';
+                            clearInterval(timer);
+                        } else {
+                            el.innerText = current + '+';
+                        }
+                    }, 25);
+                });
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
