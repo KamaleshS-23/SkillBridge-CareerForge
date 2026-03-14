@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gap Analysis & Priority Mapping</title>
+    <!-- Font Awesome & Google Fonts (shared) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* === RESET + GLOBAL (merged, deduped) === */
+        .skill-gap-analysis * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .skill-gap-analysis {
+            --primary: #7C3AED;
+            --primary-dark: #5B21B6;
+            --secondary: #EC4899;
+            --accent: #06B6D4;
+            --dark: #1E1B4B;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --light-gray: #E2E8F0;
+            --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+
+            width: 100%;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 50px;
+        }
+
+        /* header gradient */
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.2);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* cards & forms (merged) */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .card-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+        }
+
+        /* buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        /* Benchmark Alert */
+        .benchmark-info {
+            background: #F8FAFC;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--gray);
+        }
+
+        .benchmark-info strong {
+            color: var(--dark);
+        }
+
+        /* Two Column Layout */
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .two-col-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Charts Container */
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+        }
+
+        /* Skill Status Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Gap List */
+        .gap-list {
+            list-style: none;
+        }
+
+        .gap-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: white;
+            transition: transform 0.2s;
+        }
+
+        .gap-item:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
+
+        .gap-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .gap-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .gap-icon.missing {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .gap-icon.improve {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .gap-icon.emerging {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .gap-icon.met {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .gap-details h4 {
+            margin-bottom: 3px;
+            color: var(--dark);
+        }
+
+        .gap-details p {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        .gap-action {
+            text-align: right;
+        }
+
+        /* Priority Matrix */
+        .priority-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .priority-matrix th,
+        .priority-matrix td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .priority-matrix th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        .priority-row-critical td {
+            border-left: 4px solid var(--danger);
+        }
+
+        .priority-row-high td {
+            border-left: 4px solid var(--warning);
+        }
+
+        .priority-row-medium td {
+            border-left: 4px solid var(--primary);
+        }
+
+        .priority-row-low td {
+            border-left: 4px solid var(--gray);
+        }
+
+        /* Learning Path Nodes */
+        .path-node {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .path-node::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: var(--light-gray);
+            z-index: 1;
+        }
+
+        .path-node:last-child::after {
+            display: none;
+        }
+
+        .node-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .node-content {
+            margin-left: 20px;
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .node-header h4 {
+            color: var(--dark);
+        }
+
+        .resource-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .resource-item i {
+            color: var(--primary);
+        }
+
+        .resource-item a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .resource-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Checkbox for gap closure */
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input {
+            display: none;
+        }
+
+        .checkmark {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .custom-checkbox input:checked+.checkmark {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checkmark i {
+            color: white;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .custom-checkbox input:checked+.checkmark i {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="skill-gap-analysis">
+        <div class="container">
+            <!-- ========== HEADER ========== -->
+            <div class="header">
+                <button
+                    onclick="window.location.href='/dashboard/'; return false;"
+                    style="position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500; transition: all 0.3s ease;"
+                    onmouseover="this.style.backgroundColor='rgba(255,255,255,0.3)';"
+                    onmouseout="this.style.backgroundColor='rgba(255,255,255,0.2)';">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </button>
+                <h1><i class="fas fa-search-minus"></i> Skill Gap Analysis</h1>
+                <p>Market Comparison & Priority Mapping</p>
+            </div>
+
+            <!-- 1. Target Role Configuration Module -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-title-left">
+                        <i class="fas fa-bullseye"></i> Target Role Configuration
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Target Job Title</label>
+                        <input type="text" id="targetRole" value="Senior React Developer" placeholder="Search roles...">
+                    </div>
+                    <div class="form-group">
+                        <label>Career Path</label>
+                        <select id="careerPath">
+                            <option>Frontend Dev → Senior → Lead</option>
+                            <option>Backend Dev → Senior → Architect</option>
+                            <option>Full Stack Developer Track</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Industry</label>
+                        <select id="industry">
+                            <option>Technology / Software</option>
+                            <option>Finance / FinTech</option>
+                            <option>Healthcare / HealthTech</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Experience Level</label>
+                        <select id="expLevel">
+                            <option>Senior (5-8 years)</option>
+                            <option>Mid-Level (2-5 years)</option>
+                            <option>Entry-Level (0-2 years)</option>
+                            <option>Lead / Principal (8+ years)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location / Market</label>
+                        <select id="market">
+                            <option>Global Remote</option>
+                            <option>North America (Tech Hubs)</option>
+                            <option>Europe</option>
+                            <option>Asia Pacific</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button class="btn btn-primary" onclick="generateAnalysis()"><i class="fas fa-sync-alt"></i> Run
+                        Market Analysis</button>
+                </div>
+            </div>
+
+            <!-- 2. Market Benchmark Engine Display -->
+            <div class="card" id="benchmarkCard" style="display: none;">
+                <div class="card-title">
+                    <div class="card-title-left">
+                        <i class="fas fa-chart-line"></i> Market Benchmark: Senior React Developer
+                    </div>
+                    <span class="badge badge-info">Source: Aggregated Job Postings (Last 30 days)</span>
+                </div>
+
+                <div class="benchmark-info">
+                    <strong>Market Demand Trend:</strong> <i class="fas fa-arrow-up text-success"
+                        style="color: var(--success);"></i> High Demand (15% YoY growth). Emphasis is shifting heavily
+                    towards TypeScript and State Management mastery.
+                </div>
+
+                <ul class="gap-list"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                    <li style="padding: 10px; background: var(--light); border-radius: 8px;">
+                        <i class="fas fa-check text-success" style="color: var(--success); margin-right: 5px;"></i>
+                        React: Level 4 (Expert) - <strong>Required</strong>
+                    </li>
+                    <li style="padding: 10px; background: var(--light); border-radius: 8px;">
+                        <i class="fas fa-check text-success" style="color: var(--success); margin-right: 5px;"></i>
+                        TypeScript: Level 3 (Advanced) - <strong>Required</strong>
+                    </li>
+                    <li style="padding: 10px; background: var(--light); border-radius: 8px;">
+                        <i class="fas fa-check text-success" style="color: var(--success); margin-right: 5px;"></i>
+                        System Design: Level 3 (Advanced) - <strong>Required</strong>
+                    </li>
+                    <li style="padding: 10px; background: var(--light); border-radius: 8px;">
+                        <i class="fas fa-plus text-primary" style="color: var(--primary); margin-right: 5px;"></i>
+                        Node.js: Level 2 (Intermediate) - <em>Nice to have</em>
+                    </li>
+                    <li style="padding: 10px; background: var(--light); border-radius: 8px;">
+                        <i class="fas fa-plus text-primary" style="color: var(--primary); margin-right: 5px;"></i> AWS:
+                        Level 2 (Intermediate) - <em>Preferred</em>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Analysis Content (Hidden until generated) -->
+            <div id="analysisContent" style="display: none;">
+
+                <!-- 3. Comparative Visualization Module -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-left">
+                            <i class="fas fa-chart-pie"></i> Visual Profile Comparison
+                        </div>
+                    </div>
+                    <div class="two-col-grid">
+                        <div>
+                            <h4 style="margin-bottom: 15px; text-align: center; color: var(--gray);">Category Overview
+                                (Radar)</h4>
+                            <div class="chart-container">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 15px; text-align: center; color: var(--gray);">Key Skill
+                                Proficiency (Bar)</h4>
+                            <div class="chart-container">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Skill Gap Analysis Dashboard -->
+                <div class="two-col-grid">
+                    <!-- A. Met & Exceeded -->
+                    <div class="card">
+                        <div class="card-title">
+                            <div class="card-title-left">
+                                <i class="fas fa-trophy" style="color: var(--warning);"></i> Met & Exceeded
+                            </div>
+                        </div>
+                        <ul class="gap-list">
+                            <li class="gap-item">
+                                <div class="gap-info">
+                                    <div class="gap-icon met"><i class="fas fa-check"></i></div>
+                                    <div class="gap-details">
+                                        <h4>React</h4>
+                                        <p>You: Level 4 | Req: Level 4</p>
+                                    </div>
+                                </div>
+                                <div class="gap-action">
+                                    <span class="badge badge-success">Top 20%</span>
+                                </div>
+                            </li>
+                            <li class="gap-item">
+                                <div class="gap-info">
+                                    <div class="gap-icon met"><i class="fas fa-check"></i></div>
+                                    <div class="gap-details">
+                                        <h4>HTML/CSS</h4>
+                                        <p>You: Level 4 | Req: Level 3</p>
+                                    </div>
+                                </div>
+                                <div class="gap-action">
+                                    <span class="badge badge-success">Exceeds</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- B. Skill Gaps Section -->
+                    <div class="card">
+                        <div class="card-title">
+                            <div class="card-title-left">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Identified
+                                Gaps
+                            </div>
+                        </div>
+                        <ul class="gap-list">
+                            <!-- Missing -->
+                            <li class="gap-item" style="border-left: 4px solid var(--danger);">
+                                <div class="gap-info">
+                                    <div class="gap-icon missing"><i class="fas fa-times"></i></div>
+                                    <div class="gap-details">
+                                        <h4>Docker</h4>
+                                        <p>Not detected (Required for Deployment)</p>
+                                    </div>
+                                </div>
+                                <div class="gap-action">
+                                    <span class="badge badge-danger">Missing</span>
+                                </div>
+                            </li>
+                            <!-- Proficiency -->
+                            <li class="gap-item" style="border-left: 4px solid var(--warning);">
+                                <div class="gap-info">
+                                    <div class="gap-icon improve"><i class="fas fa-arrow-up"></i></div>
+                                    <div class="gap-details">
+                                        <h4>TypeScript</h4>
+                                        <p>Level 2 &rarr; Need Level 3 (Advanced)</p>
+                                    </div>
+                                </div>
+                                <div class="gap-action">
+                                    <span class="badge badge-warning">Upgrade</span>
+                                </div>
+                            </li>
+                            <!-- Emerging -->
+                            <li class="gap-item" style="border-left: 4px solid var(--accent);">
+                                <div class="gap-info">
+                                    <div class="gap-icon emerging"><i class="fas fa-lightbulb"></i></div>
+                                    <div class="gap-details">
+                                        <h4>GraphQL</h4>
+                                        <p>Gaining importance in target role</p>
+                                    </div>
+                                </div>
+                                <div class="gap-action">
+                                    <span class="badge badge-info">Emerging</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 5. Priority Mapping Engine -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-left">
+                            <i class="fas fa-layer-group"></i> Priority Development Matrix
+                        </div>
+                    </div>
+                    <p style="color: var(--gray); margin-bottom: 15px;">Algorithm factors: Impact Score, Learning
+                        Effort, Market Demand Weight, Goal Alignment.</p>
+                    <div style="overflow-x: auto;">
+                        <table class="priority-matrix">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Skills</th>
+                                    <th>Action Required</th>
+                                    <th>Impact</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="priority-row-critical">
+                                    <td><span class="badge badge-danger">Critical (Must Learn Now)</span></td>
+                                    <td><strong>Docker, System Design</strong></td>
+                                    <td>Missing core requirements</td>
+                                    <td>High</td>
+                                    <td>
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox">
+                                            <span class="checkmark"><i class="fas fa-check"></i></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr class="priority-row-high">
+                                    <td><span class="badge badge-warning">High (Next 30 Days)</span></td>
+                                    <td><strong>TypeScript Level 3</strong></td>
+                                    <td>Need advanced patterns</td>
+                                    <td>High</td>
+                                    <td>
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox">
+                                            <span class="checkmark"><i class="fas fa-check"></i></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr class="priority-row-medium">
+                                    <td><span class="badge badge-info"
+                                            style="background: var(--light-gray); color: var(--dark);">Medium (Next 90
+                                            Days)</span></td>
+                                    <td><strong>AWS Basics, Node.js</strong></td>
+                                    <td>Nice to have / Preferred</td>
+                                    <td>Medium</td>
+                                    <td>
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox">
+                                            <span class="checkmark"><i class="fas fa-check"></i></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr class="priority-row-low">
+                                    <td><span class="badge" style="background: #f1f5f9; color: var(--gray);">Low
+                                            (Future)</span></td>
+                                    <td><strong>GraphQL</strong></td>
+                                    <td>Emerging tech trend</td>
+                                    <td>Low</td>
+                                    <td>
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox">
+                                            <span class="checkmark"><i class="fas fa-check"></i></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 6. Learning Path Generator -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-left">
+                            <i class="fas fa-road"></i> Generated Learning Path
+                        </div>
+                        <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export Path</button>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <div class="path-node">
+                            <div class="node-icon"><i class="fas fa-box"></i></div>
+                            <div class="node-content">
+                                <div class="node-header">
+                                    <h4>1. Master Docker Fundamentals</h4>
+                                    <span class="badge badge-danger">Est. 2 weeks</span>
+                                </div>
+                                <p style="color: var(--gray); font-size: 0.9rem;">Required for deployment workflows in
+                                    target role.</p>
+                                <ul class="resource-list">
+                                    <li class="resource-item"><i class="fab fa-youtube"></i> <a href="#">Docker for
+                                            Beginners (FreeCodeCamp)</a></li>
+                                    <li class="resource-item"><i class="fas fa-file-alt"></i> <a href="#">Official
+                                            Docker Documentation</a></li>
+                                    <li class="resource-item"><i class="fas fa-laptop-code"></i> Project: Containerize a
+                                        React App</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="path-node">
+                            <div class="node-icon"><i class="js-icon-ts" style="font-weight: bold;">TS</i></div>
+                            <div class="node-content">
+                                <div class="node-header">
+                                    <h4>2. Advanced TypeScript Patterns</h4>
+                                    <span class="badge badge-warning">Est. 3 weeks</span>
+                                </div>
+                                <p style="color: var(--gray); font-size: 0.9rem;">Upgrade proficiency from Level 2 to
+                                    Level 3.</p>
+                                <ul class="resource-list">
+                                    <li class="resource-item"><i class="fas fa-graduation-cap"></i> <a href="#">Advanced
+                                            TypeScript Masterclass</a></li>
+                                    <li class="resource-item"><i class="fas fa-laptop-code"></i> Project: Refactor a JS
+                                        app to strict TS</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="path-node">
+                            <div class="node-icon"><i class="fas fa-sitemap"></i></div>
+                            <div class="node-content">
+                                <div class="node-header">
+                                    <h4>3. Frontend System Design</h4>
+                                    <span class="badge badge-danger">Est. 4 weeks</span>
+                                </div>
+                                <p style="color: var(--gray); font-size: 0.9rem;">Crucial for Senior level interviews.
+                                </p>
+                                <ul class="resource-list">
+                                    <li class="resource-item"><i class="fas fa-book"></i> <a href="#">Frontend System
+                                            Design Guide</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Role Comparison & 8. Tracker -->
+                <div class="two-col-grid">
+                    <div class="card">
+                        <div class="card-title">
+                            <div class="card-title-left">
+                                <i class="fas fa-exchange-alt"></i> Career Switcher Analysis
+                            </div>
+                        </div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">Compare gaps across alternative roles to
+                            maximize learning efficiency.</p>
+
+                        <div style="margin-top: 15px;">
+                            <div
+                                style="padding: 15px; border: 1px solid var(--light-gray); border-radius: 8px; margin-bottom: 10px;">
+                                <strong>Target A: Senior React Dev</strong>
+                                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                                    <span class="badge badge-danger">Docker</span>
+                                    <span class="badge badge-warning">System Design</span>
+                                </div>
+                            </div>
+                            <div
+                                style="padding: 15px; border: 1px solid var(--light-gray); border-radius: 8px; margin-bottom: 10px;">
+                                <strong>Target B: Full Stack Node/React</strong>
+                                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                                    <span class="badge badge-danger">Docker</span>
+                                    <span class="badge badge-danger">Node.js Level 3</span>
+                                </div>
+                            </div>
+                            <div class="benchmark-info"
+                                style="margin-top: 15px; background: rgba(16, 185, 129, 0.1); border-color: var(--success);">
+                                <strong>Overlap Insight:</strong> Learning <strong>Docker</strong> applies to both
+                                target roles. Start there!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <div class="card-title-left">
+                                <i class="fas fa-tasks"></i> Gap Closure Tracker
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>Overall Gap Closure Progress</span>
+                                <strong>15%</strong>
+                            </div>
+                            <div
+                                style="width: 100%; height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 15%; height: 100%; background: var(--success);"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Learning Reflections & Notes</label>
+                            <textarea rows="4"
+                                style="width: 100%; padding: 10px; border: 2px solid var(--light-gray); border-radius: 8px; font-family: inherit;"
+                                placeholder="Started Docker tutorial on FreeCodeCamp. Confused about docker-compose, need to review..."></textarea>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;">Save Notes</button>
+                    </div>
+                </div>
+
+            </div> <!-- End Analysis Content -->
+
+        </div>
+    </div>
+
+    <script>
+        // ===== USER DATA FROM SERVER =====
+        const userSkillsData = {{ user_skills_json|safe }} || [];
+        const categoriesData = {{ categories_json|safe }} || [];
+        
+        // Validate data is loaded
+        if (!Array.isArray(userSkillsData)) {
+            console.error('User skills data not loaded properly');
+            document.body.innerHTML = '<div style="padding: 20px; color: red;"><h2>Error Loading Data</h2><p>Please refresh the page or contact support.</p></div>';
+        }
+        
+        // Chart rendering variables
+        let radarChartInstance = null;
+        let barChartInstance = null;
+        
+        // Build user skills map for quick lookup
+        const userSkillsMap = {};
+        if (Array.isArray(userSkillsData)) {
+            userSkillsData.forEach(skill => {
+                if (skill && skill.skill_name) {
+                    userSkillsMap[skill.skill_name.toLowerCase()] = skill;
+                }
+            });
+        }
+        
+        console.log('User Skills Loaded:', userSkillsData);
+
+        function generateAnalysis() {
+            const targetRole = document.getElementById('targetRole').value || 'Senior React Developer';
+            const careerPath = document.getElementById('careerPath').value;
+            const industry = document.getElementById('industry').value;
+            const expLevel = document.getElementById('expLevel').value;
+            const market = document.getElementById('market').value;
+            
+            // Show loading state
+            const btn = document.querySelector('button[onclick="generateAnalysis()"]');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Profile & Market...';
+            btn.disabled = true;
+
+            // Fetch role requirements from server API
+            fetch('/api/get-role-requirements/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    role_title: targetRole,
+                    experience_level: expLevel.split('(')[0].trim(),
+                    industry: industry,
+                    career_path: careerPath
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Role Requirements Data:', data);
+                
+                if (!data || !data.benchmark) {
+                    throw new Error('Invalid response data: missing benchmark');
+                }
+                
+                if (data.status === 'success') {
+                    const benchmark = data.benchmark;
+                    
+                    // Update benchmark card
+                    updateBenchmarkCard(targetRole, benchmark);
+                    
+                    // Update comparison visualizations
+                    updateComparativeVisualization(benchmark);
+                    
+                    // Update skill gap analysis
+                    updateSkillGapAnalysis(benchmark);
+                    
+                    // Update priority matrix
+                    updatePriorityMatrix(benchmark);
+                    
+                    // Update learning path
+                    updateLearningPath(benchmark);
+                    
+                    // Update role comparison
+                    updateRoleComparison(benchmark);
+                    
+                    // Update progress tracker
+                    updateProgressTracker(benchmark);
+                    
+                    // Show sections
+                    const benchmarkCard = document.getElementById('benchmarkCard');
+                    const analysisContent = document.getElementById('analysisContent');
+                    if (benchmarkCard) benchmarkCard.style.display = 'block';
+                    if (analysisContent) analysisContent.style.display = 'block';
+                    
+                    // Render Charts
+                    setTimeout(() => renderCharts(benchmark), 500);
+                    
+                    // Scroll to results
+                    setTimeout(() => {
+                        const bCard = document.getElementById('benchmarkCard');
+                        if (bCard) bCard.scrollIntoView({ behavior: 'smooth' });
+                    }, 800);
+                    
+                    // Reset button
+                    btn.innerHTML = '<i class="fas fa-check"></i> Analysis Complete';
+                    btn.classList.replace('btn-primary', 'btn-success');
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.innerHTML = originalContent;
+                        btn.classList.replace('btn-success', 'btn-primary');
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 2000);
+                } else {
+                    const errorMsg = data.message || 'Unknown error occurred';
+                    console.error('Analysis failed:', errorMsg);
+                    alert('Error: ' + errorMsg);
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                const errorMsg = error.message || 'Failed to fetch role requirements. Please try again.';
+                alert('Error: ' + errorMsg);
+                btn.innerHTML = originalContent;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-primary');
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.disabled = false;
+            });
+        }
+
+        function updateBenchmarkCard(roleName, benchmark) {
+            const titleElement = document.querySelector('#benchmarkCard .card-title-left');
+            if (titleElement) {
+                titleElement.innerHTML = `<i class="fas fa-chart-line"></i> Market Benchmark: ${roleName}`;
+            }
+            
+            // Build skills list
+            const requirementsList = document.querySelector('#benchmarkCard .gap-list');
+            if (requirementsList && benchmark.required_skills) {
+                let html = '';
+                
+                // Required skills
+                const requiredSkills = benchmark.required_skills || [];
+                requiredSkills.slice(0, 5).forEach(skill => {
+                    if (skill && skill.skill_name) {
+                        const userSkill = findUserSkill(skill.skill_name);
+                        const icon = userSkill ? '<i class="fas fa-check text-success" style="color: var(--success); margin-right: 5px;"></i>' : '<i class="fas fa-plus text-primary" style="color: var(--primary); margin-right: 5px;"></i>';
+                        html += `<li style="padding: 10px; background: var(--light); border-radius: 8px;">
+                            ${icon}
+                            <strong>${skill.skill_name}</strong>: ${skill.recommended_proficiency || 'Advanced'} - <strong>Required</strong>
+                        </li>`;
+                    }
+                });
+                
+                requirementsList.innerHTML = html;
+            }
+        }
+
+        function updateComparativeVisualization(benchmark) {
+            // Data for charts will be processed in renderCharts()
+        }
+
+        function updateSkillGapAnalysis(benchmark) {
+            // Find the "Met & Exceeded" and "Identified Gaps" cards by looking for their titles
+            let metCard = null;
+            let gapsCard = null;
+            
+            const cards = document.querySelectorAll('.two-col-grid .card');
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title-left');
+                if (title && title.textContent.includes('Met & Exceeded')) {
+                    metCard = card;
+                } else if (title && title.textContent.includes('Identified')) {
+                    gapsCard = card;
+                }
+            });
+            
+            // Update Met & Exceeded skills
+            const metSkills = benchmark.met_skills || [];
+            let metHtml = '';
+            metSkills.forEach(skill => {
+                metHtml += `<li class="gap-item">
+                    <div class="gap-info">
+                        <div class="gap-icon met"><i class="fas fa-check"></i></div>
+                        <div class="gap-details">
+                            <h4>${skill.skill_name}</h4>
+                            <p>You: Level ${skill.user_proficiency_numeric} | Req: Level 3</p>
+                        </div>
+                    </div>
+                    <div class="gap-action">
+                        <span class="badge badge-success">Met</span>
+                    </div>
+                </li>`;
+            });
+            
+            if (metCard && metHtml) {
+                const metList = metCard.querySelector('.gap-list');
+                if (metList) metList.innerHTML = metHtml;
+            }
+            
+            // Update gaps
+            let gapHtml = '';
+            
+            // Missing skills
+            const missingSkills = benchmark.missing_skills || [];
+            missingSkills.forEach(skill => {
+                gapHtml += `<li class="gap-item" style="border-left: 4px solid var(--danger);">
+                    <div class="gap-info">
+                        <div class="gap-icon missing"><i class="fas fa-times"></i></div>
+                        <div class="gap-details">
+                            <h4>${skill.skill_name}</h4>
+                            <p>Not detected (Required for ${skill.skill_type})</p>
+                        </div>
+                    </div>
+                    <div class="gap-action">
+                        <span class="badge badge-danger">Missing</span>
+                    </div>
+                </li>`;
+            });
+            
+            // Proficiency gaps
+            const proficiencyGaps = benchmark.proficiency_gaps || [];
+            proficiencyGaps.forEach(skill => {
+                gapHtml += `<li class="gap-item" style="border-left: 4px solid var(--warning);">
+                    <div class="gap-info">
+                        <div class="gap-icon improve"><i class="fas fa-arrow-up"></i></div>
+                        <div class="gap-details">
+                            <h4>${skill.skill_name}</h4>
+                            <p>Level ${skill.user_proficiency_numeric} → Need Level ${skill.gap_level + skill.user_proficiency_numeric}</p>
+                        </div>
+                    </div>
+                    <div class="gap-action">
+                        <span class="badge badge-warning">Upgrade</span>
+                    </div>
+                </li>`;
+            });
+            
+            // Emerging skills
+            const emergingSkills = benchmark.emerging_skills || [];
+            emergingSkills.forEach(skill => {
+                gapHtml += `<li class="gap-item" style="border-left: 4px solid var(--accent);">
+                    <div class="gap-info">
+                        <div class="gap-icon emerging"><i class="fas fa-lightbulb"></i></div>
+                        <div class="gap-details">
+                            <h4>${skill.skill_name}</h4>
+                            <p>Gaining importance in target role</p>
+                        </div>
+                    </div>
+                    <div class="gap-action">
+                        <span class="badge badge-info">Emerging</span>
+                    </div>
+                </li>`;
+            });
+            
+            if (gapHtml && gapsCard) {
+                const gapsList = gapsCard.querySelector('.gap-list');
+                if (gapsList) gapsList.innerHTML = gapHtml;
+            }
+        }
+
+        function updatePriorityMatrix(benchmark) {
+            // Build priority matrix
+            const missingCount = (benchmark.missing_skills || []).length;
+            const gapCount = (benchmark.proficiency_gaps || []).length;
+            const emergingCount = (benchmark.emerging_skills || []).length;
+            
+            const matrixTable = document.querySelector('.priority-matrix tbody');
+            if (matrixTable) {
+                let rows = '';
+                
+                if (missingCount > 0) {
+                    const skills = (benchmark.missing_skills || []).map(s => s.skill_name).join(', ');
+                    rows += `<tr class="priority-row-critical">
+                        <td><span class="badge badge-danger">Critical (Must Learn Now)</span></td>
+                        <td><strong>${skills}</strong></td>
+                        <td>Missing core requirements</td>
+                        <td>High</td>
+                        <td><label class="custom-checkbox"><input type="checkbox"><span class="checkmark"><i class="fas fa-check"></i></span></label></td>
+                    </tr>`;
+                }
+                
+                if (gapCount > 0) {
+                    const skills = (benchmark.proficiency_gaps || []).map(s => s.skill_name).join(', ');
+                    rows += `<tr class="priority-row-high">
+                        <td><span class="badge badge-warning">High (Next 30 Days)</span></td>
+                        <td><strong>${skills}</strong></td>
+                        <td>Need advanced patterns & practices</td>
+                        <td>High</td>
+                        <td><label class="custom-checkbox"><input type="checkbox"><span class="checkmark"><i class="fas fa-check"></i></span></label></td>
+                    </tr>`;
+                }
+                
+                if (emergingCount > 0) {
+                    const skills = (benchmark.emerging_skills || []).map(s => s.skill_name).join(', ');
+                    rows += `<tr class="priority-row-medium">
+                        <td><span class="badge badge-info" style="background: var(--light-gray); color: var(--dark);">Medium (Next 90 Days)</span></td>
+                        <td><strong>${skills}</strong></td>
+                        <td>Nice to have / Emerging skills</td>
+                        <td>Medium</td>
+                        <td><label class="custom-checkbox"><input type="checkbox"><span class="checkmark"><i class="fas fa-check"></i></span></label></td>
+                    </tr>`;
+                }
+                
+                matrixTable.innerHTML = rows || '<tr><td colspan="5" style="text-align: center; padding: 20px;">All skills match! Ready for this role.</td></tr>';
+            }
+        }
+
+        function updateLearningPath(benchmark) {
+            // Generate learning path based on gaps
+            const allGaps = [
+                ...(benchmark.missing_skills || []),
+                ...(benchmark.proficiency_gaps || [])
+            ];
+            
+            // Find learning path container by looking for the card with learning path content
+            const cards = document.querySelectorAll('.card');
+            let pathContainer = null;
+            
+            for (let card of cards) {
+                const content = card.textContent;
+                if (content.includes('Practical Learning Path') || content.includes('Master')) {
+                    const paths = card.querySelector('[style*="margin-top"]');
+                    if (paths && paths.closest('.card') === card) {
+                        pathContainer = paths;
+                        break;
+                    }
+                }
+            }
+            
+            // Fallback: find by looking for card with learning path marker
+            if (!pathContainer) {
+                const allPaths = document.querySelectorAll('.path-node');
+                if (allPaths.length > 0) {
+                    pathContainer = allPaths[0].parentElement;
+                }
+            }
+            
+            if (pathContainer && allGaps.length > 0) {
+                let pathHtml = '';
+                allGaps.slice(0, 3).forEach((gap, index) => {
+                    if (gap && gap.skill_name) {
+                        const duration = (index + 1) * 2;
+                        pathHtml += `<div class="path-node">
+                            <div class="node-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="node-content">
+                                <div class="node-header">
+                                    <h4>${index + 1}. Master ${gap.skill_name}</h4>
+                                    <span class="badge badge-warning">Est. ${duration} weeks</span>
+                                </div>
+                                <p style="color: var(--gray); font-size: 0.9rem;">Critical skill required for target role.</p>
+                                <ul class="resource-list">
+                                    <li class="resource-item"><i class="fas fa-graduation-cap"></i> <a href="#">Udemy: ${gap.skill_name} Masterclass</a></li>
+                                    <li class="resource-item"><i class="fas fa-file-alt"></i> <a href="#">Official ${gap.skill_name} Documentation</a></li>
+                                    <li class="resource-item"><i class="fas fa-laptop-code"></i> Project: Build with ${gap.skill_name}</li>
+                                </ul>
+                            </div>
+                        </div>`;
+                    }
+                });
+                
+                if (pathHtml) pathContainer.innerHTML = pathHtml;
+            }
+        }
+
+        function updateRoleComparison(benchmark) {
+            // Update role comparison card - find by looking for Career Switcher text in card title
+            const cards = document.querySelectorAll('.card');
+            let comparisonCard = null;
+            
+            for (let card of cards) {
+                const titleElement = card.querySelector('.card-title-left');
+                if (titleElement && titleElement.textContent.includes('Career Switcher')) {
+                    comparisonCard = card;
+                    break;
+                }
+            }
+            
+            if (comparisonCard && benchmark && benchmark.required_skills && benchmark.required_skills.length > 0) {
+                const metCount = (benchmark.met_skills || []).length;
+                const totalCount = (benchmark.required_skills || []).length || 1;
+                const compatibility = totalCount > 0 ? Math.round((metCount / totalCount) * 100) : 0;
+                
+                let html = `<div style="padding: 15px; border: 1px solid var(--light-gray); border-radius: 8px; margin-bottom: 10px;">
+                    <strong>Target: ${benchmark.job_title || 'Selected Role'}</strong>
+                    <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.9rem; color: var(--gray);">Compatibility: ${compatibility}%</div>
+                            <div style="width: 100%; height: 6px; background: var(--light-gray); border-radius: 3px; margin-top: 5px;">
+                                <div style="width: ${compatibility}%; height: 100%; background: ${compatibility >= 80 ? 'var(--success)' : compatibility >= 50 ? 'var(--warning)' : 'var(--danger)'}; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                        <span style="font-weight: bold; color: ${compatibility >= 80 ? 'var(--success)' : compatibility >= 50 ? 'var(--warning)' : 'var(--danger)'};">${compatibility}%</span>
+                    </div>
+                </div>`;
+                
+                const divs = comparisonCard.querySelectorAll('div[style*="padding: 15px"]');
+                if (divs.length > 0) {
+                    divs[0].innerHTML = html;
+                }
+            }
+        }
+
+        function updateProgressTracker(benchmark) {
+            const metCount = (benchmark.met_skills || []).length;
+            const totalCount = (benchmark.required_skills || []).length || 1;  // Prevent division by zero
+            const progress = totalCount > 0 ? Math.round((metCount / totalCount) * 100) : 0;
+            
+            // Find tracker by looking for the card with Gap Closure Tracker title
+            const cards = document.querySelectorAll('.card');
+            let trackerCard = null;
+            
+            for (let card of cards) {
+                const titleElement = card.querySelector('.card-title-left');
+                if (titleElement && titleElement.textContent.includes('Gap Closure Tracker')) {
+                    trackerCard = card;
+                    break;
+                }
+            }
+            
+            if (trackerCard) {
+                const progressDiv = trackerCard.querySelector('[style*="Overall"]');
+                if (progressDiv && progressDiv.closest('div')) {
+                    progressDiv.closest('div').innerHTML = `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Overall Skill Alignment</span>
+                        <strong>${progress}%</strong>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                        <div style="width: ${progress}%; height: 100%; background: var(--success);"></div>
+                    </div>`;
+                }
+            }
+        }
+
+        function findUserSkill(skillName) {
+            if (!skillName || !userSkillsData) return null;
+            return userSkillsData.find(s => s && s.skill_name && s.skill_name.toLowerCase() === skillName.toLowerCase());
+        }
+        
+        function getCookie(name) {
+            // Extract CSRF token for API calls
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function renderCharts(benchmark) {
+            // Destroy existing charts to prevent overlap on re-render
+            if (radarChartInstance) radarChartInstance.destroy();
+            if (barChartInstance) barChartInstance.destroy();
+
+            // Prepare data for charts
+            if (!benchmark || !benchmark.required_skills || benchmark.required_skills.length === 0) {
+                console.log('No required skills data for charts');
+                return;
+            }
+            
+            const requiredSkills = (benchmark.required_skills || []).slice(0, 6);
+            const labels = requiredSkills.map(s => s && s.skill_name ? s.skill_name : 'Unknown');
+            const userProficiency = requiredSkills.map(s => {
+                if (!s || !s.skill_name) return 0;
+                const userSkill = findUserSkill(s.skill_name);
+                return userSkill && userSkill.proficiency_numeric ? userSkill.proficiency_numeric : 0;
+            });
+            const targetProficiency = requiredSkills.map(s => {
+                if (!s) return 3;
+                const levelMap = { 'beginner': 1, 'intermediate': 2, 'advanced': 3, 'expert': 4 };
+                return levelMap[s.recommended_proficiency] || 3;
+            });
+
+            // 1. Bar Chart (Skill-by-skill comparison)
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            barChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Your Level',
+                            data: userProficiency,
+                            backgroundColor: 'rgba(6, 182, 212, 0.8)',
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Required Level',
+                            data: targetProficiency,
+                            backgroundColor: 'rgba(124, 58, 237, 0.8)',
+                            borderRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 4,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function (value) {
+                                    const levelNames = ['None', 'Beginner', 'Intermediate', 'Advanced', 'Expert'];
+                                    return levelNames[value] || '';
+                                },
+                                font: { family: "'Poppins', sans-serif", size: 10 }
+                            }
+                        },
+                        x: {
+                            ticks: { font: { family: "'Poppins', sans-serif" } }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: "'Poppins', sans-serif" } } }
+                    }
+                }
+            });
+
+            // 2. Radar Chart (Category overlay)
+            const categories = ['Technical', 'Soft Skills', 'Domain', 'Problem Solving', 'Leadership', 'Collaboration'];
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            radarChartInstance = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: categories,
+                    datasets: [
+                        {
+                            label: 'Your Profile',
+                            data: [75, 70, 60, 65, 55, 80],
+                            backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                            borderColor: 'rgba(6, 182, 212, 1)',
+                            pointBackgroundColor: 'rgba(6, 182, 212, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(6, 182, 212, 1)'
+                        },
+                        {
+                            label: 'Target Role',
+                            data: [90, 75, 80, 85, 70, 85],
+                            backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                            borderColor: 'rgba(124, 58, 237, 1)',
+                            pointBackgroundColor: 'rgba(124, 58, 237, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(124, 58, 237, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: { font: { family: "'Poppins', sans-serif", size: 12 } },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: "'Poppins', sans-serif" } } }
+                    }
+                }
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Display user's current skills on page load
+        window.addEventListener('load', () => {
+            if (userSkillsData.length > 0) {
+                console.log('Skills loaded from database:', userSkillsData.length, 'skills');
+            }
+        });
+    </script>
+</body>
+
+</html>

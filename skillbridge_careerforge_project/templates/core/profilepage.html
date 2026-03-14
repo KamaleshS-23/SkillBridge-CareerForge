@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Profiling System · Unified</title>
+    <!-- Font Awesome & Google Fonts (shared) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* === RESET + GLOBAL (merged, deduped) === */
+        .ai-profiling-unified * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .ai-profiling-unified {
+            --primary: #7C3AED;
+            --primary-dark: #5B21B6;
+            --secondary: #EC4899;
+            --accent: #06B6D4;
+            --dark: #1E1B4B;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --light-gray: #E2E8F0;
+            --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+
+            width: 100%;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 50px;
+        }
+
+        /* header gradient */
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.2);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .completion-section {
+            margin-top: 20px;
+        }
+
+        .completion-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .completion-fill {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* stats grid (from second) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gray);
+            overflow-x: auto;
+            padding-bottom: 0;
+            background: white;
+            border-radius: 12px 12px 0 0;
+            padding: 10px 10px 0;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* cards & forms (merged) */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+        }
+
+        /* buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        /* upload area (first) */
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(124, 58, 237, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* parsing status (first) */
+        .parsing-status-container {
+            display: none;
+            padding: 20px;
+            background: #F1F5F9;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .step-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+
+        .step-item.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .step-item.completed {
+            color: var(--success);
+        }
+
+        /* skills table (first) */
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .skills-table th,
+        .skills-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .skills-table th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        /* inference / soft skill cards */
+        .inference-card {
+            background: #F8FAFC;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .taxonomy-mapping {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .mapping-arrow {
+            color: var(--primary);
+        }
+
+        /* badges, item cards, skill grid (from second) */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-blue {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .items-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .item-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .item-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-info h4 {
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .item-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .skill-tag {
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.1);
+        }
+
+        .skill-tag h5 {
+            margin: 0 0 5px;
+            color: var(--dark);
+            font-size: 1.1rem;
+            padding-right: 30px;
+        }
+
+        .skill-tag .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .skill-tag:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .integration-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .integration-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        /* alert & modal */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(124, 58, 237, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* navigation buttons (prev/next) */
+        .nav-button {
+            position: fixed;
+            bottom: 30px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .nav-button:hover:not(.disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(124, 58, 237, 0.4);
+        }
+
+        .nav-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .nav-button-prev {
+            left: 30px;
+        }
+
+        .nav-button:not(.nav-button-prev) {
+            right: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .tabs {
+                gap: 5px;
+            }
+
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ai-profiling-unified">
+        <div class="container">
+            <!-- ========== HEADER (unified) ========== -->
+            <div class="header">
+                <button
+                    onclick="if(typeof closeProfilePage === 'function') { closeProfilePage(); } else { window.location.href='/dashboard/'; }"
+                    style="position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </button>
+                <h1><i class="fas fa-brain"></i> AI Profiling System · Unified</h1>
+                <p>Data collection, skill extraction & human-in-the-loop review</p>
+                <div class="completion-section">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Profile Completion</span>
+                        <span id="completionPercent">0%</span>
+                    </div>
+                    <div class="completion-bar">
+                        <div class="completion-fill" id="completionBar" style="width:0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- stats row -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="statSkills">0</h3>
+                    <p><i class="fas fa-code"></i> Skills</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statEducation">0</h3>
+                    <p><i class="fas fa-graduation-cap"></i> Education</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statCertifications">0</h3>
+                    <p><i class="fas fa-certificate"></i> Certs</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statProjects">0</h3>
+                    <p><i class="fas fa-project-diagram"></i> Projects</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statLanguages">0</h3>
+                    <p><i class="fas fa-language"></i> Languages</p>
+                </div>
+            </div>
+
+            <!-- alert container -->
+            <div id="alertContainer"></div>
+
+            <!-- ========== TABS ========== -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab(this, 'identity')"><i class="fas fa-user"></i>
+                    Identity</button>
+                <button class="tab-btn" onclick="switchTab(this, 'education')"><i class="fas fa-graduation-cap"></i>
+                    Education</button>
+                <button class="tab-btn" onclick="switchTab(this, 'certifications')"><i class="fas fa-certificate"></i>
+                    Certifications</button>
+                <button class="tab-btn" onclick="switchTab(this, 'projects')"><i class="fas fa-code-branch"></i>
+                    Projects</button>
+                <button class="tab-btn" onclick="switchTab(this, 'skills')"><i class="fas fa-star"></i> Skills</button>
+                <button class="tab-btn" onclick="switchTab(this, 'extraction')"><i class="fas fa-robot"></i>
+                    Extraction</button>
+                <button class="tab-btn" onclick="switchTab(this, 'integrations')"><i class="fas fa-link"></i>
+                    Integrations</button>
+            </div>
+
+            <!-- ========== TAB: IDENTITY (with languages) ========== -->
+            <div id="identity-tab" class="tab-pane active">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-user-circle"></i> Professional Identity</h2>
+                    <form id="identityForm">
+                        <div class="form-grid">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="fullName"
+                                    placeholder="John Doe"></div>
+                            <div class="form-group"><label>Educational Level</label><input type="text"
+                                    id="educationLevel" placeholder="Grade / Program"></div>
+                            <div class="form-group"><label>Date of Birth</label><input type="date" id="dateOfBirth">
+                            </div>
+                            <div class="form-group"><label>Gender</label><select id="gender">
+                                    <option value="">Select</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Non-binary</option>
+                                    <option>Prefer not to say</option>
+                                </select></div>
+                            <div class="form-group"><label>Phone Number</label><input type="tel" id="phoneNumber"
+                                    placeholder="+1 234 567 8900"></div>
+                            <div class="form-group"><label>Location / Timezone</label><input type="text" id="location"
+                                    placeholder="City, Country"></div>
+                            <div class="form-group"><label>Native Language</label><input type="text" id="nativeLanguage"
+                                    placeholder="English"></div>
+                            <div class="form-group"><label>LinkedIn URL</label><input type="url" id="linkedinUrl"
+                                    placeholder="https://linkedin.com/in/yourprofile"><small style="color: #888; display: block; margin-top: 4px;">Optional - Leave empty if not applicable</small></div>
+                            <div class="form-group"><label>GitHub URL</label><input type="url" id="githubUrl"
+                                    placeholder="https://github.com/yourprofile"><small style="color: #888; display: block; margin-top: 4px;">Optional - Leave empty if not applicable</small></div>
+                            <div class="form-group"><label>Portfolio URL</label><input type="url" id="portfolioUrl"
+                                    placeholder="https://yourportfolio.com"><small style="color: #888; display: block; margin-top: 4px;">Optional - Full URL required (e.g., https://example.com)</small></div>
+                            <div class="form-group"><label>Resume URL</label><input type="url" id="resumeUrl"
+                                    placeholder="https://example.com/resume.pdf"><small style="color: #888; display: block; margin-top: 4px;">Optional - Full URL required (e.g., https://example.com/resume.pdf)</small></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Identity</button>
+                    </form>
+                </div>
+                <!-- Languages sub-card -->
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-language"></i> Languages</h2>
+                    <button class="btn btn-secondary" onclick="openModal('languageModal')"><i class="fas fa-plus"></i>
+                        Add Language</button>
+                    <div id="languagesList" class="items-list"></div>
+                </div>
+            </div>
+
+            <!-- EDUCATION TAB -->
+            <div id="education-tab" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-graduation-cap"></i> Education</h2>
+                    <button class="btn btn-secondary" onclick="openModal('educationModal')"><i class="fas fa-plus"></i>
+                        Add Education</button>
+                    <div id="educationList" class="items-list"></div>
+                </div>
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-book"></i> Courses</h2>
+                    <button class="btn btn-secondary" onclick="openModal('courseModal')"><i class="fas fa-plus"></i> Add
+                        Course</button>
+                    <div id="coursesList" class="items-list"></div>
+                </div>
+            </div>
+
+            <!-- CERTIFICATIONS TAB -->
+            <div id="certifications-tab" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-certificate"></i> Certifications</h2>
+                    <button class="btn btn-secondary" onclick="openModal('certificationModal')"><i
+                            class="fas fa-plus"></i> Add Certification</button>
+                    <div id="certificationsList" class="items-list"></div>
+                </div>
+            </div>
+
+            <!-- PROJECTS TAB -->
+            <div id="projects-tab" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-code-branch"></i> Projects</h2>
+                    <button class="btn btn-secondary" onclick="openModal('projectModal')"><i class="fas fa-plus"></i>
+                        Add Project</button>
+                    <div id="projectsList" class="items-list"></div>
+                </div>
+            </div>
+
+            <!-- SKILLS TAB (manual + extracted) -->
+            <div id="skills-tab" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-star"></i> All Skills</h2>
+                    <button class="btn btn-secondary" onclick="openModal('skillModal')"><i class="fas fa-plus"></i> Add
+                        Skill Manually</button>
+                    <div id="skillsList" class="skills-grid"></div>
+                </div>
+            </div>
+
+            <!-- EXTRACTION TAB (module 2,3,4,5 from first design) -->
+            <div id="extraction-tab" class="tab-pane">
+                <!-- Resume upload + parsing status -->
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-file-upload"></i> Resume Upload & AI Parsing</h2>
+                    <div class="upload-area" id="resumeDropZone"
+                        onclick="document.getElementById('resumeInput').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Upload Resume/CV</h3>
+                        <p style="color:var(--gray);">Drag & drop PDF/DOCX or click</p>
+                        <input type="file" id="resumeInput" hidden accept=".pdf,.doc,.docx"
+                            onchange="handleFileUpload(event)">
+                    </div>
+                    <div id="resumeStatus" style="margin-top:10px; color:var(--success); display:none;"></div>
+
+                    <!-- parsing progress (first) -->
+                    <div class="parsing-status-container" id="parsingStatus">
+                        <h4><i class="fas fa-cogs"></i> AI Processing document...</h4>
+                        <div style="height:6px; background:#ddd; border-radius:3px; margin:10px 0;">
+                            <div id="parsingProgressBar"
+                                style="width:0%; height:100%; background:var(--primary); transition:width 0.3s;"></div>
+                        </div>
+                        <small style="float:right;">Time left: <span id="timeRemaining">12</span>s</small>
+                        <ul class="step-list">
+                            <li class="step-item" id="step1"><i class="far fa-circle"></i> Extracting text</li>
+                            <li class="step-item" id="step2"><i class="far fa-circle"></i> Identifying sections</li>
+                            <li class="step-item" id="step3"><i class="far fa-circle"></i> Extracting skills</li>
+                            <li class="step-item" id="step4"><i class="far fa-circle"></i> Mapping to taxonomy</li>
+                            <li class="step-item" id="step5"><i class="far fa-circle"></i> Estimating proficiency</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Extracted skills table (human-in-the-loop) -->
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h2 class="card-title"><i class="fas fa-list-check"></i> Extracted Skills Review</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="openModal('skillModal')"><i
+                                class="fas fa-plus"></i> Add Missing</button>
+                    </div>
+                    <p style="color:var(--gray);">Skills extracted from sources (simulated). Adjust or confirm.</p>
+                    <div style="overflow-x:auto;">
+                        <table class="skills-table">
+                            <thead>
+                                <tr>
+                                    <th>Skill</th>
+                                    <th>Category</th>
+                                    <th>Context snippet</th>
+                                    <th>Proficiency</th>
+                                    <th>Confidence</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="skillsTableBody">
+                                <!-- static examples, but we also update via js from profileData? for demo we populate with mock -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Inferred soft skills + taxonomy mapping (modules 4&5) -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:20px;">
+                    <div class="card">
+                        <h2 class="card-title"><i class="fas fa-lightbulb"></i> Inferred Soft Skills</h2>
+                        <div id="softSkillsContainer">
+                            <div class="inference-card">
+                                <div><strong>Leadership</strong>
+                                    <p style="font-size:0.85rem;">From: "Managed team of 5"</p>
+                                </div>
+                                <div><button class="btn btn-success btn-sm"><i class="fas fa-check"></i></button><button
+                                        class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div>
+                            </div>
+                            <div class="inference-card">
+                                <div><strong>Communication</strong>
+                                    <p style="font-size:0.85rem;">From: "Presented to stakeholders"</p>
+                                </div>
+                                <div><button class="btn btn-success btn-sm"><i class="fas fa-check"></i></button><button
+                                        class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h2 class="card-title"><i class="fas fa-project-diagram"></i> Taxonomy Mapping</h2>
+                        <div class="taxonomy-mapping"><span
+                                style="background:#E2E8F0; padding:5px 10px; border-radius:5px;">"JS"</span> <i
+                                class="fas fa-arrow-right mapping-arrow"></i> <span
+                                style="background:#FEF08A; padding:5px 10px;">JavaScript</span></div>
+                        <div class="taxonomy-mapping"><span
+                                style="background:#E2E8F0; padding:5px 10px;">"React.js"</span> <i
+                                class="fas fa-arrow-right"></i> <span
+                                style="background:#BAE6FD; padding:5px 10px;">React</span></div>
+                        <div class="taxonomy-mapping"><span
+                                style="background:#E2E8F0; padding:5px 10px;">"Postgres"</span> <i
+                                class="fas fa-arrow-right"></i> <span
+                                style="background:#BFDBFE; padding:5px 10px;">PostgreSQL</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTEGRATIONS TAB (data sources) -->
+            <div id="integrations-tab" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-link"></i> External Integrations</h2>
+                    <div class="integration-grid">
+                        <div class="integration-card">
+                            <h3><i class="fab fa-linkedin" style="color:#0A66C2;"></i> LinkedIn</h3>
+                            <p>Import profile & skills</p><input type="url" id="linkedinSync" placeholder="Profile URL"
+                                class="form-group" style="margin-bottom:10px;"><button class="btn btn-primary"
+                                onclick="syncLinkedIn()"><i class="fas fa-sync-alt"></i> Sync</button>
+                        </div>
+                        <div class="integration-card">
+                            <h3><i class="fab fa-github" style="color:#333;"></i> GitHub</h3>
+                            <p>Analyze repos & languages</p><input type="url" id="githubSync" placeholder="GitHub URL"
+                                class="form-group" style="margin-bottom:10px;"><button class="btn btn-primary"
+                                onclick="syncGitHub()"><i class="fas fa-sync-alt"></i> Sync</button>
+                        </div>
+                        <div class="integration-card">
+                            <h3><i class="fas fa-file-pdf" style="color:#DC2626;"></i> Resume</h3>
+                            <p>Upload & auto-extract</p><input type="file" id="resumeSync" accept=".pdf,.docx"
+                                class="form-group" style="margin-bottom:10px;"><button class="btn btn-primary"
+                                onclick="uploadResume()"><i class="fas fa-upload"></i> Extract</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Sync History</h2>
+                    <div id="syncHistory" class="items-list"></div>
+                </div>
+            </div>
+
+            <!-- save continue button (from first) -->
+            <div style="text-align:right; margin:30px 0;"><button class="btn btn-primary"
+                    style="font-size:1.1rem; padding:15px 40px;" onclick="showAlert('Profile saved (demo)')">Save
+                    Profile & Continue <i class="fas fa-arrow-right"></i></button></div>
+        </div>
+
+        <!-- navigation buttons (prev/next) -->
+        <button class="nav-button nav-button-prev" id="prevBtn" onclick="previousTab()" title="Previous"><i
+                class="fas fa-chevron-left"></i></button>
+        <button class="nav-button" id="nextBtn" onclick="nextTab()" title="Next"><i
+                class="fas fa-chevron-right"></i></button>
+
+        <!-- ========== MODALS (all merged) ========== -->
+        <!-- Education Modal -->
+        <div id="educationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Education</h2><button class="modal-close"
+                        onclick="closeModal('educationModal')">&times;</button>
+                </div>
+                <form id="educationForm">
+                    <div class="form-group"><label>Degree Type</label><select id="degreeType" required>
+                            <option value="">Select</option>
+                            <option value="high_school">High School</option>
+                            <option value="bachelor">Bachelor's</option>
+                            <option value="master">Master's</option>
+                            <option value="phd">PhD</option>
+                        </select></div>
+                    <div class="form-group"><label>Field of Study</label><input type="text" id="fieldOfStudy" required>
+                    </div>
+                    <div class="form-group"><label>Institution</label><input type="text" id="institution" required>
+                    </div>
+                    <div class="form-group"><label>Graduation Year</label><input type="number" id="gradYear" min="1980"
+                            max="2100" required></div>
+                    <div class="form-group"><label>CGPA (opt)</label><input type="number" step="0.01" id="gpa"></div>
+                    <div class="form-group"><label>Description</label><textarea id="eduDesc" rows="2"></textarea></div>
+                    <button type="submit" class="btn btn-primary">Add Education</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Certification Modal -->
+        <div id="certificationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Certification</h2><button class="modal-close"
+                        onclick="closeModal('certificationModal')">&times;</button>
+                </div>
+                <form id="certificationForm">
+                    <div class="form-group"><label>Certification Name</label><input type="text" id="certName" required>
+                    </div>
+                    <div class="form-group"><label>Issuing Org</label><input type="text" id="issuingOrg" required></div>
+                    <div class="form-group"><label>Issue Date</label><input type="date" id="issueDate" required></div>
+                    <div class="form-group"><label>Expiry Date</label><input type="date" id="expiryDate"></div>
+                    <div class="form-group"><label>Credential URL</label><input type="url" id="credentialUrl"></div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Course Modal -->
+        <div id="courseModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Course</h2><button class="modal-close" onclick="closeModal('courseModal')">&times;</button>
+                </div>
+                <form id="courseForm">
+                    <div class="form-group"><label>Course Name</label><input type="text" id="courseName" required></div>
+                    <div class="form-group"><label>Platform</label><select id="platform">
+                            <option>Coursera</option>
+                            <option>Udemy</option>
+                            <option>LinkedIn Learning</option>
+                        </select></div>
+                    <div class="form-group"><label>Completion Date</label><input type="date" id="completionDate"
+                            required></div>
+                    <div class="form-group"><label>Certificate URL</label><input type="url" id="certUrl"></div><button
+                        type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Project Modal -->
+        <div id="projectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Project</h2><button class="modal-close"
+                        onclick="closeModal('projectModal')">&times;</button>
+                </div>
+                <form id="projectForm">
+                    <div class="form-group"><label>Project Name</label><input type="text" id="projectName" required>
+                    </div>
+                    <div class="form-group"><label>Description</label><textarea id="projectDesc" required></textarea>
+                    </div>
+                    <div class="form-group"><label>Start Date</label><input type="date" id="projectStart"></div>
+                    <div class="form-group"><label>End Date</label><input type="date" id="projectEnd"></div>
+                    <div class="form-group"><label>Technologies</label><input type="text" id="techStack"></div><button
+                        type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Skill Modal -->
+        <div id="skillModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Skill</h2><button class="modal-close" onclick="closeModal('skillModal')">&times;</button>
+                </div>
+                <form id="skillForm">
+                    <div class="form-group"><label>Skill Name</label><input type="text" id="skillName" required></div>
+                    <div class="form-group"><label>Type</label><select id="skillType">
+                            <option value="technical">Technical</option>
+                            <option value="soft">Soft</option>
+                        </select></div>
+                    <div class="form-group"><label>Proficiency</label><select id="proficiency">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select></div>
+                    <div class="form-group"><label>Years (opt)</label><input type="number" step="0.5" id="skillYears">
+                    </div>
+                    <div class="form-group"><label>Source</label><select id="skillSource">
+                            <option value="manual">Manual</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="github">GitHub</option>
+                        </select></div><button type="submit" class="btn btn-primary">Add Skill</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Language Modal -->
+        <div id="languageModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Language</h2><button class="modal-close"
+                        onclick="closeModal('languageModal')">&times;</button>
+                </div>
+                <form id="languageForm">
+                    <div class="form-group"><label>Language</label><input type="text" id="languageName" required></div>
+                    <div class="form-group"><label>Proficiency</label><select id="languageProficiency">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="fluent">Fluent</option>
+                            <option value="native">Native</option>
+                        </select></div><button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- end modals -->
+    </div>
+
+    <script>
+        // ---------- MERGED JAVASCRIPT (state, functions from both) ----------
+        let profileData = {
+            identity: {},
+            education: [],
+            certifications: [],
+            courses: [],
+            projects: [],
+            skills: [],
+            languages: [],
+            syncHistory: []
+        };
+
+        // load from localStorage
+        function loadProfileData() {
+            const saved = localStorage.getItem('aiProfileUnified');
+            if (saved) { profileData = JSON.parse(saved); renderAllSections(); updateStats(); }
+            
+            // Also load professional identity from backend
+            fetch('/api/get-professional-identity/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.data) {
+                        // Merge backend data with localStorage data
+                        if (!profileData.identity) {
+                            profileData.identity = {};
+                        }
+                        // Update identity fields from backend (overrides localStorage)
+                        Object.assign(profileData.identity, data.data);
+                        renderAllSections();
+                    }
+                })
+                .catch(error => console.error('Error loading professional identity:', error));
+            
+            // Sync localStorage data to database (one-time migration)
+            syncLocalStorageToDatabase();
+        }
+        
+        // Sync all localStorage data to database
+        function syncLocalStorageToDatabase() {
+            if (!profileData) return;
+            
+            // Sync Education
+            if (profileData.education && profileData.education.length > 0) {
+                profileData.education.forEach(edu => {
+                    const eduData = {
+                        degree_type: edu.degreeType,
+                        field_of_study: edu.fieldOfStudy,
+                        school_name: edu.institution,
+                        graduation_year: edu.gradYear,
+                        gpa: edu.gpa || null,
+                        description: edu.description || ''
+                    };
+                    
+                    fetch('/api/add-education/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(eduData)
+                    }).then(r => r.json()).catch(e => console.log('Education sync:', e));
+                });
+            }
+            
+            // Sync Certifications
+            if (profileData.certifications && profileData.certifications.length > 0) {
+                profileData.certifications.forEach(cert => {
+                    const certData = {
+                        certification_name: cert.name,
+                        issuing_organization: cert.issuer,
+                        issue_date: cert.issueDate,
+                        expiry_date: cert.expiryDate || null,
+                        credential_id: '',
+                        credential_url: cert.url || '',
+                        is_active: true
+                    };
+                    
+                    fetch('/api/add-certification/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(certData)
+                    }).then(r => r.json()).catch(e => console.log('Certification sync:', e));
+                });
+            }
+            
+            // Sync Courses
+            if (profileData.courses && profileData.courses.length > 0) {
+                profileData.courses.forEach(course => {
+                    const courseData = {
+                        course_name: course.name,
+                        platform: course.platform,
+                        completion_date: course.completionDate,
+                        certificate_url: course.url || ''
+                    };
+                    
+                    fetch('/api/add-course/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(courseData)
+                    }).then(r => r.json()).catch(e => console.log('Course sync:', e));
+                });
+            }
+            
+            // Sync Projects
+            if (profileData.projects && profileData.projects.length > 0) {
+                profileData.projects.forEach(proj => {
+                    const projData = {
+                        project_name: proj.name,
+                        description: proj.description || '',
+                        start_date: proj.startDate,
+                        end_date: proj.endDate || null,
+                        is_active: false,
+                        project_url: '',
+                        github_url: '',
+                        team_size: null,
+                        impact: ''
+                    };
+                    
+                    fetch('/api/add-project/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(projData)
+                    }).then(r => r.json()).catch(e => console.log('Project sync:', e));
+                });
+            }
+            
+            // Sync Skills
+            if (profileData.skills && profileData.skills.length > 0) {
+                profileData.skills.forEach(skill => {
+                    const skillData = {
+                        skill_name: skill.name,
+                        category: skill.type || 'technical',
+                        proficiency_level: skill.proficiency || 'intermediate',
+                        years_experience: skill.years || 0,
+                        context_of_use: skill.context || '',
+                        source: skill.source || 'manual'
+                    };
+                    
+                    fetch('/api/add-skill/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(skillData)
+                    }).then(r => r.json()).catch(e => console.log('Skill sync:', e));
+                });
+            }
+            
+            // Sync Languages
+            if (profileData.languages && profileData.languages.length > 0) {
+                profileData.languages.forEach(lang => {
+                    const langData = {
+                        language_name: lang.name,
+                        proficiency_level: lang.proficiency || 'intermediate'
+                    };
+                    
+                    fetch('/api/add-language/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(langData)
+                    }).then(r => r.json()).catch(e => console.log('Language sync:', e));
+                });
+            }
+        }
+        function saveProfileData() {
+            localStorage.setItem('aiProfileUnified', JSON.stringify(profileData));
+            updateStats();
+        }
+
+        // update stats & completion
+        function updateStats() {
+            document.getElementById('statSkills').textContent = profileData.skills.length;
+            document.getElementById('statEducation').textContent = profileData.education.length;
+            document.getElementById('statCertifications').textContent = profileData.certifications.length;
+            document.getElementById('statProjects').textContent = profileData.projects.length;
+            document.getElementById('statLanguages').textContent = profileData.languages.length;
+            let percent = Math.min(100, (profileData.skills.length > 0 ? 20 : 0) + (profileData.education.length > 0 ? 20 : 0) + (profileData.certifications.length > 0 ? 15 : 0) + (profileData.projects.length > 0 ? 15 : 0) + (Object.keys(profileData.identity).length > 0 ? 30 : 0));
+            document.getElementById('completionPercent').innerText = percent + '%';
+            document.getElementById('completionBar').style.width = percent + '%';
+        }
+
+        // render all sections
+        function renderAllSections() {
+            renderEducation(); renderCertifications(); renderCourses(); renderProjects(); renderSkills(); renderLanguages(); renderSyncHistory();
+            if (profileData.identity) {
+                document.getElementById('fullName').value = profileData.identity.fullName || '';
+                document.getElementById('educationLevel').value = profileData.identity.educationLevel || '';
+                document.getElementById('dateOfBirth').value = profileData.identity.dateOfBirth || '';
+                document.getElementById('gender').value = profileData.identity.gender || '';
+                document.getElementById('phoneNumber').value = profileData.identity.phoneNumber || '';
+                document.getElementById('location').value = profileData.identity.location || '';
+                document.getElementById('nativeLanguage').value = profileData.identity.nativeLanguage || '';
+                document.getElementById('linkedinUrl').value = profileData.identity.linkedin || '';
+                document.getElementById('githubUrl').value = profileData.identity.github || '';
+                document.getElementById('portfolioUrl').value = profileData.identity.portfolio || '';
+                document.getElementById('resumeUrl').value = profileData.identity.resume || '';
+            }
+            // populate extraction table with skills (only a few)
+            let tbody = document.getElementById('skillsTableBody');
+            if (tbody) {
+                let skillsToShow = profileData.skills.slice(0, 4);
+                tbody.innerHTML = skillsToShow.map(s => `<tr><td><strong>${s.name}</strong></td><td><span class="badge badge-blue">${s.type}</span></td><td><em style="color:gray;">${s.context || 'auto-extracted'}</em></td><td><select><option>${s.proficiency}</option></select></td><td><span style="color:var(--success);">85%</span></td><td><button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+            }
+        }
+
+        function renderEducation() { let list = document.getElementById('educationList'); if (!profileData.education.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-graduation-cap"></i><p>No education</p></div>'; return; } list.innerHTML = profileData.education.map((e, i) => `<div class="item-card"><div><h4>${e.degreeType} in ${e.fieldOfStudy}</h4><p>${e.institution} • ${e.gradYear}</p></div><button class="btn btn-danger btn-sm" onclick="deleteItem('education',${i})"><i class="fas fa-trash"></i></button></div>`).join(''); }
+        function renderCertifications() { let list = document.getElementById('certificationsList'); if (!profileData.certifications.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-certificate"></i><p>No certifications</p></div>'; return; } list.innerHTML = profileData.certifications.map((c, i) => `<div class="item-card"><div><h4>${c.name}</h4><p>${c.issuer} • ${c.issueDate}</p></div><button class="btn btn-danger btn-sm" onclick="deleteItem('certifications',${i})"><i class="fas fa-trash"></i></button></div>`).join(''); }
+        function renderCourses() { let list = document.getElementById('coursesList'); if (!profileData.courses.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><p>No courses</p></div>'; return; } list.innerHTML = profileData.courses.map((c, i) => `<div class="item-card"><div><h4>${c.name}</h4><p>${c.platform} • ${c.completionDate}</p></div><button class="btn btn-danger btn-sm" onclick="deleteItem('courses',${i})"><i class="fas fa-trash"></i></button></div>`).join(''); }
+        function renderProjects() { let list = document.getElementById('projectsList'); if (!profileData.projects.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-code-branch"></i><p>No projects</p></div>'; return; } list.innerHTML = profileData.projects.map((p, i) => `<div class="item-card"><div><h4>${p.name}</h4><p>${p.startDate} - ${p.endDate || 'present'}</p></div><button class="btn btn-danger btn-sm" onclick="deleteItem('projects',${i})"><i class="fas fa-trash"></i></button></div>`).join(''); }
+        function renderSkills() { let grid = document.getElementById('skillsList'); if (!profileData.skills.length) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><p>No skills</p></div>'; return; } grid.innerHTML = profileData.skills.map((s, i) => `<div class="skill-tag"><button class="delete-btn" onclick="deleteItem('skills',${i})">&times;</button><h5>${s.name}</h5><p>${s.type} • ${s.proficiency}</p><span class="badge badge-info">${s.source || 'manual'}</span></div>`).join(''); }
+        function renderLanguages() { let list = document.getElementById('languagesList'); if (!profileData.languages.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-language"></i><p>No languages</p></div>'; return; } list.innerHTML = profileData.languages.map((l, i) => `<div class="item-card"><div><h4>${l.name}</h4><p>${l.proficiency}</p></div><button class="btn btn-danger btn-sm" onclick="deleteItem('languages',${i})"><i class="fas fa-trash"></i></button></div>`).join(''); }
+        function renderSyncHistory() { let list = document.getElementById('syncHistory'); if (!profileData.syncHistory.length) { list.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><p>No sync history</p></div>'; return; } list.innerHTML = profileData.syncHistory.map(s => `<div class="item-card"><div><h4>${s.source}</h4><p>${s.date} • ${s.skillsCount} skills</p></div></div>`).join(''); }
+
+        function deleteItem(cat, idx) { profileData[cat].splice(idx, 1); saveProfileData(); renderAllSections(); showAlert('Deleted'); }
+
+        // identity form - SAVE TO DATABASE
+        document.getElementById('identityForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            // Get form button for feedback
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            // Helper to validate URL or allow empty
+            function isValidUrl(url) {
+                if (!url || !url.trim()) return true; // Empty is valid
+                const urlPattern = /^https?:\/\/.+\..+/; // Must have http/https + domain
+                return urlPattern.test(url.trim());
+            }
+            
+            // Validate URLs
+            const linkedinUrl = document.getElementById('linkedinUrl')?.value || '';
+            const githubUrl = document.getElementById('githubUrl')?.value || '';
+            const portfolioUrl = document.getElementById('portfolioUrl')?.value || '';
+            const resumeUrl = document.getElementById('resumeUrl')?.value || '';
+            
+            let hasInvalidUrl = false;
+            if (linkedinUrl && !isValidUrl(linkedinUrl)) {
+                showAlert('Invalid LinkedIn URL format', 'error');
+                hasInvalidUrl = true;
+            }
+            if (githubUrl && !isValidUrl(githubUrl)) {
+                showAlert('Invalid GitHub URL format', 'error');
+                hasInvalidUrl = true;
+            }
+            if (portfolioUrl && !isValidUrl(portfolioUrl)) {
+                showAlert('Invalid Portfolio URL format', 'error');
+                hasInvalidUrl = true;
+            }
+            if (resumeUrl && !isValidUrl(resumeUrl)) {
+                showAlert('Invalid Resume URL format', 'error');
+                hasInvalidUrl = true;
+            }
+            
+            if (hasInvalidUrl) return;
+            
+            const identityData = {
+                fullName: document.getElementById('fullName')?.value || '',
+                educationLevel: document.getElementById('educationLevel')?.value || '',
+                dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
+                gender: document.getElementById('gender')?.value || '',
+                phoneNumber: document.getElementById('phoneNumber')?.value || '',
+                location: document.getElementById('location')?.value || '',
+                nativeLanguage: document.getElementById('nativeLanguage')?.value || '',
+                linkedin: linkedinUrl,
+                github: githubUrl,
+                portfolio: portfolioUrl,
+                resume: resumeUrl
+            };
+            
+            // Disable submit button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            // Save to localStorage first
+            profileData.identity = identityData;
+            saveProfileData();
+            
+            // Send to backend API
+            fetch('/api/save-professional-identity/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(identityData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Server error: ' + response.status);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('✓ Professional identity saved to database successfully!');
+                    console.log('Saved data:', data.data);
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error saving to database: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            });
+        });
+        
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // form handlers for modals (simplified)
+        // Education form - SAVE TO DATABASE
+        document.getElementById('educationForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const eduData = {
+                degree_type: document.getElementById('degreeType').value,
+                field_of_study: document.getElementById('fieldOfStudy').value,
+                school_name: document.getElementById('institution').value,
+                graduation_year: document.getElementById('gradYear').value,
+                gpa: document.getElementById('gpa').value || null,
+                description: ''
+            };
+            
+            fetch('/api/add-education/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(eduData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Also save to localStorage for offline
+                    let edu = { degreeType: eduData.degree_type, fieldOfStudy: eduData.field_of_study, institution: eduData.school_name, gradYear: eduData.graduation_year, gpa: eduData.gpa };
+                    profileData.education.push(edu);
+                    saveProfileData();
+                    renderEducation();
+                    closeModal('educationModal');
+                    showAlert('✓ Education added successfully');
+                    this.reset();
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error adding education', 'error');
+            });
+        });
+        
+        // Certification form - SAVE TO DATABASE
+        document.getElementById('certificationForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const certData = {
+                certification_name: document.getElementById('certName').value,
+                issuing_organization: document.getElementById('issuingOrg').value,
+                issue_date: document.getElementById('issueDate').value,
+                expiry_date: document.getElementById('expiryDate').value || null,
+                credential_id: '',
+                credential_url: document.getElementById('credentialUrl').value,
+                is_active: true
+            };
+            
+            fetch('/api/add-certification/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(certData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let cert = { name: certData.certification_name, issuer: certData.issuing_organization, issueDate: certData.issue_date, expiryDate: certData.expiry_date, url: certData.credential_url };
+                    profileData.certifications.push(cert);
+                    saveProfileData();
+                    renderCertifications();
+                    closeModal('certificationModal');
+                    showAlert('✓ Certification added successfully');
+                    this.reset();
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error adding certification', 'error');
+            });
+        });
+        
+        // Course form - SAVE TO DATABASE
+        document.getElementById('courseForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const courseData = {
+                course_name: document.getElementById('courseName').value,
+                platform: document.getElementById('platform').value,
+                completion_date: document.getElementById('completionDate').value,
+                certificate_url: document.getElementById('certUrl').value || ''
+            };
+            
+            fetch('/api/add-course/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(courseData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let course = { name: courseData.course_name, platform: courseData.platform, completionDate: courseData.completion_date, url: courseData.certificate_url };
+                    profileData.courses.push(course);
+                    saveProfileData();
+                    renderCourses();
+                    closeModal('courseModal');
+                    showAlert('✓ Course added successfully');
+                    this.reset();
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error adding course', 'error');
+            });
+        });
+        
+        // Project form - SAVE TO DATABASE
+        document.getElementById('projectForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const projData = {
+                project_name: document.getElementById('projectName').value,
+                description: document.getElementById('projectDesc').value,
+                start_date: document.getElementById('projectStart').value,
+                end_date: document.getElementById('projectEnd').value || null,
+                is_active: false,
+                project_url: '',
+                github_url: '',
+                team_size: null,
+                impact: ''
+            };
+            
+            fetch('/api/add-project/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(projData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let proj = { name: projData.project_name, description: projData.description, startDate: projData.start_date, endDate: projData.end_date, techStack: '' };
+                    profileData.projects.push(proj);
+                    saveProfileData();
+                    renderProjects();
+                    closeModal('projectModal');
+                    showAlert('✓ Project added successfully');
+                    this.reset();
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error adding project', 'error');
+            });
+        });
+        
+        // Skill form - SAVE TO DATABASE
+        document.getElementById('skillForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const skillData = {
+                skill_name: document.getElementById('skillName').value,
+                proficiency_level: document.getElementById('proficiency').value,
+                endorsement_count: 0,
+                category: document.getElementById('skillType').value
+            };
+            
+            fetch('/api/add-skill/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(skillData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let skill = { name: skillData.skill_name, type: skillData.category, proficiency: skillData.proficiency_level, years: 0, source: 'manual' };
+                    profileData.skills.push(skill);
+                    saveProfileData();
+                    renderSkills();
+                    closeModal('skillModal');
+                    showAlert('✓ Skill added successfully');
+                    this.reset();
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error adding skill', 'error');
+            });
+        });
+        
+        // Language form - SAVE TO DATABASE
+        document.getElementById('languageForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const langData = {
+                language_name: document.getElementById('languageName').value,
+                proficiency_level: document.getElementById('languageProficiency').value
+            };
+            
+            fetch('/api/add-language/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(langData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let lang = { name: langData.language_name, proficiency: langData.proficiency_level };
+                    profileData.languages.push(lang);
+                    saveProfileData();
+                    renderLanguages();
+                    closeModal('languageModal');
+                    showAlert('✓ Language added successfully');
+                    this.reset();
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error adding language', 'error');
+            });
+        });
+
+        // modal controls
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        // alert
+        function showAlert(msg, type = 'success') { let c = document.getElementById('alertContainer'); let a = document.createElement('div'); a.className = `alert alert-${type}`; a.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${msg} <button style="margin-left:auto; background:none; border:none;" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`; c.appendChild(a); setTimeout(() => a.remove(), 3000); }
+
+        // file upload simulation
+        function handleFileUpload(e) {
+            if (!e.target.files[0]) return;
+            document.getElementById('resumeStatus').style.display = 'block'; document.getElementById('resumeStatus').innerHTML = '<i class="fas fa-clock"></i> Uploading...';
+            document.getElementById('parsingStatus').style.display = 'block';
+            let steps = ['step1', 'step2', 'step3', 'step4', 'step5']; let cur = 0; let bar = document.getElementById('parsingProgressBar');
+            let timer = setInterval(() => {
+                if (cur >= steps.length) { clearInterval(timer); document.getElementById('parsingStatus').style.display = 'none'; document.getElementById('resumeStatus').innerHTML = '<i class="fas fa-check-circle"></i> Parsing done'; return; }
+                if (cur > 0) { let prev = document.getElementById(steps[cur - 1]); prev.className = 'step-item completed'; prev.innerHTML = prev.innerHTML.replace('fa-spinner fa-spin', 'fa-check-circle'); }
+                let curr = document.getElementById(steps[cur]); curr.className = 'step-item active'; curr.innerHTML = curr.innerHTML.replace('fa-circle', 'fa-spinner fa-spin'); bar.style.width = (cur + 1) * 20 + '%'; cur++;
+            }, 1500);
+        }
+
+        // sync functions (mock)
+        window.syncLinkedIn = function () {
+            let btn = event.target; btn.innerHTML = '<span class="spinner"></span> Syncing...';
+            setTimeout(() => { profileData.syncHistory.push({ source: 'LinkedIn', date: new Date().toLocaleDateString(), skillsCount: 5 }); profileData.skills.push({ name: 'JavaScript', type: 'technical', proficiency: 'advanced', source: 'linkedin' }, { name: 'React', type: 'technical', proficiency: 'intermediate', source: 'linkedin' }); saveProfileData(); renderSkills(); renderSyncHistory(); btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync'; showAlert('LinkedIn synced'); }, 2000);
+        }
+        window.syncGitHub = function () {
+            let btn = event.target; btn.innerHTML = '<span class="spinner"></span> Syncing...';
+            setTimeout(() => { profileData.syncHistory.push({ source: 'GitHub', date: new Date().toLocaleDateString(), skillsCount: 4 }); profileData.skills.push({ name: 'Python', type: 'technical', proficiency: 'advanced', source: 'github' }); saveProfileData(); renderSkills(); renderSyncHistory(); btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync'; showAlert('GitHub synced'); }, 2000);
+        }
+        window.uploadResume = function () {
+            let btn = event.target; btn.innerHTML = '<span class="spinner"></span> Processing...';
+            setTimeout(() => { profileData.syncHistory.push({ source: 'Resume', date: new Date().toLocaleDateString(), skillsCount: 6 }); profileData.skills.push({ name: 'Project Management', type: 'soft', proficiency: 'advanced', source: 'resume' }); saveProfileData(); renderSkills(); renderSyncHistory(); btn.innerHTML = '<i class="fas fa-upload"></i> Extract'; showAlert('Resume processed'); }, 2000);
+        }
+
+        // tab switching
+        function switchTab(btn, tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+            updateNavButtons();
+        }
+        function nextTab() { let active = document.querySelector('.tab-btn.active'); if (active.nextElementSibling) active.nextElementSibling.click(); }
+        function previousTab() { let active = document.querySelector('.tab-btn.active'); if (active.previousElementSibling) active.previousElementSibling.click(); }
+        function updateNavButtons() {
+            let active = document.querySelector('.tab-btn.active'); let prev = active.previousElementSibling; let next = active.nextElementSibling;
+            document.getElementById('prevBtn').classList.toggle('disabled', !prev || !prev.classList.contains('tab-btn'));
+            document.getElementById('nextBtn').classList.toggle('disabled', !next || !next.classList.contains('tab-btn'));
+        }
+
+        // init
+        loadProfileData();
+        // populate extraction table with mock if empty
+        if (profileData.skills.length === 0) {
+            profileData.skills.push({ name: 'Python', type: 'technical', proficiency: 'advanced', context: 'Built APIs', source: 'resume' });
+            profileData.skills.push({ name: 'Docker', type: 'technical', proficiency: 'intermediate', context: 'Containerized apps', source: 'resume' });
+            saveProfileData();
+        }
+        renderAllSections();
+        updateNavButtons();
+    </script>
+</body>
+
+</html>

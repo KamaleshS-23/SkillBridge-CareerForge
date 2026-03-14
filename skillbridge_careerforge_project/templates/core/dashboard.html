@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillBridge & CareerForge | AI-Powered Career Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #7C3AED;
@@ -36,7 +39,11 @@
             min-height: 100vh;
         }
 
-        h1, h2, h3, h4, h5 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
             font-family: 'Montserrat', sans-serif;
             font-weight: 800;
         }
@@ -462,8 +469,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .feature-detail-header {
@@ -749,17 +763,50 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(124,58,237,0.1);
+            background: rgba(124, 58, 237, 0.1);
             padding: 8px 18px;
             border-radius: 40px;
             color: var(--primary-dark);
             font-weight: 600;
-            border: 1px solid rgba(124,58,237,0.2);
+            border: 1px solid rgba(124, 58, 237, 0.2);
             font-size: 0.95rem;
         }
+
         .user-badge i {
             font-size: 1.2rem;
             color: var(--primary);
+        }
+
+        /* AI Profiling Container */
+        .profiling-container {
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .profiling-container.active {
+            display: block;
+        }
+
+        .dashboard-view {
+            display: block;
+        }
+
+        .dashboard-view.hidden {
+            display: none;
+        }
+
+
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive Design */
@@ -767,11 +814,11 @@
             .sidebar {
                 width: 350px;
             }
-            
+
             .main-content {
                 margin-left: 350px;
             }
-            
+
             .hero-text h2 {
                 font-size: 3rem;
             }
@@ -783,48 +830,48 @@
                 transition: transform 0.3s ease;
                 width: 320px;
             }
-            
+
             .sidebar.active {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
-            
+
             .mobile-menu-btn {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            
+
             .hero-section {
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 40px;
             }
-            
+
             .dashboard-mockup {
                 max-width: 500px;
                 margin: 0 auto;
                 transform: none;
             }
-            
+
             .feature-detail-content {
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-            
+
             .stats-section {
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-            
+
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
-            
+
             .footer-links {
                 grid-template-columns: 1fr;
                 gap: 30px;
@@ -832,28 +879,34 @@
         }
 
         @media (max-width: 768px) {
-            .hero-section, .content-section, .feature-detail, .stats-section, .cta-section, .footer {
+
+            .hero-section,
+            .content-section,
+            .feature-detail,
+            .stats-section,
+            .cta-section,
+            .footer {
                 padding: 40px 25px;
                 margin: 20px 25px;
             }
-            
+
             .hero-text h2 {
                 font-size: 2.5rem;
             }
-            
+
             .hero-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .detail-title h2 {
                 font-size: 2rem;
             }
-            
+
             .header-text h1 {
                 font-size: 2rem;
             }
-            
+
             .auth-buttons {
                 flex-direction: column;
                 gap: 10px;
@@ -864,15 +917,15 @@
             .hero-text h2 {
                 font-size: 2.2rem;
             }
-            
+
             .feature-item {
                 padding: 20px 25px;
             }
-            
+
             .feature-item h3 {
                 font-size: 1.2rem;
             }
-            
+
             .cta-section h2 {
                 font-size: 2.5rem;
             }
@@ -880,8 +933,15 @@
 
         /* Floating Animation */
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .floating {
@@ -903,6 +963,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -921,7 +982,8 @@
                     <span>& CareerForge</span>
                 </div>
             </a>
-            <p class="sidebar-tagline">AI-powered platform that bridges skill gaps and forges career paths through intelligent matching, personalized learning, and comprehensive preparation.</p>
+            <p class="sidebar-tagline">AI-powered platform that bridges skill gaps and forges career paths through
+                intelligent matching, personalized learning, and comprehensive preparation.</p>
         </div>
 
         <h2 class="features-title">
@@ -929,46 +991,95 @@
         </h2>
 
         <ul class="features-list">
-            <!-- Feature 1 -->
-            <li class="feature-item active" data-feature="1">
-                <div class="feature-number">01</div>
-                <h3>
-                    AI Skill Profiling
-                    <i class="fas fa-brain feature-icon"></i>
-                </h3>
-                <p>AI analyzes resumes or manual inputs to extract and assess technical, soft, and domain skills with proficiency estimation.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Resume Parsing</span>
-                    <span class="feature-tag">Skill Assessment</span>
+            <!-- Feature 1 && AI Profiling Access -->
+            <li class="feature-item" data-feature="profiling"
+                style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number" style="color: var(--accent);">
+                            <i class="fas fa-rocket"></i> 01 Quick Access
+                        </div>
+                        <h3 style="margin-bottom: 8px;">
+                            Build AI Profile & AI Skill Profiling
+                            <i class="fas fa-brain feature-icon"></i>
+                        </h3>
+                        <p>Complete your comprehensive professional profile with LinkedIn, GitHub, and resume
+                            integration.
+                            AI analyzes resumes or manual inputs to extract and assess technical, soft, and domain
+                            skills with
+                            proficiency estimation.</p>
+                        <span class="feature-tag">Resume Parsing</span>
+                    </div>
+                    <button onclick="loadProfilePage(); return false;" title="Open Profile" style="
+                        background: var(--primary);
+                        color: white;
+                        border: none;
+                        width: 45px;
+                        height: 45px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 20px;
+                        transition: all 0.3s ease;
+                        flex-shrink: 0;
+                    " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                        onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
                 </div>
             </li>
-
             <!-- Feature 2 -->
             <li class="feature-item" data-feature="2">
                 <div class="feature-number">02</div>
                 <h3>
-                    Smart Job Matching
+                    Smart Internship Provider
                     <i class="fas fa-handshake feature-icon"></i>
                 </h3>
-                <p>Matches candidates with internships/jobs based on skills, location, and interests with compatibility scoring.</p>
+                <p>Connects students with perfect internships based on skills, interests, and career goals using
+                    intelligent matching algorithms.</p>
                 <div class="feature-tags">
-                    <span class="feature-tag">AI Matching</span>
-                    <span class="feature-tag">Compatibility Score</span>
+                    <span class="feature-tag">Internship Matching</span>
+                    <span class="feature-tag">Match Score</span>
                 </div>
             </li>
 
             <!-- Feature 3 -->
-            <li class="feature-item" data-feature="3">
-                <div class="feature-number">03</div>
-                <h3>
-                    Skill Gap Analysis
-                    <i class="fas fa-search-minus feature-icon"></i>
-                </h3>
-                <p>Identifies missing/weak skills for target roles and prioritizes improvements needed.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Gap Analysis</span>
-                    <span class="feature-tag">Priority Mapping</span>
+            <li class="feature-item" data-feature="3" style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number">03</div>
+                        <h3 style="margin-bottom: 8px;">
+                            Skill Gap Analysis
+                            <i class="fas fa-search-minus feature-icon"></i>
+                        </h3>
+                        <p>Identifies missing/weak skills for target roles and prioritizes improvements needed. Compare against market benchmarks and create personalized learning paths.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Gap Analysis</span>
+                            <span class="feature-tag">Priority Mapping</span>
+                            <span class="feature-tag">Market Comparison</span>
+                        </div>
+                    </div>
                 </div>
+                <button onclick="loadSkillGapPage(); return false;" title="Open Skill Gap Analysis" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </li>
 
             <!-- Feature 4 -->
@@ -992,7 +1103,8 @@
                     Certification Recommendations
                     <i class="fas fa-certificate feature-icon"></i>
                 </h3>
-                <p>Suggests relevant certifications from top platforms like Coursera, AWS, Google based on industry demand.</p>
+                <p>Suggests relevant certifications from top platforms like Coursera, AWS, Google based on industry
+                    demand.</p>
                 <div class="feature-tags">
                     <span class="feature-tag">Certifications</span>
                     <span class="feature-tag">Industry-Recognized</span>
@@ -1034,7 +1146,8 @@
                     Aptitude & Reasoning Tests
                     <i class="fas fa-calculator feature-icon"></i>
                 </h3>
-                <p>Timed tests in quantitative aptitude, logical reasoning, and verbal ability simulating real hiring processes.</p>
+                <p>Timed tests in quantitative aptitude, logical reasoning, and verbal ability simulating real hiring
+                    processes.</p>
                 <div class="feature-tags">
                     <span class="feature-tag">Aptitude Tests</span>
                     <span class="feature-tag">Timed Practice</span>
@@ -1048,7 +1161,8 @@
                     AI Mock Interview System
                     <i class="fas fa-comments feature-icon"></i>
                 </h3>
-                <p>AI-driven mock interviews covering HR, technical, and behavioral questions with comprehensive feedback.</p>
+                <p>AI-driven mock interviews covering HR, technical, and behavioral questions with comprehensive
+                    feedback.</p>
                 <div class="feature-tags">
                     <span class="feature-tag">AI Interviews</span>
                     <span class="feature-tag">Feedback</span>
@@ -1082,32 +1196,65 @@
                 </div>
                 <div class="auth-buttons">
                     {% if user.is_authenticated %}
-                        <!-- Show logged-in user email with badge -->
-                        <div class="user-badge">
-                            <i class="fas fa-user-circle"></i> {{ user.email }}
-                        </div>
-                        <a href="/accounts/logout/" class="btn btn-primary">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
+                    <!-- Show logged-in user email with badge -->
+                    <div class="user-badge">
+                        <i class="fas fa-user-circle"></i> {{ user.email }}
+                    </div>
+                    <a href="/accounts/logout/" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
                     {% else %}
-                        <!-- For demo / fallback, show static login (this will be replaced by Django) -->
-                        <button class="btn btn-outline" onclick="location.href='/accounts/login/'">
-                            <i class="fas fa-sign-in-alt"></i> Log In
-                        </button>
-                        <button class="btn btn-primary" onclick="location.href='/accounts/register/'">
-                            <i class="fas fa-rocket"></i> Get Started Free
-                        </button>
+                    <!-- For demo / fallback, show static login (this will be replaced by Django) -->
+                    <button class="btn btn-outline" onclick="location.href='/accounts/login/'">
+                        <i class="fas fa-sign-in-alt"></i> Log In
+                    </button>
+                    <button class="btn btn-primary" onclick="location.href='/accounts/register/'">
+                        <i class="fas fa-rocket"></i> Get Started Free
+                    </button>
                     {% endif %}
                 </div>
             </div>
         </header>
 
+
+        <!-- AI Profile Quick Access Button -->
+        <div class="ai-profile-cta" style="
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 20px 25px;
+            margin: 20px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        " onclick="loadProfilePage()" style="transition: transform 0.2s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(59, 130, 246, 0.4)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.3)';">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <i class="fas fa-brain" style="font-size: 24px;"></i>
+                <div style="text-align: left;">
+                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 600; color: white;">
+                        Build Your AI Profile
+                    </h3>
+                    <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: rgba(255, 255, 255, 0.9);">
+                        Create comprehensive profile with LinkedIn, GitHub & Resume
+                    </p>
+                </div>
+            </div>
+            <i class="fas fa-arrow-right" style="font-size: 20px; color: white; margin-left: 15px;"></i>
+        </div>
+
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-text">
                 <h2>Bridge Your <span>Skill Gaps</span>, Forge Your <span>Dream Career</span></h2>
-                <p>An intelligent platform that analyzes your skills, identifies gaps, creates personalized learning paths, and matches you with perfect internships and jobs—all in one ecosystem.</p>
-                
+                <p>An intelligent platform that analyzes your skills, identifies gaps, creates personalized learning
+                    paths, and matches you with perfect internships and jobs—all in one ecosystem.</p>
+
                 <div class="hero-buttons">
                     <button class="btn btn-primary btn-lg">
                         <i class="fas fa-bolt"></i> Start Free Assessment
@@ -1117,7 +1264,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <div class="hero-image">
                 <div class="dashboard-mockup floating">
                     <div class="dashboard-header">
@@ -1159,14 +1306,19 @@
                     <p>Intelligent analysis of your skills and proficiencies</p>
                 </div>
             </div>
-            
+
             <div class="feature-detail-content">
                 <div class="detail-description">
                     <h3>How It Works</h3>
-                    <p>Our advanced AI analyzes your resume, LinkedIn profile, or manual skill inputs to create a comprehensive skill profile. It extracts technical skills (programming languages, frameworks, tools), soft skills (communication, leadership, teamwork), and domain-specific knowledge with estimated proficiency levels.</p>
-                    
-                    <p>The system uses natural language processing and machine learning to understand context, experience levels, and skill relationships. It compares your profile with industry standards and current market demands to provide an accurate assessment of where you stand.</p>
-                    
+                    <p>Our advanced AI analyzes your resume, LinkedIn profile, or manual skill inputs to create a
+                        comprehensive skill profile. It extracts technical skills (programming languages, frameworks,
+                        tools), soft skills (communication, leadership, teamwork), and domain-specific knowledge with
+                        estimated proficiency levels.</p>
+
+                    <p>The system uses natural language processing and machine learning to understand context,
+                        experience levels, and skill relationships. It compares your profile with industry standards and
+                        current market demands to provide an accurate assessment of where you stand.</p>
+
                     <h3>Key Benefits</h3>
                     <ul class="benefits-list">
                         <li><i class="fas fa-check-circle"></i> Automated resume parsing and skill extraction</li>
@@ -1176,7 +1328,7 @@
                         <li><i class="fas fa-check-circle"></i> Industry benchmark comparison</li>
                     </ul>
                 </div>
-                
+
                 <div class="detail-stats">
                     <div class="stat-item">
                         <h4>95%</h4>
@@ -1205,39 +1357,44 @@
                     <i class="fas fa-handshake"></i>
                 </div>
                 <div class="detail-title">
-                    <h2>Smart Job Matching</h2>
-                    <p>Intelligent matching with perfect opportunities</p>
+                    <h2>Smart Internship Provider</h2>
+                    <p>Intelligent matching with perfect internship opportunities</p>
                 </div>
             </div>
-            
+
             <div class="feature-detail-content">
                 <div class="detail-description">
                     <h3>How It Works</h3>
-                    <p>Our algorithm analyzes thousands of job listings and matches them with your skill profile, preferences, and career goals. It considers multiple factors including required skills, experience level, location preferences (remote/onsite), company culture, and growth opportunities.</p>
-                    
-                    <p>Each match receives a compatibility score from 0-100%, showing how well you align with the opportunity. The system learns from your interactions (applications, interviews, feedback) to continuously improve recommendations.</p>
-                    
+                    <p>Our algorithm analyzes thousands of internship opportunities and matches them with your skill
+                        profile, preferences, and career goals. It considers multiple factors including required skills,
+                        experience level, location preferences (remote/onsite), company culture, and growth
+                        opportunities.</p>
+
+                    <p>Each match receives a match score from 0-100%, showing how well you align with the internship
+                        opportunity. The system learns from your interactions (applications, interviews, feedback) to
+                        continuously improve recommendations.</p>
+
                     <h3>Key Benefits</h3>
                     <ul class="benefits-list">
-                        <li><i class="fas fa-check-circle"></i> Personalized job recommendations</li>
-                        <li><i class="fas fa-check-circle"></i> Compatibility scoring system</li>
+                        <li><i class="fas fa-check-circle"></i> Personalized internship recommendations</li>
+                        <li><i class="fas fa-check-circle"></i> Intelligent match scoring system</li>
                         <li><i class="fas fa-check-circle"></i> Real-time opportunity alerts</li>
                         <li><i class="fas fa-check-circle"></i> One-click application process</li>
-                        <li><i class="fas fa-check-circle"></i> Direct employer connections</li>
+                        <li><i class="fas fa-check-circle"></i> Direct company connections</li>
                     </ul>
                 </div>
-                
+
                 <div class="detail-stats">
                     <div class="stat-item">
-                        <h4>85%</h4>
+                        <h4>90%</h4>
                         <p>Higher interview conversion rate</p>
                     </div>
                     <div class="stat-item">
-                        <h4>15k+</h4>
-                        <p>Active job opportunities</p>
+                        <h4>8k+</h4>
+                        <p>Active internship opportunities</p>
                     </div>
                     <div class="stat-item">
-                        <h4>94%</h4>
+                        <h4>96%</h4>
                         <p>User satisfaction with matches</p>
                     </div>
                 </div>
@@ -1263,8 +1420,9 @@
         <!-- CTA Section -->
         <section class="cta-section">
             <h2>Ready to Transform Your Career Journey?</h2>
-            <p>Join thousands of students and early-career professionals who've landed their dream internships and jobs with SkillBridge & CareerForge</p>
-            
+            <p>Join thousands of students and early-career professionals who've landed their dream internships and jobs
+                with SkillBridge & CareerForge</p>
+
             <div class="hero-buttons">
                 <button class="btn btn-primary btn-lg">
                     <i class="fas fa-rocket"></i> Start Your Free Trial
@@ -1275,6 +1433,9 @@
             </div>
         </section>
 
+        <!-- AI Profiling Container (Hidden by default) -->
+        <div id="profilingContainer" class="profiling-container"></div>
+
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
@@ -1283,8 +1444,9 @@
                         <span>SkillBridge</span>
                         <span>& CareerForge</span>
                     </div>
-                    <p>An intelligent platform that bridges skill gaps and forges career paths through AI-powered matching, personalized learning, and comprehensive preparation.</p>
-                    
+                    <p>An intelligent platform that bridges skill gaps and forges career paths through AI-powered
+                        matching, personalized learning, and comprehensive preparation.</p>
+
                     <div class="social-icons">
                         <a href="#" class="social-icon">
                             <i class="fab fa-twitter"></i>
@@ -1300,7 +1462,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="footer-links">
                     <div class="footer-column">
                         <h3>Platform</h3>
@@ -1312,7 +1474,7 @@
                             <li><a href="#">FAQ</a></li>
                         </ul>
                     </div>
-                    
+
                     <div class="footer-column">
                         <h3>Resources</h3>
                         <ul>
@@ -1323,7 +1485,7 @@
                             <li><a href="#">Industry Reports</a></li>
                         </ul>
                     </div>
-                    
+
                     <div class="footer-column">
                         <h3>Company</h3>
                         <ul>
@@ -1336,7 +1498,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2023 SkillBridge & CareerForge. All rights reserved.</p>
             </div>
@@ -1347,10 +1509,10 @@
         // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
-        
+
         mobileMenuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('active');
-            
+
             // Change icon
             const icon = mobileMenuBtn.querySelector('i');
             if (sidebar.classList.contains('active')) {
@@ -1365,29 +1527,29 @@
         // Feature Selection
         const featureItems = document.querySelectorAll('.feature-item');
         const featureDetails = document.querySelectorAll('.feature-detail');
-        
+
         featureItems.forEach(item => {
             item.addEventListener('click', () => {
                 // Remove active class from all items
                 featureItems.forEach(f => f.classList.remove('active'));
-                
+
                 // Add active class to clicked item
                 item.classList.add('active');
-                
+
                 // Get feature number
                 const featureNumber = item.getAttribute('data-feature');
-                
+
                 // Hide all feature details
                 featureDetails.forEach(detail => {
                     detail.classList.remove('active');
                 });
-                
+
                 // Show selected feature detail
                 const selectedDetail = document.getElementById(`feature-detail-${featureNumber}`);
                 if (selectedDetail) {
                     selectedDetail.classList.add('active');
                 }
-                
+
                 // Close sidebar on mobile
                 if (window.innerWidth <= 992) {
                     sidebar.classList.remove('active');
@@ -1404,7 +1566,7 @@
             const timer = setInterval(() => {
                 start += increment;
                 element.textContent = Math.floor(start) + "+";
-                
+
                 if (start >= target) {
                     element.textContent = target + "+";
                     clearInterval(timer);
@@ -1436,7 +1598,7 @@
                     item.style.transform = 'translateX(10px)';
                 }
             });
-            
+
             item.addEventListener('mouseleave', () => {
                 item.style.transform = 'translateX(0)';
             });
@@ -1444,7 +1606,7 @@
 
         // Add click animation to buttons
         document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 this.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     this.style.transform = '';
@@ -1454,15 +1616,118 @@
 
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', (event) => {
-            if (window.innerWidth <= 992 && 
-                sidebar.classList.contains('active') && 
-                !sidebar.contains(event.target) && 
+            if (window.innerWidth <= 992 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(event.target) &&
                 !mobileMenuBtn.contains(event.target)) {
                 sidebar.classList.remove('active');
                 mobileMenuBtn.querySelector('i').classList.remove('fa-times');
                 mobileMenuBtn.querySelector('i').classList.add('fa-bars');
             }
         });
+
+        // Skill Gap Analysis Page Integration
+        function loadSkillGapPage() {
+            // Navigate directly to the skill gap analysis page
+            window.location.href = '/skill-gap-analysis/';
+        }
+
+        function closeSkillGapPage() {
+            // Navigate back to dashboard
+            window.location.href = '/dashboard/';
+        }
+
+        // Profile Page Integration
+        function loadProfilePage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Profile...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the profile page content
+            fetch('/skills/profile/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly - it's now a standalone page
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts that came with the HTML
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the profiling container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Profile page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Profile</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the profile page. Please try again.</p><button class="btn btn-primary" onclick="loadProfilePage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the profiling feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector('[data-feature="profiling"]').classList.add('active');
+        }
+
+        function closeProfilePage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                document.querySelector('[data-feature="profiling"]').classList.remove('active');
+                document.querySelector('[data-feature="1"]').classList.add('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
     </script>
 </body>
+
 </html>

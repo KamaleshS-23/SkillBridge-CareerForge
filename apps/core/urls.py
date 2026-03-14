@@ -6,4 +6,6 @@ app_name = 'core'
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('skill-gap-analysis/', views.skill_gap_analysis, name='skill_gap_analysis'),
+    path('api/get-role-requirements/', views.get_role_requirements, name='get_role_requirements'),
 ]

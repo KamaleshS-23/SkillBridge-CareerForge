@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from apps.accounts.models import User
 
 class SkillCategory(models.Model):
@@ -16,6 +17,7 @@ class Skill(models.Model):
         ('technical', 'Technical'),
         ('soft', 'Soft'),
         ('domain', 'Domain'),
+        ('language', 'Language'),
     )
     
     PROFICIENCY_LEVELS = (
@@ -47,6 +49,242 @@ class UserSkill(models.Model):
     
     def __str__(self):
         return f"{self.user.email} - {self.skill.name}"
+
+
+# ==================== AI PROFILING MODELS ====================
+
+class ProfessionalIdentity(models.Model):
+    """Store professional identity data"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professional_identity')
+    full_name = models.CharField(max_length=255)
+    education_level = models.CharField(max_length=255, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=50, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
+    location = models.CharField(max_length=255, blank=True)
+    native_language = models.CharField(max_length=100, blank=True)
+    
+    # Source tracking
+    linkedin_url = models.URLField(blank=True)
+    github_url = models.URLField(blank=True)
+    portfolio_url = models.URLField(blank=True)
+    resume_url = models.URLField(blank=True)
+    
+    # Data extraction metadata
+    last_linkedin_sync = models.DateTimeField(null=True, blank=True)
+    last_resume_upload = models.DateTimeField(null=True, blank=True)
+    last_github_sync = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.full_name} - {self.user.email}"
+
+
+class Education(models.Model):
+    """Store education and degree information"""
+    DEGREE_CHOICES = (
+        ('high_school', 'High School'),
+        ('bachelor', "Bachelor's"),
+        ('master', "Master's"),
+        ('phd', 'PhD'),
+        ('diploma', 'Diploma'),
+        ('certificate', 'Certificate'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='education')
+    degree_type = models.CharField(max_length=20, choices=DEGREE_CHOICES)
+    field_of_study = models.CharField(max_length=255)
+    school_name = models.CharField(max_length=255)
+    graduation_year = models.PositiveIntegerField()
+    gpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    description = models.TextField(blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-graduation_year']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.degree_type} in {self.field_of_study}"
+
+
+class Certification(models.Model):
+    """Store certifications and credentials"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='certifications')
+    certification_name = models.CharField(max_length=255)
+    issuing_organization = models.CharField(max_length=255)
+    issue_date = models.DateField()
+    expiry_date = models.DateField(null=True, blank=True)
+    credential_id = models.CharField(max_length=255, blank=True)
+    credential_url = models.URLField(blank=True)
+    is_active = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-issue_date']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.certification_name}"
+
+
+class Course(models.Model):
+    """Store completed courses and learning activities"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
+    course_name = models.CharField(max_length=255)
+    platform = models.CharField(max_length=100)  # Coursera, Udemy, LinkedIn Learning, etc.
+    completion_date = models.DateField()
+    certificate_url = models.URLField(blank=True)
+    skills_acquired = models.ManyToManyField(Skill, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-completion_date']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.course_name}"
+
+
+class SkillContextMetadata(models.Model):
+    """Store contextual metadata for skills"""
+    user_skill = models.OneToOneField(UserSkill, on_delete=models.CASCADE, related_name='metadata')
+    
+    # Context of use
+    context_of_use = models.TextField(help_text="e.g., 'Built production APIs', 'Took a course'")
+    frequency = models.CharField(
+        max_length=20,
+        choices=(
+            ('rare', 'Mentioned once'),
+            ('occasional', 'Mentioned few times'),
+            ('frequent', 'Throughout resume/profile'),
+            ('primary', 'Primary focus'),
+        ),
+        default='occasional'
+    )
+    
+    # Recency
+    last_used_date = models.DateField(null=True, blank=True)
+    
+    # Source of knowledge
+    source = models.CharField(
+        max_length=50,
+        choices=(
+            ('resume', 'Resume'),
+            ('linkedin', 'LinkedIn'),
+            ('github', 'GitHub'),
+            ('project', 'Project'),
+            ('certification', 'Certification'),
+            ('course', 'Course'),
+            ('manual', 'Manual Entry'),
+        )
+    )
+    
+    # Related entities
+    related_project = models.ForeignKey('Project', on_delete=models.SET_NULL, null=True, blank=True)
+    related_certification = models.ForeignKey(Certification, on_delete=models.SET_NULL, null=True, blank=True)
+    related_course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Metadata for {self.user_skill}"
+
+
+class Project(models.Model):
+    """Store projects and work experience"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects')
+    project_name = models.CharField(max_length=255)
+    description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=False)
+    project_url = models.URLField(blank=True)
+    github_url = models.URLField(blank=True)
+    
+    # Associated skills
+    skills_used = models.ManyToManyField(Skill, blank=True)
+    
+    # Metrics
+    team_size = models.PositiveIntegerField(null=True, blank=True)
+    impact = models.TextField(blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-start_date']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.project_name}"
+
+
+class Language(models.Model):
+    """Store language proficiencies"""
+    PROFICIENCY_CHOICES = (
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('fluent', 'Fluent'),
+        ('native', 'Native'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='languages')
+    language_name = models.CharField(max_length=100)
+    proficiency = models.CharField(max_length=20, choices=PROFICIENCY_CHOICES)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['user', 'language_name']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.language_name} ({self.proficiency})"
+
+
+class AIProfilingSession(models.Model):
+    """Track AI profiling sessions and extractions"""
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profiling_sessions')
+    session_type = models.CharField(
+        max_length=20,
+        choices=(
+            ('linkedin', 'LinkedIn'),
+            ('resume', 'Resume'),
+            ('github', 'GitHub'),
+            ('manual', 'Manual'),
+        )
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    # Source data
+    source_url = models.URLField(blank=True)
+    file_path = models.CharField(max_length=500, blank=True)
+    
+    # Extraction results
+    extracted_data = models.JSONField(default=dict, blank=True)
+    skills_extracted = models.PositiveIntegerField(default=0)
+    confidence_score = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    
+    # Error handling
+    error_message = models.TextField(blank=True)
+    
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.session_type} ({self.status})"
 
 class SkillGap(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skill_gaps')
