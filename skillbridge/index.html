@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>SkillBridge Internship Finder</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Find internships across top companies</h1>
+
+<div class="controls">
+
+<input id="searchInput"
+placeholder="Search internships (Python, Marketing...)">
+
+<select id="locationFilter">
+
+<option value="">All Locations</option>
+<option value="remote">Remote</option>
+<option value="india">India</option>
+<option value="usa">USA</option>
+<option value="europe">Europe</option>
+
+</select>
+
+<button onclick="searchInternships()">Search</button>
+
+</div>
+
+</header>
+
+
+<section class="top-companies">
+
+<h2>🏆 Top Company Internships</h2>
+
+<div class="companies">
+
+<div class="company" onclick="searchCompany('Google')">Google</div>
+<div class="company" onclick="searchCompany('Microsoft')">Microsoft</div>
+<div class="company" onclick="searchCompany('Amazon')">Amazon</div>
+<div class="company" onclick="searchCompany('Zoho')">Zoho</div>
+<div class="company" onclick="searchCompany('IBM')">IBM</div>
+<div class="company" onclick="searchCompany('Deloitte')">Deloitte</div>
+<div class="company" onclick="searchCompany('TCS')">TCS</div>
+
+</div>
+
+</section>
+
+
+<section class="stats">
+
+<div class="stat">
+<h2 id="totalInternships">0</h2>
+<p>Total Internships</p>
+</div>
+
+<div class="stat">
+<h2 id="savedInternships">0</h2>
+<p>Saved Internships</p>
+</div>
+
+</section>
+
+
+<section class="results">
+
+<h2>🔥 Current Trending Internships</h2>
+
+<p id="loading"></p>
+
+<div id="internshipContainer" class="cards"></div>
+
+</section>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
