@@ -1,11 +1,18 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('login/', views.LoginView.as_view(), name='login'),
-    path('register/', views.RegisterView.as_view(), name='register'),
-    path('logout/', views.LogoutView.as_view(), name='logout'),
-    path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='accounts/login.html',
+        redirect_authenticated_user=True,
+        next_page='core:dashboard'
+    ), name='login'),
+
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.register, name='register'),
+    path('profile/', views.profile, name='profile'),
+    path('add-certification/', views.add_certification, name='add_certification'),
 ]

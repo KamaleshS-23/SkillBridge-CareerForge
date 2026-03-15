@@ -1,0 +1,31 @@
+name,provider,domain,description,registration_url,rating,duration,difficulty_level
+AWS Certified Cloud Practitioner,aws,Cloud Computing,Fundamental AWS cloud concepts and services for beginners,https://aws.amazon.com/certification/certified-cloud-practitioner/,4.5,1-2 months,beginner
+AWS Certified Solutions Architect - Professional,aws,Cloud Computing,Advanced design and deployment of AWS solutions,https://aws.amazon.com/certification/certified-solutions-architect-professional/,4.8,6-12 months,advanced
+AWS Certified DevOps Engineer - Professional,aws,DevOps,Continuous delivery and automation on AWS,https://aws.amazon.com/certification/devops-engineer-professional/,4.6,4-8 months,advanced
+Microsoft Azure Fundamentals AZ-900,azure,Cloud Computing,Basic Azure cloud concepts and services,https://docs.microsoft.com/en-us/learn/certifications/azure-fundamentals/,4.3,1-2 months,beginner
+Microsoft Azure Administrator AZ-104,azure,Cloud Computing,Manage Azure subscriptions and resources,https://docs.microsoft.com/en-us/learn/certifications/azure-administrator/,4.5,3-6 months,intermediate
+Google Cloud Digital Leader,google,Cloud Computing,Google Cloud fundamentals and business transformation,https://cloud.google.com/certification/cloud-digital-leader,4.4,1-2 months,beginner
+Google Cloud Professional Cloud Architect,google,Cloud Computing,Design and plan Google Cloud solutions,https://cloud.google.com/certification/cloud-architect,4.7,4-6 months,advanced
+Infosys Full Stack Developer Certification,infosys,Programming,Complete web development with modern technologies,https://www.infosys.com/services/digital/certification/fullstack,4.3,4-6 months,intermediate
+Infosys Data Science Certification,infosys,Data Science,Statistical analysis and machine learning fundamentals,https://www.infosys.com/services/digital/certification/data-science,4.4,5-7 months,intermediate
+TCS Blockchain Developer Certification,tcs,Blockchain,Blockchain development and smart contract programming,https://www.tcs.com/blockchain-certification,4.2,3-5 months,intermediate
+TCS IoT Engineer Certification,tcs,IoT,Internet of Things development and implementation,https://www.tcs.com/iot-certification,4.3,4-6 months,intermediate
+IBM Data Science Professional Certificate,coursera,Data Science,Complete data science workflow with Python,https://www.coursera.org/professional-certificates/ibm-data-science,4.6,3-6 months,beginner
+Google IT Support Professional Certificate,coursera,IT Support,Fundamental IT support skills and troubleshooting,https://www.coursera.org/professional-certificates/google-it-support,4.7,3-6 months,beginner
+Meta Front-End Developer Professional Certificate,coursera,Web Development,React and modern front-end development,https://www.coursera.org/professional-certificates/meta-front-end-developer,4.5,4-7 months,intermediate
+University of Michigan Python for Everybody,coursera,Programming,Python programming fundamentals for beginners,https://www.coursera.org/specializations/python,4.8,2-3 months,beginner
+DeepLearning.AI TensorFlow Developer,coursera,Deep Learning,TensorFlow and deep learning model building,https://www.coursera.org/professional-certificates/tensorflow,4.6,3-4 months,intermediate
+NASSCOM Data Analytics Certification,nasscom,Data Science,Advanced data analytics and visualization techniques,https://www.nasscom.in/data-analytics-certification,4.4,4-6 months,intermediate
+NASSCOM Cybersecurity Expert,nasscom,Cybersecurity,Network security and ethical hacking,https://www.nasscom.in/cybersecurity-expert,4.5,5-7 months,advanced
+NASSCOM AI Engineer Certification,nasscom,Artificial Intelligence,Machine learning and AI implementation,https://www.nasscom.in/ai-engineer,4.6,6-8 months,advanced
+Digital Marketing Certification,govt,Digital Marketing,Government certified digital marketing skills,https://digitalindia.gov.in/digital-marketing,4.1,2-3 months,beginner
+E-Governance Certification,govt,E-Governance,Digital governance and public service delivery,https://digitalindia.gov.in/e-governance,4.0,3-4 months,intermediate
+National Financial Literacy Program,govt,Finance,Financial education and literacy certification,https://nsdcindia.org/financial-literacy,4.2,2-3 months,beginner
+Digital Skills for Rural India,govt,Digital Literacy,Basic digital skills for rural development,https://digitalindia.gov.in/rural-digital-skills,4.1,1-2 months,beginner
+Cybersecurity Awareness Program,govt,Cybersecurity,Basic cybersecurity awareness for citizens,https://cyberswachhata.gov.in/awareness,4.0,1 month,beginner
+Artificial Intelligence Foundation,govt,Artificial Intelligence,Introduction to AI concepts and applications,https://digitalindia.gov.in/ai-foundation,4.3,2-3 months,beginner
+Cloud Computing Essentials,govt,Cloud Computing,Fundamental cloud computing concepts,https://digitalindia.gov.in/cloud-essentials,4.2,2-3 months,beginner
+Data Science Fundamentals,govt,Data Science,Introduction to data science and analytics,https://digitalindia.gov.in/data-science,4.3,3-4 months,intermediate
+Blockchain Technology Basics,govt,Blockchain,Fundamentals of blockchain technology,https://digitalindia.gov.in/blockchain-basics,4.1,2-3 months,beginner
+Python Programming Certification,govt,Programming,Python programming for government applications,https://digitalindia.gov.in/python-certification,4.4,3-4 months,intermediate
+Web Development Bootcamp,govt,Web Development,Full-stack web development certification,https://digitalindia.gov.in/web-dev-bootcamp,4.3,4-6 months,intermediate

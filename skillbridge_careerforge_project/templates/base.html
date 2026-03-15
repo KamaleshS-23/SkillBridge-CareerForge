@@ -5,18 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SkillBridge & CareerForge{% endblock %}</title>
     
-    <!-- Your existing CSS from the homepage -->
     {% load static %}
+    
+    <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
-    <!-- Your existing sidebar and main content structure -->
-    {% block content %}{% endblock %}
-    
+
+    <!-- ================= NAVIGATION ================= -->
+    <header style="background:#111; padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
+        
+        <div>
+            <a href="{% url 'core:home' %}" style="color:white; font-weight:600; text-decoration:none;">
+                SkillBridge
+            </a>
+        </div>
+
+        <nav>
+            {% if user.is_authenticated %}
+                
+                <a href="{% url 'core:dashboard' %}" 
+                   style="color:white; margin-right:20px; text-decoration:none;">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'certifications:certification_list' %}" 
+                   style="color:white; margin-right:20px; text-decoration:none;">
+                    Certifications
+                </a>
+
+                <a href="{% url 'accounts:profile' %}" 
+                   style="color:white; margin-right:20px; text-decoration:none;">
+                    Profile
+                </a>
+
+                <a href="{% url 'accounts:add_certification' %}" 
+                   style="color:white; margin-right:20px; text-decoration:none;">
+                    Add Certification
+                </a>
+
+                <span style="color:#ccc; margin-right:15px;">
+                    Hi, {{ user.username }}
+                </span>
+
+                <a href="{% url 'accounts:logout' %}" 
+                   style="color:#ff4d4d; text-decoration:none;">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'accounts:login' %}" 
+                   style="color:white; margin-right:20px; text-decoration:none;">
+                    Login
+                </a>
+
+                <a href="{% url 'accounts:register' %}" 
+                   style="color:#4CAF50; text-decoration:none;">
+                    Register
+                </a>
+
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main style="padding:30px;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ================= SCRIPTS ================= -->
     <script src="{% static 'js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>

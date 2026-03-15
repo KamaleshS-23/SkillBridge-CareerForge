@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+
+{% block title %}Certifications - SkillBridge & CareerForge{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #7C3AED;
+        --primary-dark: #5B21B6;
+        --secondary: #EC4899;
+        --accent: #06B6D4;
+        --accent-light: #3B82F6;
+        --dark: #1E1B4B;
+        --light: #F8FAFC;
+        --gray: #64748B;
+        --light-gray: #E2E8F0;
+        --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+        --gradient-secondary: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+    }
+
+    h1, h2, h3, h4, h5 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+    }
+
+    .certification-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .page-header h2 {
+        font-size: 3rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 15px;
+    }
+
+    .page-header p {
+        color: var(--gray);
+        font-size: 1.2rem;
+    }
+
+    /* Search Section */
+    .search-section {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--light-gray);
+        margin-bottom: 40px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 15px 20px;
+        border: 2px solid var(--light-gray);
+        border-radius: 12px;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .search-btn {
+        padding: 15px 30px;
+        background: var(--gradient);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 5px 15px rgba(124, 58, 237, 0.2);
+    }
+
+    .search-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+    }
+
+    /* Filter Pills */
+    .filter-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .filter-pill {
+        padding: 8px 20px;
+        background: var(--light-gray);
+        border: 2px solid transparent;
+        border-radius: 20px;
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .filter-pill:hover {
+        background: rgba(124, 58, 237, 0.1);
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .filter-pill.active {
+        background: var(--gradient);
+        color: white;
+        border-color: transparent;
+    }
+
+    /* Results Info */
+    .results-info {
+        margin: 30px 0;
+        text-align: center;
+        color: var(--gray);
+        font-size: 1.1rem;
+    }
+
+    /* Certification Cards Grid */
+    .certifications-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .certification-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--light-gray);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .certification-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+    }
+
+    .card-header {
+        background: var(--gradient);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .provider-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    .rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 600;
+    }
+
+    .rating-stars {
+        color: #FFD700;
+        font-size: 1.1rem;
+    }
+
+    .card-body {
+        padding: 25px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cert-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--dark);
+        line-height: 1.3;
+    }
+
+    .cert-domain {
+        color: var(--accent);
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .cert-description {
+        color: var(--gray);
+        line-height: 1.6;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+    .cert-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .difficulty-badge {
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .difficulty-beginner {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10B981;
+    }
+
+    .difficulty-intermediate {
+        background: rgba(251, 191, 36, 0.1);
+        color: #F59E0B;
+    }
+
+    .difficulty-advanced {
+        background: rgba(239, 68, 68, 0.1);
+        color: #EF4444;
+    }
+
+    .cert-duration {
+        color: var(--gray);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .card-footer {
+        padding: 0 25px 25px;
+    }
+
+    .enroll-btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--gradient-secondary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+    }
+
+    .enroll-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* No Results State */
+    .no-results {
+        background: white;
+        padding: 60px 40px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--light-gray);
+    }
+
+    .no-results h4 {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+
+    .no-results p {
+        color: var(--gray);
+        font-size: 1.1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .certification-container {
+            padding: 20px 15px;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+        }
+
+        .search-section {
+            padding: 25px;
+        }
+
+        .search-form {
+            flex-direction: column;
+        }
+
+        .certifications-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .filter-section {
+            justify-content: flex-start;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="certification-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>Certifications</h2>
+        <p>Find and enroll in certifications from top platforms</p>
+    </div>
+    
+    <!-- Search Section -->
+    <div class="search-section">
+        <form method="GET" class="search-form">
+            <input type="text" name="search" class="search-input" placeholder="Search by domain (e.g., Cloud Computing, Data Science, Cybersecurity)" value="{{ search_query }}">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+        
+        <!-- Filter Options -->
+        <div class="filter-section">
+            <a href="?search=" class="filter-pill {% if not search_query and not selected_provider %}active{% endif %}">
+                <i class="fas fa-th"></i> All
+            </a>
+            {% for provider in providers %}
+                <a href="?provider={{ provider.0 }}" class="filter-pill {% if selected_provider == provider.0 %}active{% endif %}">
+                    {{ provider.1 }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Results Count -->
+    {% if certifications %}
+        <div class="results-info">
+            {% if search_query %}
+                Found {{ certifications|length }} certifications for "{{ search_query }}"
+            {% elif selected_provider %}
+                Showing {{ certifications|length }} {{ selected_provider|title }} certifications
+            {% else %}
+                Showing {{ certifications|length }} available certifications
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <!-- Certification Cards -->
+    <div class="certifications-grid">
+        {% for cert in certifications %}
+            <div class="certification-card">
+                <div class="card-header">
+                    <span class="provider-badge">{{ cert.get_provider_display }}</span>
+                    <div class="rating">
+                        <span class="rating-stars">★</span>
+                        <span>{{ cert.rating }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3 class="cert-title">{{ cert.name }}</h3>
+                    <p class="cert-domain">{{ cert.domain }}</p>
+                    <p class="cert-description">{{ cert.description|truncatewords:30 }}</p>
+                    <div class="cert-meta">
+                        <span class="difficulty-badge difficulty-{{ cert.difficulty_level }}">
+                            {{ cert.get_difficulty_level_display }}
+                        </span>
+                        <span class="cert-duration">
+                            <i class="fas fa-clock"></i> {{ cert.duration }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ cert.registration_url }}" target="_blank" class="enroll-btn">
+                        <i class="fas fa-external-link-alt"></i> Enroll Now
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-results">
+                <h4>No certifications found</h4>
+                <p>Try searching with different keywords or browse all available certifications.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

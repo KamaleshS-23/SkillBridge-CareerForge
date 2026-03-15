@@ -1082,6 +1082,11 @@
                 </div>
                 <div class="auth-buttons">
                     {% if user.is_authenticated %}
+                        <!-- Quick Navigation Links -->
+                        <a href="{% url 'certifications:certification_list' %}" class="btn btn-outline">
+                            <i class="fas fa-certificate"></i> Certifications
+                        </a>
+                        
                         <!-- Show logged-in user email with badge -->
                         <div class="user-badge">
                             <i class="fas fa-user-circle"></i> {{ user.email }}
@@ -1368,14 +1373,20 @@
         
         featureItems.forEach(item => {
             item.addEventListener('click', () => {
+                // Get feature number
+                const featureNumber = item.getAttribute('data-feature');
+                
+                // Special handling for certifications - redirect to certification page
+                if (featureNumber === '5') {
+                    window.location.href = "{% url 'certifications:certification_list' %}";
+                    return;
+                }
+                
                 // Remove active class from all items
                 featureItems.forEach(f => f.classList.remove('active'));
                 
                 // Add active class to clicked item
                 item.classList.add('active');
-                
-                // Get feature number
-                const featureNumber = item.getAttribute('data-feature');
                 
                 // Hide all feature details
                 featureDetails.forEach(detail => {

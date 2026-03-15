@@ -1,82 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - SkillBridge & CareerForge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Profile - SkillBridge</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #F8FAFC;
-        }
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        h1 {
-            margin-bottom: 30px;
-            color: #1E1B4B;
-        }
-        .profile-item {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #E2E8F0;
-        }
-        .profile-item label {
-            display: block;
-            color: #7C3AED;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .profile-item p {
-            color: #1E1B4B;
-            font-size: 1.1rem;
-        }
-        a {
-            color: #7C3AED;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            display: inline-block;
-        }
+        body { font-family: Arial; background:#f4f6f9; }
+        .container { width:800px; margin:40px auto; background:white; padding:30px; border-radius:10px; }
+        .card { background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px; }
+        .btn { padding:6px 12px; text-decoration:none; border-radius:5px; font-size:14px; }
+        .btn-primary { background:#7c3aed; color:white; }
+        .btn-success { background:#16a34a; color:white; }
+        h2 { margin-top:30px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Your Profile</h1>
-        
-        <div class="profile-item">
-            <label>Email:</label>
-            <p>{{ user.email }}</p>
+
+<div class="container">
+
+    <h1>Welcome {{ user.first_name }}</h1>
+
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>User Type:</strong> {{ user.user_type }}</p>
+    <p><strong>Field of Interest:</strong> {{ user.field_of_interest }}</p>
+
+    <hr>
+
+    <!-- 🔥 Recommended Certifications -->
+    <h2>Recommended Certifications</h2>
+
+    {% if recommended_certifications %}
+        {% for cert in recommended_certifications %}
+            <div class="card">
+                <h3>{{ cert.title }}</h3>
+                <p><strong>Organization:</strong> {{ cert.organization }}</p>
+                <p>{{ cert.description }}</p>
+
+                <a href="{{ cert.official_url }}" target="_blank" class="btn btn-success">
+                    Enroll Now
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No recommendations available. Please update your field of interest.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- User Certifications -->
+    <h2>My Certifications</h2>
+
+    <a href="{% url 'add_certification' %}" class="btn btn-primary">
+        + Add Certification
+    </a>
+
+    {% for cert in certifications %}
+        <div class="card">
+            <strong>{{ cert.name }}</strong>
+            <p>{{ cert.organization }}</p>
+            <p>Issued: {{ cert.issue_date }}</p>
         </div>
-        
-        <div class="profile-item">
-            <label>Name:</label>
-            <p>{{ user.first_name }} {{ user.last_name }}</p>
-        </div>
-        
-        <div class="profile-item">
-            <label>User Type:</label>
-            <p>{{ user.user_type }}</p>
-        </div>
-        
-        <div class="profile-item">
-            <label>Member Since:</label>
-            <p>{{ user.created_at }}</p>
-        </div>
-        
-        <a href="/core/dashboard/">Back to Dashboard</a>
-        <a href="/accounts/logout/" style="color: #EC4899; margin-left: 20px;">Logout</a>
-    </div>
+    {% empty %}
+        <p>No certifications added yet.</p>
+    {% endfor %}
+
+</div>
+
 </body>
 </html>
