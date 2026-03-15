@@ -698,6 +698,189 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* ================= RESUME EXTRACTOR (EXTRACTION TAB) ================= */
+        .resume-extractor {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 20px;
+            color: #1a202c;
+        }
+
+        .resume-extractor-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .resume-extractor-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .resume-extractor-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.6rem;
+        }
+
+        .re-upload-area {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 3px dashed #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .re-upload-area:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .re-upload-area i {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .re-file-info {
+            background: #ebf4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .re-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .re-btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .re-btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .re-progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .re-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .re-results {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .re-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .re-card h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3rem;
+        }
+
+        .re-extracted-text {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid #e2e8f0;
+        }
+
+        .re-stats-bar {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 15px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+        }
+
+        .re-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+        }
+
+        .re-stat-item i {
+            color: #667eea;
+        }
+
+        .re-badge {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .re-download-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .re-download-btn:hover {
+            background: #667eea;
+            color: white;
+        }
     </style>
 </head>
 
@@ -860,101 +1043,106 @@
                 </div>
             </div>
 
-            <!-- EXTRACTION TAB (module 2,3,4,5 from first design) -->
+            <!-- EXTRACTION TAB: Resume Data Extractor -->
             <div id="extraction-tab" class="tab-pane">
-                <!-- Resume upload + parsing status -->
-                <div class="card">
-                    <h2 class="card-title"><i class="fas fa-file-upload"></i> Resume Upload & AI Parsing</h2>
-                    <div class="upload-area" id="resumeDropZone"
-                        onclick="document.getElementById('resumeInput').click()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <h3>Upload Resume/CV</h3>
-                        <p style="color:var(--gray);">Drag & drop PDF/DOCX or click</p>
-                        <input type="file" id="resumeInput" hidden accept=".pdf,.doc,.docx"
-                            onchange="handleFileUpload(event)">
-                    </div>
-                    <div id="resumeStatus" style="margin-top:10px; color:var(--success); display:none;"></div>
-
-                    <!-- parsing progress (first) -->
-                    <div class="parsing-status-container" id="parsingStatus">
-                        <h4><i class="fas fa-cogs"></i> AI Processing document...</h4>
-                        <div style="height:6px; background:#ddd; border-radius:3px; margin:10px 0;">
-                            <div id="parsingProgressBar"
-                                style="width:0%; height:100%; background:var(--primary); transition:width 0.3s;"></div>
+                <div class="resume-extractor">
+                    <div class="resume-extractor-inner">
+                        <div class="resume-extractor-header">
+                            <h1><i class="fas fa-file-alt" style="color: #667eea;"></i> Resume Data Extractor - Complete Text
+                                Display</h1>
+                            <p>Upload any resume (PDF, DOCX, TXT, or Image) - extracts and displays ALL content exactly as
+                                found</p>
                         </div>
-                        <small style="float:right;">Time left: <span id="timeRemaining">12</span>s</small>
-                        <ul class="step-list">
-                            <li class="step-item" id="step1"><i class="far fa-circle"></i> Extracting text</li>
-                            <li class="step-item" id="step2"><i class="far fa-circle"></i> Identifying sections</li>
-                            <li class="step-item" id="step3"><i class="far fa-circle"></i> Extracting skills</li>
-                            <li class="step-item" id="step4"><i class="far fa-circle"></i> Mapping to taxonomy</li>
-                            <li class="step-item" id="step5"><i class="far fa-circle"></i> Estimating proficiency</li>
-                        </ul>
-                    </div>
-                </div>
 
-                <!-- Extracted skills table (human-in-the-loop) -->
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between;">
-                        <h2 class="card-title"><i class="fas fa-list-check"></i> Extracted Skills Review</h2>
-                        <button class="btn btn-secondary btn-sm" onclick="openModal('skillModal')"><i
-                                class="fas fa-plus"></i> Add Missing</button>
-                    </div>
-                    <p style="color:var(--gray);">Skills extracted from sources (simulated). Adjust or confirm.</p>
-                    <div style="overflow-x:auto;">
-                        <table class="skills-table">
-                            <thead>
-                                <tr>
-                                    <th>Skill</th>
-                                    <th>Category</th>
-                                    <th>Context snippet</th>
-                                    <th>Proficiency</th>
-                                    <th>Confidence</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="skillsTableBody">
-                                <!-- static examples, but we also update via js from profileData? for demo we populate with mock -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                        <!-- Upload Area -->
+                        <div class="re-upload-area" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Drag & drop your resume here</h3>
+                            <p style="color: #718096; margin: 10px 0;">or click to browse</p>
+                            <p style="color: #a0aec0; font-size: 0.9rem;">
+                                <i class="fas fa-file-pdf"></i> PDF ·
+                                <i class="fas fa-file-word"></i> DOCX ·
+                                <i class="fas fa-file-alt"></i> TXT ·
+                                <i class="fas fa-image"></i> Images (JPG, PNG)
+                            </p>
+                            <input type="file" id="fileInput" hidden
+                                accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.bmp">
+                        </div>
 
-                <!-- Inferred soft skills + taxonomy mapping (modules 4&5) -->
-                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:20px;">
-                    <div class="card">
-                        <h2 class="card-title"><i class="fas fa-lightbulb"></i> Inferred Soft Skills</h2>
-                        <div id="softSkillsContainer">
-                            <div class="inference-card">
-                                <div><strong>Leadership</strong>
-                                    <p style="font-size:0.85rem;">From: "Managed team of 5"</p>
-                                </div>
-                                <div><button class="btn btn-success btn-sm"><i class="fas fa-check"></i></button><button
-                                        class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div>
+                        <!-- File Info -->
+                        <div class="re-file-info" id="fileInfo" style="display: none;">
+                            <div>
+                                <i class="fas fa-file" style="color: #667eea;"></i>
+                                <span id="fileName"></span>
+                                <span class="re-badge" id="fileSize"></span>
+                                <span class="re-badge" id="fileType"></span>
                             </div>
-                            <div class="inference-card">
-                                <div><strong>Communication</strong>
-                                    <p style="font-size:0.85rem;">From: "Presented to stakeholders"</p>
-                                </div>
-                                <div><button class="btn btn-success btn-sm"><i class="fas fa-check"></i></button><button
-                                        class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="re-btn-primary" id="extractBtn" onclick="extractContent()">
+                                    <i class="fas fa-magic"></i> Extract Text
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="card">
-                        <h2 class="card-title"><i class="fas fa-project-diagram"></i> Taxonomy Mapping</h2>
-                        <div class="taxonomy-mapping"><span
-                                style="background:#E2E8F0; padding:5px 10px; border-radius:5px;">"JS"</span> <i
-                                class="fas fa-arrow-right mapping-arrow"></i> <span
-                                style="background:#FEF08A; padding:5px 10px;">JavaScript</span></div>
-                        <div class="taxonomy-mapping"><span
-                                style="background:#E2E8F0; padding:5px 10px;">"React.js"</span> <i
-                                class="fas fa-arrow-right"></i> <span
-                                style="background:#BAE6FD; padding:5px 10px;">React</span></div>
-                        <div class="taxonomy-mapping"><span
-                                style="background:#E2E8F0; padding:5px 10px;">"Postgres"</span> <i
-                                class="fas fa-arrow-right"></i> <span
-                                style="background:#BFDBFE; padding:5px 10px;">PostgreSQL</span></div>
+
+                        <!-- Progress Bar -->
+                        <div class="re-progress-bar" id="progressBar">
+                            <div class="re-progress-fill" id="progressFill"></div>
+                        </div>
+
+                        <!-- Results -->
+                        <div class="re-results" id="results" style="display: none;">
+                            <!-- Extracted Text - Full Display -->
+                            <div class="re-card">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3><i class="fas fa-file-lines" style="color: #667eea;"></i> Complete Extracted Content
+                                    </h3>
+                                    <button class="re-download-btn" onclick="downloadText()">
+                                        <i class="fas fa-download"></i> Download as TXT
+                                    </button>
+                                </div>
+                                <div class="re-extracted-text" id="extractedText"></div>
+
+                                <!-- Text Statistics -->
+                                <div class="re-stats-bar">
+                                    <span class="re-stat-item"><i class="fas fa-font"></i> Characters: <span
+                                            id="charCount">0</span></span>
+                                    <span class="re-stat-item"><i class="fas fa-words"></i> Words: <span
+                                            id="wordCount">0</span></span>
+                                    <span class="re-stat-item"><i class="fas fa-lines"></i> Lines: <span
+                                            id="lineCount">0</span></span>
+                                </div>
+                            </div>
+
+                            <!-- Auto-extracted skills & certifications summary -->
+                            <div class="re-card" id="autoExtractSummary" style="display:none;">
+                                <h3><i class="fas fa-robot" style="color:#7C3AED;"></i> Auto-added to your profile</h3>
+                                <p style="color:#4b5563; margin-bottom:10px;">
+                                    We scanned your resume text and automatically updated your Skills and Certifications using
+                                    the same colour theme.
+                                </p>
+                                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                                    <span class="badge badge-info" id="autoSkillCountBadge"
+                                        style="display:none;"><i class="fas fa-star"></i>
+                                        <span id="autoSkillCount">0</span> new skills</span>
+                                    <span class="badge badge-success" id="autoCertCountBadge"
+                                        style="display:none;"><i class="fas fa-certificate"></i>
+                                        <span id="autoCertCount">0</span> new certifications</span>
+                                </div>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;"
+                                    id="autoExtractLists">
+                                    <!-- Filled by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Note -->
+                        <div
+                            style="background: white; border-radius: 10px; padding: 15px; margin-top: 20px; color: #718096;">
+                            <p><i class="fas fa-info-circle" style="color: #667eea;"></i> <strong>How it works:</strong>
+                                This tool extracts and displays ALL text content from your uploaded file exactly as found - no
+                                filtering, no default data.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1140,6 +1328,379 @@
 
         <!-- end modals -->
     </div>
+
+    <!-- Resume Extractor dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
+    <script>
+        // Configure PDF.js worker for resume extractor
+        if (window['pdfjsLib']) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+
+        let currentFile = null;
+        let extractedTextContent = '';
+
+        // Resume extractor: Drag and drop handlers
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        if (dropZone && fileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length) handleResumeExtractorFile(files[0]);
+            });
+
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => handleResumeExtractorFile(e.target.files[0]));
+        }
+
+        function handleResumeExtractorFile(file) {
+            if (!file) return;
+            currentFile = file;
+
+            document.getElementById('fileInfo').style.display = 'flex';
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+            const fileExt = file.name.split('.').pop().toUpperCase();
+            document.getElementById('fileType').textContent = fileExt;
+
+            document.getElementById('results').style.display = 'none';
+            extractedTextContent = '';
+        }
+
+        async function extractContent() {
+            if (!currentFile) return;
+
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const extractBtn = document.getElementById('extractBtn');
+
+            progressBar.style.display = 'block';
+            extractBtn.disabled = true;
+            progressFill.style.width = '0%';
+
+            try {
+                let text = '';
+                const fileType = currentFile.name.split('.').pop().toLowerCase();
+
+                progressFill.style.width = '30%';
+
+                if (fileType === 'pdf') {
+                    text = await extractFromPDF(currentFile);
+                } else if (fileType === 'docx') {
+                    text = await extractFromDOCX(currentFile);
+                } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileType)) {
+                    text = await extractFromImage(currentFile);
+                } else if (fileType === 'txt') {
+                    text = await extractFromTXT(currentFile);
+                } else {
+                    throw new Error('Unsupported file format');
+                }
+
+                progressFill.style.width = '80%';
+
+                extractedTextContent = text;
+                displayExtractedText(text);
+
+                // Auto-extract skills and certifications from resume text
+                await autoExtractFromResume(text);
+
+                progressFill.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 500);
+
+            } catch (error) {
+                console.error('Extraction error:', error);
+                alert('Error extracting text: ' + error.message);
+            } finally {
+                extractBtn.disabled = false;
+            }
+        }
+
+        // PDF extraction
+        async function extractFromPDF(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = '';
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + '\n\n';
+            }
+
+            return fullText;
+        }
+
+        // DOCX extraction using mammoth
+        async function extractFromDOCX(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                        resolve(result.value);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // Image OCR using Tesseract
+        async function extractFromImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    try {
+                        const { data: { text } } = await Tesseract.recognize(
+                            e.target.result,
+                            'eng',
+                            { logger: m => console.log(m) }
+                        );
+                        resolve(text);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Text file extraction
+        async function extractFromTXT(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        // Display extracted text with statistics
+        function displayExtractedText(text) {
+            document.getElementById('results').style.display = 'block';
+
+            const extractedDiv = document.getElementById('extractedText');
+            extractedDiv.textContent = text || '[No text could be extracted from this file]';
+
+            const charCount = text.length;
+            const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+            const lineCount = text.split('\n').length;
+
+            document.getElementById('charCount').textContent = charCount.toLocaleString();
+            document.getElementById('wordCount').textContent = wordCount.toLocaleString();
+            document.getElementById('lineCount').textContent = lineCount.toLocaleString();
+        }
+
+        // Simple heuristic-based extraction of skills & certifications from resume text
+        async function autoExtractFromResume(text) {
+            if (!text || !window.profileData) return;
+
+            const lower = text.toLowerCase();
+
+            // Basic skill dictionary – extend as needed
+            const knownSkills = [
+                'python', 'django', 'rest framework', 'javascript', 'typescript', 'react', 'next.js',
+                'html', 'css', 'tailwind', 'bootstrap', 'node.js', 'express', 'java', 'spring',
+                'c++', 'c#', 'sql', 'postgresql', 'mysql', 'mongodb', 'git', 'docker', 'kubernetes',
+                'aws', 'azure', 'gcp', 'machine learning', 'deep learning', 'tensorflow', 'pytorch',
+                'nlp', 'data analysis', 'pandas', 'numpy', 'power bi', 'tableau'
+            ];
+
+            const newSkills = [];
+            const existingSkillNames = new Set(
+                (profileData.skills || []).map(s => (s.name || '').toLowerCase())
+            );
+
+            knownSkills.forEach(skillName => {
+                if (lower.includes(skillName.toLowerCase()) && !existingSkillNames.has(skillName.toLowerCase())) {
+                    const prettyName = skillName
+                        .split(' ')
+                        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                        .join(' ');
+                    newSkills.push({
+                        name: prettyName,
+                        type: 'technical',
+                        proficiency: 'intermediate',
+                        years: 0,
+                        source: 'resume_extractor'
+                    });
+                    existingSkillNames.add(skillName.toLowerCase());
+                }
+            });
+
+            // Heuristic for certifications: lines containing "certificate" / "certification" / "Certified"
+            const lines = text.split(/\r?\n/);
+            const newCerts = [];
+            const existingCertNames = new Set(
+                (profileData.certifications || []).map(c => (c.name || '').toLowerCase())
+            );
+
+            lines.forEach(rawLine => {
+                const line = rawLine.trim();
+                const lowerLine = line.toLowerCase();
+                if (!line) return;
+                if (
+                    lowerLine.includes('certificate') ||
+                    lowerLine.includes('certification') ||
+                    lowerLine.includes('certified ')
+                ) {
+                    // Avoid duplicates and very short noise lines
+                    if (line.length < 6) return;
+                    const key = line.toLowerCase();
+                    if (existingCertNames.has(key)) return;
+
+                    newCerts.push({
+                        name: line,
+                        issuer: 'From Resume',
+                        issueDate: '',
+                        expiryDate: null,
+                        url: ''
+                    });
+                    existingCertNames.add(key);
+                }
+            });
+
+            // Persist new skills and certs: update local UI immediately, then fire-and-forget API calls
+            if (newSkills.length) {
+                newSkills.forEach(skill => {
+                    profileData.skills.push(skill);
+                    // Save to backend
+                    try {
+                        fetch('/api/add-skill/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                skill_name: skill.name,
+                                category: skill.type,
+                                proficiency_level: skill.proficiency,
+                                years_experience: skill.years,
+                                context_of_use: 'Auto-extracted from resume',
+                                source: skill.source
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                });
+            }
+
+            if (newCerts.length) {
+                newCerts.forEach(cert => {
+                    profileData.certifications.push(cert);
+                    // Save to backend
+                    try {
+                        fetch('/api/add-certification/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                certification_name: cert.name,
+                                issuing_organization: cert.issuer,
+                                issue_date: cert.issueDate || null,
+                                expiry_date: cert.expiryDate,
+                                credential_id: '',
+                                credential_url: cert.url || '',
+                                is_active: true
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                });
+            }
+
+            // Update local storage + stats + rendered sections
+            if (newSkills.length || newCerts.length) {
+                saveProfileData();
+                renderSkills();
+                renderCertifications();
+                updateStats();
+
+                // Update auto-extract summary card in Extraction tab
+                const summaryCard = document.getElementById('autoExtractSummary');
+                const skillBadge = document.getElementById('autoSkillCountBadge');
+                const certBadge = document.getElementById('autoCertCountBadge');
+                const skillCountSpan = document.getElementById('autoSkillCount');
+                const certCountSpan = document.getElementById('autoCertCount');
+                const listsContainer = document.getElementById('autoExtractLists');
+
+                if (summaryCard && skillBadge && certBadge && skillCountSpan && certCountSpan && listsContainer) {
+                    let html = '';
+
+                    if (newSkills.length) {
+                        skillBadge.style.display = 'inline-flex';
+                        skillCountSpan.textContent = newSkills.length;
+                        html += `<div><h4 style="margin-bottom:6px; color:#1e293b;"><i class="fas fa-star" style="color:#7C3AED;"></i> Skills</h4>`;
+                        newSkills.forEach(s => {
+                            html += `<div style="background:#EEF2FF; border-radius:8px; padding:6px 10px; margin-bottom:4px; font-size:0.9rem;">${s.name}</div>`;
+                        });
+                        html += `</div>`;
+                    } else {
+                        skillBadge.style.display = 'none';
+                    }
+
+                    if (newCerts.length) {
+                        certBadge.style.display = 'inline-flex';
+                        certCountSpan.textContent = newCerts.length;
+                        html += `<div><h4 style="margin-bottom:6px; color:#1e293b;"><i class="fas fa-certificate" style="color:#F59E0B;"></i> Certifications</h4>`;
+                        newCerts.forEach(c => {
+                            html += `<div style="background:#FEF3C7; border-radius:8px; padding:6px 10px; margin-bottom:4px; font-size:0.9rem;">${c.name}</div>`;
+                        });
+                        html += `</div>`;
+                    } else {
+                        certBadge.style.display = 'none';
+                    }
+
+                    listsContainer.innerHTML = html || '<p style="color:#6b7280;">No new items detected.</p>';
+                    summaryCard.style.display = 'block';
+
+                    if (typeof showAlert === 'function') {
+                        showAlert(`Auto-extracted ${newSkills.length} skills and ${newCerts.length} certifications from your resume.`, 'success');
+                    }
+                }
+            }
+        }
+
+        // Download extracted text as a file
+        function downloadText() {
+            if (!extractedTextContent) {
+                alert('No text to download');
+                return;
+            }
+
+            const blob = new Blob([extractedTextContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') + '_extracted.txt' : 'extracted_text.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
 
     <script>
         // ---------- MERGED JAVASCRIPT (state, functions from both) ----------
