@@ -5,4 +5,5 @@ app_name = 'certifications'
 
 urlpatterns = [
     path('', views.certification_list, name='certification_list'),
+    path('sync/', views.sync_dashboard, name='sync_dashboard'),
 ]

@@ -67,16 +67,56 @@
     .search-form {
         display: flex;
         gap: 15px;
-        margin-bottom: 30px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-row {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .search-input-group {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        flex-wrap: wrap;
+    }
+
+    .search-dropdown {
+        padding: 15px 20px;
+        border: 2px solid var(--light-gray);
+        border-radius: 12px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        background: white;
+        min-width: 200px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .search-dropdown:hover {
+        border-color: var(--primary);
+        box-shadow: 0 5px 15px rgba(124, 58, 237, 0.1);
+    }
+
+    .search-dropdown:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 5px 15px rgba(124, 58, 237, 0.2);
     }
 
     .search-input {
         flex: 1;
+        min-width: 250px;
         padding: 15px 20px;
         border: 2px solid var(--light-gray);
         border-radius: 12px;
-        font-size: 1rem;
         font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
         transition: all 0.3s ease;
     }
 
@@ -299,6 +339,36 @@
         color: white;
     }
 
+    /* API Mode Styles */
+    .api-indicator {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10B981;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .api-notice {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #1E40AF;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .api-notice i {
+        color: #3B82F6;
+    }
+
     /* No Results State */
     .no-results {
         background: white;
@@ -338,6 +408,25 @@
             flex-direction: column;
         }
 
+        .search-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-input-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-dropdown {
+            width: 100%;
+            min-width: auto;
+        }
+
+        .search-input {
+            min-width: auto;
+        }
+
         .certifications-grid {
             grid-template-columns: 1fr;
             gap: 20px;
@@ -364,23 +453,45 @@
     <!-- Search Section -->
     <div class="search-section">
         <form method="GET" class="search-form">
-            <input type="text" name="search" class="search-input" placeholder="Search by domain (e.g., Cloud Computing, Data Science, Cybersecurity)" value="{{ search_query }}">
-            <button type="submit" class="search-btn">
-                <i class="fas fa-search"></i> Search
-            </button>
+            <div class="search-row">
+                <div class="search-input-group">
+                    <select name="domain" class="search-dropdown" onchange="this.form.submit()">
+                        <option value="">All Domains</option>
+                        <option value="Cloud Computing" {% if request.GET.domain == 'Cloud Computing' %}selected{% endif %}>Cloud Computing</option>
+                        <option value="Data Science" {% if request.GET.domain == 'Data Science' %}selected{% endif %}>Data Science</option>
+                        <option value="AI & Machine Learning" {% if request.GET.domain == 'AI & Machine Learning' %}selected{% endif %}>AI & Machine Learning</option>
+                        <option value="Software Development" {% if request.GET.domain == 'Software Development' %}selected{% endif %}>Software Development</option>
+                        <option value="Web Development" {% if request.GET.domain == 'Web Development' %}selected{% endif %}>Web Development</option>
+                        <option value="Information Technology" {% if request.GET.domain == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                        <option value="Digital Literacy" {% if request.GET.domain == 'Digital Literacy' %}selected{% endif %}>Digital Literacy</option>
+                        <option value="DevOps" {% if request.GET.domain == 'DevOps' %}selected{% endif %}>DevOps</option>
+                        <option value="Programming" {% if request.GET.domain == 'Programming' %}selected{% endif %}>Programming</option>
+                        <option value="Cybersecurity" {% if request.GET.domain == 'Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
+                        <option value="Networking" {% if request.GET.domain == 'Networking' %}selected{% endif %}>Networking</option>
+                        <option value="Mobile Development" {% if request.GET.domain == 'Mobile Development' %}selected{% endif %}>Mobile Development</option>
+                        <option value="Blockchain" {% if request.GET.domain == 'Blockchain' %}selected{% endif %}>Blockchain</option>
+                        <option value="Internet of Things" {% if request.GET.domain == 'Internet of Things' %}selected{% endif %}>Internet of Things</option>
+                        <option value="Database Management" {% if request.GET.domain == 'Database Management' %}selected{% endif %}>Database Management</option>
+                        <option value="UI/UX Design" {% if request.GET.domain == 'UI/UX Design' %}selected{% endif %}>UI/UX Design</option>
+                        <option value="Project Management" {% if request.GET.domain == 'Project Management' %}selected{% endif %}>Project Management</option>
+                        <option value="Digital Marketing" {% if request.GET.domain == 'Digital Marketing' %}selected{% endif %}>Digital Marketing</option>
+                        <option value="Data Analytics" {% if request.GET.domain == 'Data Analytics' %}selected{% endif %}>Data Analytics</option>
+                    </select>
+                    
+                    <select name="provider" class="search-dropdown" onchange="this.form.submit()">
+                        <option value="">All Providers</option>
+                        {% for provider in providers %}
+                            <option value="{{ provider.0 }}" {% if selected_provider == provider.0 %}selected{% endif %}>{{ provider.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <input type="text" name="search" class="search-input" placeholder="Search certifications..." value="{{ search_query }}">
+                </div>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
         </form>
-        
-        <!-- Filter Options -->
-        <div class="filter-section">
-            <a href="?search=" class="filter-pill {% if not search_query and not selected_provider %}active{% endif %}">
-                <i class="fas fa-th"></i> All
-            </a>
-            {% for provider in providers %}
-                <a href="?provider={{ provider.0 }}" class="filter-pill {% if selected_provider == provider.0 %}active{% endif %}">
-                    {{ provider.1 }}
-                </a>
-            {% endfor %}
-        </div>
     </div>
     
     <!-- Results Count -->
@@ -393,6 +504,19 @@
             {% else %}
                 Showing {{ certifications|length }} available certifications
             {% endif %}
+            {% if api_mode %}
+                <span class="api-indicator">
+                    <i class="fas fa-sync-alt"></i> Live data from APIs
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <!-- API Mode Notice -->
+    {% if api_mode %}
+        <div class="api-notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>Live API Mode:</strong> Showing current certifications from government-approved and standard providers. Data is fetched in real-time.
         </div>
     {% endif %}
     

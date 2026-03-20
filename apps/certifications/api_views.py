@@ -5,11 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q, Avg
 from django.http import HttpResponse
+from django.utils import timezone
+from datetime import timedelta
 import csv
 import pandas as pd
 from io import StringIO
 from .models import Certification
 from .serializers import CertificationSerializer
+from .external_apis import CertificationAPIManager, CertificationCache
 
 class CertificationListCreateView(generics.ListCreateAPIView):
     queryset = Certification.objects.filter(is_active=True)
@@ -180,21 +183,123 @@ def export_certifications(request):
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
 def sync_external_certifications(request):
-    """Sync certifications from external APIs (placeholder)"""
-    # This is a placeholder for external API integration
-    # You can integrate with actual certification provider APIs here
-    
-    provider = request.data.get('provider', '')
-    
-    if provider == 'aws':
-        # Example: Call AWS certification API
-        # This would require actual API integration
+    """Sync certifications from external APIs"""
+    try:
+        provider = request.data.get('provider', '')
+        force_sync = request.data.get('force', False)
+        
+        api_manager = CertificationAPIManager()
+        cache = CertificationCache()
+        
+        if not force_sync and cache.is_cache_valid():
+            return Response({
+                'message': 'Cache is still valid',
+                'cache_valid': True,
+                'last_updated': Certification.objects.order_by('-last_updated').first().last_updated
+            })
+        
+        if provider:
+            # Sync specific provider
+            provider_methods = {
+                'aws': api_manager.scrape_aws_certifications,
+                'google': api_manager.scrape_google_cloud_certifications,
+                'microsoft': api_manager.fetch_microsoft_certifications,
+                'coursera': api_manager.fetch_coursera_certifications,
+                'linkedin': api_manager.fetch_linkedin_certifications
+            }
+            
+            if provider not in provider_methods:
+                return Response({
+                    'error': f'Unknown provider: {provider}',
+                    'available_providers': list(provider_methods.keys())
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            certifications = provider_methods[provider]()
+        else:
+            # Sync all providers
+            certifications = api_manager.fetch_all_certifications()
+        
+        # Update database
+        updated_count = 0
+        created_count = 0
+        
+        for cert_data in certifications:
+            existing_cert = Certification.objects.filter(
+                name=cert_data['name'],
+                provider=cert_data['provider']
+            ).first()
+            
+            if existing_cert:
+                # Update existing
+                for key, value in cert_data.items():
+                    if hasattr(existing_cert, key):
+                        setattr(existing_cert, key, value)
+                existing_cert.save()
+                updated_count += 1
+            else:
+                # Create new
+                Certification.objects.create(**cert_data)
+                created_count += 1
+        
         return Response({
-            'message': 'AWS sync not implemented yet',
-            'provider': provider
+            'message': 'Sync completed successfully',
+            'provider': provider or 'all',
+            'updated': updated_count,
+            'created': created_count,
+            'total_fetched': len(certifications),
+            'cache_valid': False
         })
-    
-    return Response({
-        'message': 'External sync functionality',
-        'available_providers': ['aws', 'coursera', 'udemy']
-    })
+        
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'message': 'Sync failed'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def certification_sources(request):
+    """Get available certification sources and their status"""
+    try:
+        sources = []
+        
+        # Get all certifications grouped by source
+        source_stats = {}
+        for cert in Certification.objects.all():
+            source = cert.source
+            if source not in source_stats:
+                source_stats[source] = {
+                    'count': 0,
+                    'last_updated': None,
+                    'providers': set()
+                }
+            source_stats[source]['count'] += 1
+            source_stats[source]['providers'].add(cert.provider)
+            if cert.last_updated:
+                if not source_stats[source]['last_updated'] or cert.last_updated > source_stats[source]['last_updated']:
+                    source_stats[source]['last_updated'] = cert.last_updated
+        
+        # Format response
+        for source, stats in source_stats.items():
+            sources.append({
+                'source': source,
+                'count': stats['count'],
+                'last_updated': stats['last_updated'],
+                'providers': list(stats['providers'])
+            })
+        
+        # Check cache status
+        cache = CertificationCache()
+        cache_valid = cache.is_cache_valid()
+        
+        return Response({
+            'sources': sources,
+            'cache_valid': cache_valid,
+            'total_certifications': Certification.objects.count(),
+            'active_certifications': Certification.objects.filter(is_active=True).count()
+        })
+        
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
