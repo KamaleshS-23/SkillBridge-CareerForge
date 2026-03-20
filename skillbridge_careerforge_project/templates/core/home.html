@@ -18,7 +18,7 @@
             --light-gray: #E2E8F0;
             --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
             --gradient-secondary: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
-            --sidebar-bg: linear-gradient(145deg, #1E2A5A 0%, #2E3B7A 100%); /* deeper bluish */
+            --sidebar-bg: linear-gradient(145deg, #1E2A5A 0%, #2E3B7A 100%);
             --card-bg: rgba(255, 255, 255, 0.9);
         }
 
@@ -54,6 +54,8 @@
         .main-content {
             position: relative;
             z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         h1, h2, h3, h4, h5 {
@@ -61,12 +63,7 @@
             font-weight: 800;
         }
 
-        .main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* header with blur effect */
+        /* Header */
         .main-header {
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(8px);
@@ -106,6 +103,7 @@
             flex-wrap: wrap;
         }
 
+        /* Buttons */
         .btn {
             padding: 10px 24px;
             border-radius: 40px;
@@ -148,7 +146,7 @@
             font-size: 1.1rem;
         }
 
-        /* hero */
+        /* Hero Section */
         .hero-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -213,7 +211,7 @@
             100% { transform: translateY(0px); }
         }
 
-        /* ===== NEW BLUISH CENTER SIDEBAR PANEL ===== */
+        /* Bluish Sidebar Panel */
         .bluish-sidebar-panel {
             background: var(--sidebar-bg);
             border-radius: 50px 50px 30px 30px;
@@ -253,7 +251,7 @@
             margin: 15px auto 0;
         }
 
-        /* card grid inside bluish panel */
+        /* Module Grid */
         .modules-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -273,6 +271,7 @@
             color: white;
             position: relative;
             overflow: hidden;
+            animation: cardGlide 0.5s ease backwards;
         }
 
         .module-card:hover {
@@ -328,7 +327,6 @@
             backdrop-filter: blur(4px);
         }
 
-        /* extra interactive shine */
         .module-card::after {
             content: '';
             position: absolute;
@@ -346,7 +344,12 @@
             opacity: 1;
         }
 
-        /* stats */
+        @keyframes cardGlide {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stats Section */
         .stats-section {
             display: grid;
             grid-template-columns: repeat(3,1fr);
@@ -372,7 +375,7 @@
             opacity: 0.9;
         }
 
-        /* cta */
+        /* CTA Section */
         .cta-section {
             padding: 80px 50px;
             text-align: center;
@@ -397,7 +400,7 @@
             margin: 0 auto 40px;
         }
 
-        /* footer */
+        /* Footer */
         .footer {
             background: var(--dark);
             color: white;
@@ -420,6 +423,7 @@
             margin-bottom: 20px;
             display: inline-block;
         }
+
         .footer-logo .logo-text span:first-child { color: white; }
         .footer-logo .logo-text span:last-child { color: var(--accent); }
 
@@ -441,6 +445,7 @@
             position: relative;
             padding-bottom: 10px;
         }
+
         .footer-column h3::after {
             content: '';
             position: absolute;
@@ -450,6 +455,7 @@
             height: 3px;
             background: var(--gradient);
         }
+
         .footer-column ul { list-style: none; }
         .footer-column li { margin-bottom: 12px; }
         .footer-column a {
@@ -466,7 +472,7 @@
             color: rgba(255,255,255,0.5);
         }
 
-        /* mobile */
+        /* Mobile Responsive */
         @media (max-width: 900px) {
             .hero-section {
                 grid-template-columns: 1fr;
@@ -485,20 +491,11 @@
             .hero-text h2 { font-size: 2.2rem; }
             .btn-lg { width: 100%; }
         }
-
-        /* card animation */
-        .module-card {
-            animation: cardGlide 0.5s ease backwards;
-        }
-        @keyframes cardGlide {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
     <div class="main-content">
-        <!-- header with auth buttons (django placeholders) -->
+        <!-- Header -->
         <header class="main-header">
             <div class="header-content">
                 <div class="header-text">
@@ -516,7 +513,7 @@
             </div>
         </header>
 
-        <!-- hero section (same as before) -->
+        <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-text">
                 <h2>Bridge Your <span>Skill Gaps</span>, Forge Your <span>Dream Career</span></h2>
@@ -543,7 +540,7 @@
             </div>
         </section>
 
-        <!-- ===== BLUISH SIDEBAR STYLE PANEL (center of page) ===== -->
+        <!-- Bluish Sidebar Panel -->
         <div class="bluish-sidebar-panel">
             <div class="panel-header">
                 <h2><i class="fas fa-cubes"></i></h2>
@@ -551,78 +548,115 @@
             </div>
 
             <div class="modules-grid">
-                <!-- 10 feature cards (taken from original sidebar) -->
+                <!-- Feature Cards -->
                 <div class="module-card" style="animation-delay: 0.05s;">
                     <div class="card-icon"><i class="fas fa-brain"></i></div>
                     <h3>AI Skill Profiling</h3>
-                    <div class="module-desc">Resume parsing, skill extraction & proficiency estimation.</div>
-                    <div class="feature-tags"><span class="feature-tag">Resume parsing</span><span class="feature-tag">NLP</span></div>
+                    <p class="module-desc">Complete your comprehensive professional profile with LinkedIn, GitHub, and resume integration. AI analyzes resumes or manual inputs to extract and assess technical, soft, and domain skills with proficiency estimation.</p>
+                    <span class="feature-tag">Resume Parsing</span>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.1s;">
                     <div class="card-icon"><i class="fas fa-handshake"></i></div>
                     <h3>Smart Internship Provider</h3>
-                    <div class="module-desc">Connects with perfect internships using intelligent match scoring.</div>
-                    <div class="feature-tags"><span class="feature-tag">Smart Internship</span><span class="feature-tag">Match Score</span></div>
+                    <p class="module-desc">Connects students with perfect internships based on skills, interests, and career goals using intelligent matching algorithms.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Internship Matching</span>
+                        <span class="feature-tag">Match Score</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.15s;">
                     <div class="card-icon"><i class="fas fa-search-minus"></i></div>
                     <h3>Skill Gap Analysis</h3>
-                    <div class="module-desc">Pinpoints missing skills for target roles & priority map.</div>
-                    <div class="feature-tags"><span class="feature-tag">gap identifier</span><span class="feature-tag">priority</span></div>
+                    <p class="module-desc">Identifies missing/weak skills for target roles and prioritizes improvements needed. Compare against market benchmarks and create personalized learning paths.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Gap Analysis</span>
+                        <span class="feature-tag">Priority Mapping</span>
+                        <span class="feature-tag">Market Comparison</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.2s;">
                     <div class="card-icon"><i class="fas fa-road"></i></div>
                     <h3>Personalized Roadmap</h3>
-                    <div class="module-desc">Step‑by‑step learning paths from beginner to advanced.</div>
-                    <div class="feature-tags"><span class="feature-tag">adaptive</span><span class="feature-tag">timeline</span></div>
+                    <p class="module-desc">Step-by-step learning paths from beginner to advanced with time estimates and adaptive progress.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Learning Path</span>
+                        <span class="feature-tag">Adaptive</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.25s;">
                     <div class="card-icon"><i class="fas fa-certificate"></i></div>
                     <h3>Certification Recommendations</h3>
-                    <div class="module-desc">Relevant certs from Coursera, AWS, Google based on demand.</div>
-                    <div class="feature-tags"><span class="feature-tag">industry certs</span><span class="feature-tag">Coursera</span></div>
+                    <p class="module-desc">Suggests relevant certifications from top platforms like Coursera, AWS, Google based on industry demand.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Certifications</span>
+                        <span class="feature-tag">Industry-Recognized</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.3s;">
                     <div class="card-icon"><i class="fas fa-file-alt"></i></div>
                     <h3>Smart Resume Builder</h3>
-                    <div class="module-desc">ATS‑friendly resumes tailored to roles with scoring.</div>
-                    <div class="feature-tags"><span class="feature-tag">ATS optimized</span><span class="feature-tag">auto‑tailor</span></div>
+                    <p class="module-desc">Auto-generates ATS-friendly resumes tailored to specific roles with scoring and improvement tips.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">ATS Optimized</span>
+                        <span class="feature-tag">Auto-Tailoring</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.35s;">
                     <div class="card-icon"><i class="fas fa-code"></i></div>
                     <h3>Technical Assessment Engine</h3>
-                    <div class="module-desc">Role‑specific MCQs with difficulty levels & analytics.</div>
-                    <div class="feature-tags"><span class="feature-tag">MCQ bank</span><span class="feature-tag">performance</span></div>
+                    <p class="module-desc">Role-specific technical MCQs with difficulty levels and real-time performance analytics.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">MCQ Bank</span>
+                        <span class="feature-tag">Analytics</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.4s;">
                     <div class="card-icon"><i class="fas fa-calculator"></i></div>
                     <h3>Aptitude & Reasoning Tests</h3>
-                    <div class="module-desc">Timed quant, logical, verbal tests simulating hiring.</div>
-                    <div class="feature-tags"><span class="feature-tag">timed</span><span class="feature-tag">simulations</span></div>
+                    <p class="module-desc">Timed tests in quantitative aptitude, logical reasoning, and verbal ability simulating real hiring processes.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Aptitude Tests</span>
+                        <span class="feature-tag">Timed Practice</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.45s;">
                     <div class="card-icon"><i class="fas fa-comments"></i></div>
                     <h3>AI Mock Interview System</h3>
-                    <div class="module-desc">HR, technical & behavioral with feedback.</div>
-                    <div class="feature-tags"><span class="feature-tag">AI interviewer</span><span class="feature-tag">feedback</span></div>
+                    <p class="module-desc">AI-driven mock interviews covering HR, technical, and behavioral questions with comprehensive feedback.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">AI Interviews</span>
+                        <span class="feature-tag">Feedback</span>
+                    </div>
                 </div>
+
                 <div class="module-card" style="animation-delay: 0.5s;">
                     <div class="card-icon"><i class="fas fa-chart-line"></i></div>
                     <h3>Progress Tracking & Insights</h3>
-                    <div class="module-desc">Dashboard with skill growth, readiness, career insights.</div>
-                    <div class="feature-tags"><span class="feature-tag">analytics</span><span class="feature-tag">insights</span></div>
+                    <p class="module-desc">Dashboard tracking skill growth, test performance, interview readiness, and career suggestions.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Analytics</span>
+                        <span class="feature-tag">Career Insights</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- stats section -->
+        <!-- Stats Section -->
         <section class="stats-section">
             <div class="main-stat"><h3>50,000+</h3><p>Career Success Stories</p></div>
             <div class="main-stat"><h3>2,500+</h3><p>Partner Companies</p></div>
             <div class="main-stat"><h3>96%</h3><p>User Satisfaction Rate</p></div>
         </section>
 
-        <!-- call to action -->
+        <!-- CTA Section -->
         <section class="cta-section">
             <h2>Ready to Transform Your Career Journey?</h2>
             <p>Join thousands of students and professionals who've landed their dream opportunities with SkillBridge & CareerForge.</p>
@@ -632,7 +666,7 @@
             </div>
         </section>
 
-        <!-- footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-logo">
@@ -650,7 +684,7 @@
     </div>
 
     <script>
-        // subtle interactive effects for buttons
+        // Button interaction effects
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -659,10 +693,11 @@
             });
         });
 
-        // optional counter animation on stats
+        // Stats counter animation
         const stats = document.querySelectorAll('.main-stat h3');
         const statSection = document.querySelector('.stats-section');
         let animated = false;
+        
         window.addEventListener('scroll', () => {
             if (!statSection || animated) return;
             const rect = statSection.getBoundingClientRect();

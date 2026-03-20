@@ -885,6 +885,8 @@
 </head>
 
 <body>
+    <!-- Hidden user ID for JavaScript access -->
+    <input type="hidden" id="currentUserId" value="{{ user.id|default:'anonymous' }}">
     <div class="ai-profiling-unified">
         <div class="container">
             <!-- ========== HEADER (unified) ========== -->
@@ -1514,50 +1516,251 @@
 
         // Simple heuristic-based extraction of skills & certifications from resume text
         async function autoExtractFromResume(text) {
-            if (!text || !window.profileData) return;
+            // Ensure we have text and the global profileData object
+            if (!text || typeof profileData === 'undefined' || !profileData) return;
 
             const lower = text.toLowerCase();
 
-            // Basic skill dictionary – extend as needed
-            const knownSkills = [
-                'python', 'django', 'rest framework', 'javascript', 'typescript', 'react', 'next.js',
-                'html', 'css', 'tailwind', 'bootstrap', 'node.js', 'express', 'java', 'spring',
-                'c++', 'c#', 'sql', 'postgresql', 'mysql', 'mongodb', 'git', 'docker', 'kubernetes',
-                'aws', 'azure', 'gcp', 'machine learning', 'deep learning', 'tensorflow', 'pytorch',
-                'nlp', 'data analysis', 'pandas', 'numpy', 'power bi', 'tableau'
-            ];
+            // Pre-process text to create more meaningful "lines" even if PDF extraction is a single long line
+            let segmented = text;
+            segmented = segmented
+                .replace(/PROJECTS/gi, '\nPROJECTS\n')
+                .replace(/HACKATHONS & EVENTS/gi, '\nHACKATHONS & EVENTS\n')
+                .replace(/INTERNSHIP/gi, '\nINTERNSHIP\n')
+                .replace(/CERTIFICATIONS/gi, '\nCERTIFICATIONS\n')
+                .replace(/E D U C A T I O N/gi, '\nEDUCATION\n')
+                .replace(/AWARDS & ACHIEVEMENT/gi, '\nAWARDS & ACHIEVEMENT\n');
+
+            // Put numbered items like "1." / "2." on their own lines
+            segmented = segmented.replace(/(\s+)(\d+\.\s+)/g, '\n$2');
+
+            const lines = segmented
+                .split(/\r?\n/)
+                .map(l => l.trim())
+                .filter(l => l.length > 0);
+
+            /* ---------- BASIC CONTACT / DETAILS FROM RESUME ---------- */
+            try {
+                const emailMatch = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+                const phoneMatch = text.match(/(\+?\d[\d\s\-]{7,}\d)/);
+
+                // Heuristic: first non-empty line is often the name
+                let firstNonEmpty = lines.find(l => l.trim().length > 0) || '';
+                firstNonEmpty = firstNonEmpty.trim();
+
+                if (!profileData.identity) profileData.identity = {};
+
+                let updatedIdentity = false;
+
+                if (firstNonEmpty && !profileData.identity.fullName) {
+                    profileData.identity.fullName = firstNonEmpty;
+                    updatedIdentity = true;
+                }
+                if (emailMatch && !profileData.identity.email) {
+                    profileData.identity.email = emailMatch[0];
+                    updatedIdentity = true;
+                }
+                if (phoneMatch && !profileData.identity.phoneNumber) {
+                    profileData.identity.phoneNumber = phoneMatch[0].trim();
+                    updatedIdentity = true;
+                }
+
+                if (updatedIdentity) {
+                    // Persist identity update
+                    try {
+                        fetch('/api/save-professional-identity/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                fullName: profileData.identity.fullName || '',
+                                educationLevel: profileData.identity.educationLevel || '',
+                                dateOfBirth: profileData.identity.dateOfBirth || '',
+                                gender: profileData.identity.gender || '',
+                                phoneNumber: profileData.identity.phoneNumber || '',
+                                location: profileData.identity.location || '',
+                                nativeLanguage: profileData.identity.nativeLanguage || '',
+                                linkedin: profileData.identity.linkedin || '',
+                                github: profileData.identity.github || '',
+                                portfolio: profileData.identity.portfolio || '',
+                                resume: profileData.identity.resume || ''
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                }
+            } catch (e) { }
+
+            /* ---------- COMPREHENSIVE TECHNICAL SKILLS (keywords) ---------- */
+            const knownSkills = {
+                // Programming Languages
+                programming: [
+                    'python', 'java', 'javascript', 'typescript', 'c++', 'c#', 'c', 'go', 'rust', 'php', 'ruby', 'swift', 'kotlin', 'scala', 'perl', 'r', 'matlab'
+                ],
+                // Frontend Technologies
+                frontend: [
+                    'react', 'react.js', 'next.js', 'vue', 'vue.js', 'angular', 'svelte', 'html', 'html5', 'css', 'css3', 'sass', 'scss', 'less', 'tailwind', 'tailwind css', 'bootstrap', 'material ui', 'ant design', 'chakra ui', 'webpack', 'vite', 'parcel'
+                ],
+                // Backend Technologies
+                backend: [
+                    'node.js', 'express', 'nestjs', 'fastify', 'django', 'flask', 'spring boot', 'spring', 'laravel', 'rails', 'fiber', 'gin', 'asp.net', 'play framework', 'symfony'
+                ],
+                // Databases
+                database: [
+                    'mysql', 'postgresql', 'mongodb', 'redis', 'elasticsearch', 'sqlite', 'oracle', 'sql server', 'cassandra', 'dynamodb', 'firebase', 'supabase', 'prisma', 'sequelize', 'typeorm', 'mongoose'
+                ],
+                // Cloud & DevOps
+                cloud: [
+                    'aws', 'azure', 'gcp', 'google cloud', 'digitalocean', 'heroku', 'vercel', 'netlify', 'docker', 'kubernetes', 'k8s', 'jenkins', 'github actions', 'gitlab ci', 'terraform', 'ansible', 'puppet', 'chef', 'nginx', 'apache'
+                ],
+                // Mobile Development
+                mobile: [
+                    'react native', 'flutter', 'dart', 'swift', 'kotlin', 'android', 'ios', 'xamarin', 'ionic', 'cordova', 'unity'
+                ],
+                // AI & Machine Learning
+                ai: [
+                    'machine learning', 'deep learning', 'tensorflow', 'pytorch', 'keras', 'scikit-learn', 'nlp', 'natural language processing', 'computer vision', 'opencv', 'pandas', 'numpy', 'jupyter', 'spacy', 'nltk', 'hugging face', 'langchain', 'openai', 'gpt'
+                ],
+                // Data & Analytics
+                data: [
+                    'data analysis', 'data science', 'business intelligence', 'power bi', 'tableau', 'looker', 'excel', 'sql', 'etl', 'data warehouse', 'big data', 'spark', 'hadoop', 'airflow', 'dbt'
+                ],
+                // Testing & QA
+                testing: [
+                    'jest', 'mocha', 'jasmine', 'karma', 'cypress', 'playwright', 'selenium', 'pytest', 'unit testing', 'integration testing', 'e2e testing', 'tdd', 'bdd'
+                ],
+                // Tools & Others
+                tools: [
+                    'git', 'github', 'gitlab', 'bitbucket', 'linux', 'ubuntu', 'windows', 'macos', 'bash', 'shell', 'powershell', 'regex', 'json', 'xml', 'yaml', 'markdown', 'api', 'rest', 'graphql', 'grpc', 'websocket', 'microservices', 'monolith', 'agile', 'scrum', 'devops', 'ci/cd'
+                ]
+            };
 
             const newSkills = [];
             const existingSkillNames = new Set(
                 (profileData.skills || []).map(s => (s.name || '').toLowerCase())
             );
 
-            knownSkills.forEach(skillName => {
-                if (lower.includes(skillName.toLowerCase()) && !existingSkillNames.has(skillName.toLowerCase())) {
-                    const prettyName = skillName
-                        .split(' ')
-                        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-                        .join(' ');
-                    newSkills.push({
-                        name: prettyName,
-                        type: 'technical',
-                        proficiency: 'intermediate',
-                        years: 0,
-                        source: 'resume_extractor'
+            // Enhanced skill extraction with categorization
+            Object.entries(knownSkills).forEach(([category, skills]) => {
+                skills.forEach(skillName => {
+                    // Check for exact match and variations
+                    const variations = [
+                        skillName.toLowerCase(),
+                        skillName.replace(/\./g, '').toLowerCase(),
+                        skillName.replace(/\s+/g, '').toLowerCase()
+                    ];
+                    
+                    const found = variations.some(variation => {
+                        // Check for whole word match
+                        const regex = new RegExp(`\\b${variation.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+                        return regex.test(lower);
                     });
-                    existingSkillNames.add(skillName.toLowerCase());
+
+                    if (found && !existingSkillNames.has(skillName.toLowerCase())) {
+                        const prettyName = skillName
+                            .replace(/\s+/g, ' ')
+                            .trim()
+                            .split(' ')
+                            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                            .join(' ');
+                        
+                        // Determine proficiency based on context
+                        let proficiency = 'intermediate';
+                        if (category === 'programming' || category === 'ai') {
+                            proficiency = 'intermediate';
+                        } else if (category === 'tools') {
+                            proficiency = 'advanced';
+                        }
+
+                        newSkills.push({
+                            name: prettyName,
+                            type: 'technical',
+                            proficiency: proficiency,
+                            years: 0,
+                            source: 'resume_extractor',
+                            category: category
+                        });
+                        existingSkillNames.add(skillName.toLowerCase());
+                    }
+                });
+            });
+
+            /* ---------- PROJECT-BASED SKILL EXTRACTION ---------- */
+            const projectSkills = [];
+            
+            // Extract skills from project descriptions
+            const projectKeywords = ['tools/tech', 'technologies:', 'tech stack:', 'built with:', 'using:', 'skills:'];
+            
+            projectKeywords.forEach(keyword => {
+                const keywordIndex = lower.indexOf(keyword);
+                if (keywordIndex !== -1) {
+                    const afterKeyword = text.slice(keywordIndex + keyword.length);
+                    const lines = afterKeyword.split(/\r?\n/).slice(0, 3);
+                    
+                    lines.forEach(line => {
+                        const techStack = line.split(/[,\/|&]/).map(item => item.trim()).filter(item => item.length > 2);
+                        
+                        techStack.forEach(tech => {
+                            const cleanTech = tech.replace(/[^\w\s.-]/g, '').trim();
+                            if (cleanTech.length > 2 && !existingSkillNames.has(cleanTech.toLowerCase())) {
+                                projectSkills.push({
+                                    name: cleanTech,
+                                    type: 'technical',
+                                    proficiency: 'intermediate',
+                                    years: 0,
+                                    source: 'project_extracted',
+                                    category: 'project'
+                                });
+                                existingSkillNames.add(cleanTech.toLowerCase());
+                            }
+                        });
+                    });
                 }
             });
 
-            // Heuristic for certifications: lines containing "certificate" / "certification" / "Certified"
-            const lines = text.split(/\r?\n/);
+            // Combine all skills
+            const extractedSkills = [...newSkills, ...projectSkills];
+
+            /* ---------- SOFT SKILLS SECTION ---------- */
+            const newSoftSkills = [];
+            const softIndex = lower.indexOf('soft skills');
+            if (softIndex !== -1) {
+                const afterSoft = text.slice(softIndex).split(/\r?\n/).slice(0, 10);
+                const softExisting = new Set(
+                    (profileData.skills || [])
+                        .filter(s => s.type === 'soft')
+                        .map(s => (s.name || '').toLowerCase())
+                );
+                afterSoft.forEach(l => {
+                    const clean = l.replace(/S O F T S K I L L S/gi, '').trim();
+                    if (!clean) return;
+                    // Split by two or more spaces or bullet-like separators
+                    const parts = clean.split(/\s{2,}|,|•|-/).map(p => p.trim()).filter(Boolean);
+                    parts.forEach(p => {
+                        if (p.length < 3) return;
+                        const key = p.toLowerCase();
+                        if (softExisting.has(key)) return;
+                        softExisting.add(key);
+                        newSoftSkills.push({
+                            name: p.toUpperCase() === p ? p.replace(/\s+/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : p,
+                            type: 'soft',
+                            proficiency: 'intermediate',
+                            years: 0,
+                            source: 'resume_extractor'
+                        });
+                    });
+                });
+            }
+
+            /* ---------- CERTIFICATIONS (lines with certificate/certification) ---------- */
             const newCerts = [];
             const existingCertNames = new Set(
                 (profileData.certifications || []).map(c => (c.name || '').toLowerCase())
             );
 
             lines.forEach(rawLine => {
-                const line = rawLine.trim();
+                const line = rawLine.trim().replace(/\s{2,}/g, ' ');
                 const lowerLine = line.toLowerCase();
                 if (!line) return;
                 if (
@@ -1565,7 +1768,6 @@
                     lowerLine.includes('certification') ||
                     lowerLine.includes('certified ')
                 ) {
-                    // Avoid duplicates and very short noise lines
                     if (line.length < 6) return;
                     const key = line.toLowerCase();
                     if (existingCertNames.has(key)) return;
@@ -1581,11 +1783,117 @@
                 }
             });
 
-            // Persist new skills and certs: update local UI immediately, then fire-and-forget API calls
-            if (newSkills.length) {
-                newSkills.forEach(skill => {
+            /* ---------- EDUCATION (college / school lines) ---------- */
+            const newEdu = [];
+            const existingEduKeys = new Set(
+                (profileData.education || []).map(e => ((e.institution || '') + '|' + (e.fieldOfStudy || '')).toLowerCase())
+            );
+
+            lines.forEach(rawLine => {
+                const line = rawLine.trim().replace(/\s{2,}/g, ' ');
+                const lowerLine = line.toLowerCase();
+                if (!line) return;
+
+                if (lowerLine.includes('college') || lowerLine.includes('school') || lowerLine.includes('university')) {
+                    let degreeType = '';
+                    let fieldOfStudy = '';
+
+                    if (lowerLine.includes('be') || lowerLine.includes('b.e') || lowerLine.includes('b.tech')) {
+                        degreeType = "Bachelor's";
+                    }
+
+                    const key = (line + '|' + fieldOfStudy).toLowerCase();
+                    if (existingEduKeys.has(key)) return;
+                    existingEduKeys.add(key);
+
+                    newEdu.push({
+                        degreeType: degreeType || 'Education',
+                        fieldOfStudy: fieldOfStudy || '',
+                        institution: line,
+                        gradYear: '',
+                        gpa: null,
+                        description: 'Auto-extracted from resume'
+                    });
+                }
+            });
+
+            /* ---------- PROJECTS SECTION ---------- */
+            const newProjects = [];
+            const lowerLines = lines.map(l => l.toLowerCase());
+            let projStartIdx = lowerLines.findIndex(l => l.includes('projects'));
+            if (projStartIdx !== -1) {
+                for (let i = projStartIdx; i < Math.min(lines.length, projStartIdx + 30); i++) {
+                    const l = lines[i].trim().replace(/\s{2,}/g, ' ');
+                    // Match "1.  Leaf Disease Prediction ... – ..." pattern
+                    const m = l.match(/^\d+\.\s*(.+?)\s+[–-]\s*(.+)$/);
+                    if (m) {
+                        const name = m[1].trim();
+                        const tech = m[2].trim();
+                        if (!name) continue;
+                        const exists = (profileData.projects || []).some(p => (p.name || '').toLowerCase() === name.toLowerCase());
+                        if (exists) continue;
+                        newProjects.push({
+                            name: name,
+                            description: tech,
+                            startDate: '',
+                            endDate: null,
+                            techStack: tech
+                        });
+                    }
+                }
+            }
+
+            /* ---------- INTERNSHIPS (treated as projects with tag) ---------- */
+            const newInternships = [];
+            lines.forEach(rawLine => {
+                const line = rawLine.trim().replace(/\s{2,}/g, ' ');
+                const ll = line.toLowerCase();
+                if (!line) return;
+                if (ll.includes('internship')) {
+                    const name = line;
+                    const exists = (profileData.projects || []).some(
+                        p => (p.name || '').toLowerCase() === name.toLowerCase()
+                    );
+                    if (!exists) {
+                        newInternships.push({
+                            name: name,
+                            description: 'Internship (auto-extracted)',
+                            startDate: '',
+                            endDate: null,
+                            techStack: 'Internship'
+                        });
+                    }
+                }
+            });
+
+            /* ---------- LANGUAGES SECTION ---------- */
+            const newLanguages = [];
+            const langIndex = lowerLines.findIndex(l => l.includes('language') || l.includes('l a n g u a g e s'));
+            if (langIndex !== -1) {
+                const existingLangs = new Set(
+                    (profileData.languages || []).map(l => (l.name || '').toLowerCase())
+                );
+                for (let i = langIndex; i < Math.min(lines.length, langIndex + 8); i++) {
+                    const raw = lines[i].trim();
+                    const m = raw.match(/(english|tamil|hindi|telugu|kannada|malayalam|french|german|spanish)/i);
+                    if (m) {
+                        const name = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
+                        if (existingLangs.has(name.toLowerCase())) continue;
+                        existingLangs.add(name.toLowerCase());
+                        newLanguages.push({
+                            name: name,
+                            proficiency: 'fluent'
+                        });
+                    }
+                }
+            }
+
+            /* ---------- Persist and update UI / DB ---------- */
+            // Skills (technical + soft + project)
+            const allNewSkills = [...newSkills, ...newSoftSkills, ...projectSkills];
+            if (allNewSkills.length) {
+                allNewSkills.forEach(skill => {
                     profileData.skills.push(skill);
-                    // Save to backend
                     try {
                         fetch('/api/add-skill/', {
                             method: 'POST',
@@ -1606,10 +1914,10 @@
                 });
             }
 
+            // Certifications
             if (newCerts.length) {
                 newCerts.forEach(cert => {
                     profileData.certifications.push(cert);
-                    // Save to backend
                     try {
                         fetch('/api/add-certification/', {
                             method: 'POST',
@@ -1631,11 +1939,112 @@
                 });
             }
 
+            // Education
+            if (newEdu.length) {
+                newEdu.forEach(edu => {
+                    profileData.education.push(edu);
+                    try {
+                        fetch('/api/add-education/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                degree_type: edu.degreeType,
+                                field_of_study: edu.fieldOfStudy,
+                                school_name: edu.institution,
+                                graduation_year: edu.gradYear || null,
+                                gpa: edu.gpa,
+                                description: edu.description
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                });
+            }
+
+            // Projects
+            if (newProjects.length) {
+                newProjects.forEach(proj => {
+                    profileData.projects.push(proj);
+                    try {
+                        fetch('/api/add-project/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                project_name: proj.name,
+                                description: proj.description,
+                                start_date: proj.startDate || null,
+                                end_date: proj.endDate,
+                                is_active: false,
+                                project_url: '',
+                                github_url: '',
+                                team_size: null,
+                                impact: ''
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                });
+            }
+
+            // Internships as projects
+            if (newInternships.length) {
+                newInternships.forEach(proj => {
+                    profileData.projects.push(proj);
+                    try {
+                        fetch('/api/add-project/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                project_name: proj.name,
+                                description: proj.description,
+                                start_date: proj.startDate || null,
+                                end_date: proj.endDate,
+                                is_active: false,
+                                project_url: '',
+                                github_url: '',
+                                team_size: null,
+                                impact: ''
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                });
+            }
+
+            // Languages
+            if (newLanguages.length) {
+                newLanguages.forEach(lang => {
+                    profileData.languages.push(lang);
+                    try {
+                        fetch('/api/add-language/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': (typeof getCookie === 'function') ? getCookie('csrftoken') : ''
+                            },
+                            body: JSON.stringify({
+                                language_name: lang.name,
+                                proficiency_level: lang.proficiency
+                            })
+                        }).catch(() => { });
+                    } catch (e) { }
+                });
+            }
+
             // Update local storage + stats + rendered sections
-            if (newSkills.length || newCerts.length) {
+            if (allNewSkills.length || newCerts.length || newEdu.length || newProjects.length || newInternships.length || newLanguages.length) {
                 saveProfileData();
                 renderSkills();
                 renderCertifications();
+                renderEducation();
+                renderProjects();
+                renderLanguages();
                 updateStats();
 
                 // Update auto-extract summary card in Extraction tab
@@ -1649,11 +2058,11 @@
                 if (summaryCard && skillBadge && certBadge && skillCountSpan && certCountSpan && listsContainer) {
                     let html = '';
 
-                    if (newSkills.length) {
+                    if (allNewSkills.length) {
                         skillBadge.style.display = 'inline-flex';
-                        skillCountSpan.textContent = newSkills.length;
+                        skillCountSpan.textContent = allNewSkills.length;
                         html += `<div><h4 style="margin-bottom:6px; color:#1e293b;"><i class="fas fa-star" style="color:#7C3AED;"></i> Skills</h4>`;
-                        newSkills.forEach(s => {
+                        allNewSkills.forEach(s => {
                             html += `<div style="background:#EEF2FF; border-radius:8px; padding:6px 10px; margin-bottom:4px; font-size:0.9rem;">${s.name}</div>`;
                         });
                         html += `</div>`;
@@ -1673,11 +2082,38 @@
                         certBadge.style.display = 'none';
                     }
 
+                    if (newProjects.length || newInternships.length) {
+                        html += `<div><h4 style="margin-bottom:6px; color:#1e293b;"><i class="fas fa-code-branch" style="color:#22C55E;"></i> Projects</h4>`;
+                        [...newProjects, ...newInternships].forEach(p => {
+                            html += `<div style="background:#ECFDF5; border-radius:8px; padding:6px 10px; margin-bottom:4px; font-size:0.9rem;">${p.name}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+
+                    if (newEdu.length) {
+                        html += `<div><h4 style="margin-bottom:6px; color:#1e293b;"><i class="fas fa-graduation-cap" style="color:#6366F1;"></i> Education</h4>`;
+                        newEdu.forEach(e => {
+                            html += `<div style="background:#EEF2FF; border-radius:8px; padding:6px 10px; margin-bottom:4px; font-size:0.9rem;">${e.institution}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+
+                    if (newLanguages.length) {
+                        html += `<div><h4 style="margin-bottom:6px; color:#1e293b;"><i class="fas fa-language" style="color:#06B6D4;"></i> Languages</h4>`;
+                        newLanguages.forEach(l => {
+                            html += `<div style="background:#ECFEFF; border-radius:8px; padding:6px 10px; margin-bottom:4px; font-size:0.9rem;">${l.name}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+
                     listsContainer.innerHTML = html || '<p style="color:#6b7280;">No new items detected.</p>';
                     summaryCard.style.display = 'block';
 
                     if (typeof showAlert === 'function') {
-                        showAlert(`Auto-extracted ${newSkills.length} skills and ${newCerts.length} certifications from your resume.`, 'success');
+                        showAlert(
+                            `Auto-extracted ${allNewSkills.length} skills, ${newCerts.length} certifications, ${newProjects.length + newInternships.length} projects/internships, ${newEdu.length} education entries and ${newLanguages.length} languages from your resume.`,
+                            'success'
+                        );
                     }
                 }
             }
@@ -1715,10 +2151,41 @@
             syncHistory: []
         };
 
+        // Get user-specific localStorage key
+        function getUserStorageKey() {
+            // Try to get user ID from template context or fall back to a session identifier
+            const userIdElement = document.getElementById('currentUserId');
+            const userId = userIdElement ? userIdElement.value : 'anonymous';
+            return `aiProfileUnified_${userId}`;
+        }
+
+        // Check if user has changed and clear data if needed
+        function checkUserChange() {
+            const currentKey = getUserStorageKey();
+            const lastUserKey = localStorage.getItem('lastProfileUser');
+            
+            if (lastUserKey && lastUserKey !== currentKey) {
+                // User has changed, clear old user's data
+                localStorage.removeItem(lastUserKey);
+                console.log('Cleared previous user data');
+            }
+            
+            // Store current user key
+            localStorage.setItem('lastProfileUser', currentKey);
+        }
+
         // load from localStorage
         function loadProfileData() {
-            const saved = localStorage.getItem('aiProfileUnified');
-            if (saved) { profileData = JSON.parse(saved); renderAllSections(); updateStats(); }
+            // Check for user change first
+            checkUserChange();
+            
+            const storageKey = getUserStorageKey();
+            const saved = localStorage.getItem(storageKey);
+            if (saved) { 
+                profileData = JSON.parse(saved); 
+                renderAllSections(); 
+                updateStats(); 
+            }
             
             // Also load professional identity from backend
             fetch('/api/get-professional-identity/')
@@ -1881,7 +2348,8 @@
             }
         }
         function saveProfileData() {
-            localStorage.setItem('aiProfileUnified', JSON.stringify(profileData));
+            const storageKey = getUserStorageKey();
+            localStorage.setItem(storageKey, JSON.stringify(profileData));
             updateStats();
         }
 
@@ -2336,12 +2804,6 @@
 
         // init
         loadProfileData();
-        // populate extraction table with mock if empty
-        if (profileData.skills.length === 0) {
-            profileData.skills.push({ name: 'Python', type: 'technical', proficiency: 'advanced', context: 'Built APIs', source: 'resume' });
-            profileData.skills.push({ name: 'Docker', type: 'technical', proficiency: 'intermediate', context: 'Containerized apps', source: 'resume' });
-            saveProfileData();
-        }
         renderAllSections();
         updateNavButtons();
     </script>

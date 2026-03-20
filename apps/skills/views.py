@@ -48,26 +48,43 @@ def skill_gap_page(request):
     
     user = request.user
     
-    # Get user's skills
+    # Get user's skills with proficiency mapping
     user_skills = UserSkill.objects.filter(user=user).select_related('skill')
-    user_skills_data = [
-        {
-            'id': us.id,
-            'name': us.skill.name,
-            'proficiency': us.proficiency_level,
-            'endorsements': us.endorsement_count or 0,
-            'category': us.skill.category or 'General'
-        }
-        for us in user_skills
-    ]
     
-    # Get skill categories
-    categories = set(s.get('category', 'General') for s in user_skills_data)
-    categories_data = sorted(list(categories))
+    # Map proficiency levels to the format expected by frontend
+    proficiency_map = {
+        'beginner': 'beginner',
+        'intermediate': 'intermediate', 
+        'advanced': 'advanced',
+        'expert': 'advanced'
+    }
+    
+    user_skills_data = {}
+    for us in user_skills:
+        user_skills_data[us.skill.name] = {
+            'level': proficiency_map.get(us.proficiency_level, 'beginner'),
+            'proficiency': us.proficiency_level,
+            'endorsements': 0,  # Default endorsement count
+            'category': us.skill.category.name if us.skill.category else 'General'
+        }
+    
+    # Get available roles and their requirements (in real app, this would come from database)
+    available_roles = [
+        {'key': 'fullstack', 'name': 'Full Stack Developer'},
+        {'key': 'frontend', 'name': 'Frontend Developer'},
+        {'key': 'backend', 'name': 'Backend Developer'},
+        {'key': 'data-scientist', 'name': 'Data Scientist'},
+        {'key': 'devops', 'name': 'DevOps Engineer'},
+        {'key': 'mobile', 'name': 'Mobile App Developer'},
+        {'key': 'ml-engineer', 'name': 'Machine Learning Engineer'},
+        {'key': 'product-manager', 'name': 'Product Manager'},
+        {'key': 'ui-ux', 'name': 'UI/UX Designer'}
+    ]
     
     context = {
         'user_skills_json': json.dumps(user_skills_data),
-        'categories_json': json.dumps(categories_data)
+        'available_roles_json': json.dumps(available_roles),
+        'user': user
     }
     return render(request, 'core/skillgap.html', context)
 

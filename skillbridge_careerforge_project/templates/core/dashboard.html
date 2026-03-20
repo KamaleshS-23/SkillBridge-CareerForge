@@ -982,13 +982,11 @@
                     <span>& CareerForge</span>
                 </div>
             </a>
-            <p class="sidebar-tagline">AI-powered platform that bridges skill gaps and forges career paths through
-                intelligent matching, personalized learning, and comprehensive preparation.</p>
-        </div>
+            </div>
 
-        <h2 class="features-title">
+        <h3 class="features-title">
             <i class="fas fa-star"></i> 10 Core Features
-        </h2>
+        </h3>
 
         <ul class="features-list">
             <!-- Feature 1 && AI Profiling Access -->
@@ -999,16 +997,11 @@
                         <div class="feature-number" style="color: var(--accent);">
                             <i class="fas fa-rocket"></i> 01 Quick Access
                         </div>
-                        <h3 style="margin-bottom: 8px;">
+                        <h4 style="margin-bottom: 8px;">
                             Build AI Profile & AI Skill Profiling
                             <i class="fas fa-brain feature-icon"></i>
-                        </h3>
-                        <p>Complete your comprehensive professional profile with LinkedIn, GitHub, and resume
-                            integration.
-                            AI analyzes resumes or manual inputs to extract and assess technical, soft, and domain
-                            skills with
-                            proficiency estimation.</p>
-                        <span class="feature-tag">Resume Parsing</span>
+                        </h4>
+                        
                     </div>
                     <button onclick="loadProfilePage(); return false;" title="Open Profile" style="
                         background: var(--primary);
@@ -1031,18 +1024,35 @@
                 </div>
             </li>
             <!-- Feature 2 -->
-            <li class="feature-item" data-feature="2">
-                <div class="feature-number">02</div>
-                <h3>
-                    Smart Internship Provider
-                    <i class="fas fa-handshake feature-icon"></i>
-                </h3>
-                <p>Connects students with perfect internships based on skills, interests, and career goals using
-                    intelligent matching algorithms.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Internship Matching</span>
-                    <span class="feature-tag">Match Score</span>
+            <li class="feature-item" data-feature="2" style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number">02</div>
+                        <h4 style="margin-bottom: 8px;">
+                            Smart Internship Provider
+                            <i class="fas fa-handshake feature-icon"></i>
+                        </h4>
+                        
+                    </div>
                 </div>
+                <button onclick="loadInternshipPage(); return false;" title="Open Internship Finder" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </li>
 
             <!-- Feature 3 -->
@@ -1050,16 +1060,11 @@
                 <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
                     <div style="flex: 1;">
                         <div class="feature-number">03</div>
-                        <h3 style="margin-bottom: 8px;">
+                        <h4 style="margin-bottom: 8px;">
                             Skill Gap Analysis
                             <i class="fas fa-search-minus feature-icon"></i>
-                        </h3>
-                        <p>Identifies missing/weak skills for target roles and prioritizes improvements needed. Compare against market benchmarks and create personalized learning paths.</p>
-                        <div class="feature-tags">
-                            <span class="feature-tag">Gap Analysis</span>
-                            <span class="feature-tag">Priority Mapping</span>
-                            <span class="feature-tag">Market Comparison</span>
-                        </div>
+                        </h4>
+                        
                     </div>
                 </div>
                 <button onclick="loadSkillGapPage(); return false;" title="Open Skill Gap Analysis" style="
@@ -1085,107 +1090,97 @@
             <!-- Feature 4 -->
             <li class="feature-item" data-feature="4">
                 <div class="feature-number">04</div>
-                <h3>
+                <h4>
                     Personalized Roadmap
                     <i class="fas fa-road feature-icon"></i>
-                </h3>
-                <p>Step-by-step learning paths from beginner to advanced with time estimates and adaptive progress.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Learning Path</span>
-                    <span class="feature-tag">Adaptive</span>
-                </div>
+                </h4>
+                
             </li>
 
             <!-- Feature 5 -->
             <li class="feature-item" data-feature="5">
                 <div class="feature-number">05</div>
-                <h3>
+                <h4>
                     Certification Recommendations
                     <i class="fas fa-certificate feature-icon"></i>
-                </h3>
-                <p>Suggests relevant certifications from top platforms like Coursera, AWS, Google based on industry
-                    demand.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Certifications</span>
-                    <span class="feature-tag">Industry-Recognized</span>
-                </div>
+                </h4>
+                
             </li>
 
             <!-- Feature 6 -->
             <li class="feature-item" data-feature="6">
                 <div class="feature-number">06</div>
-                <h3>
+                <h4>
                     Smart Resume Builder
                     <i class="fas fa-file-alt feature-icon"></i>
-                </h3>
-                <p>Auto-generates ATS-friendly resumes tailored to specific roles with scoring and improvement tips.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">ATS Optimized</span>
-                    <span class="feature-tag">Auto-Tailoring</span>
-                </div>
+                </h4>
+                
             </li>
 
             <!-- Feature 7 -->
             <li class="feature-item" data-feature="7">
                 <div class="feature-number">07</div>
-                <h3>
+                <h4>
                     Technical Assessment Engine
                     <i class="fas fa-code feature-icon"></i>
-                </h3>
-                <p>Role-specific technical MCQs with difficulty levels and real-time performance analytics.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">MCQ Bank</span>
-                    <span class="feature-tag">Analytics</span>
-                </div>
+                </h4>
+                
             </li>
 
             <!-- Feature 8 -->
             <li class="feature-item" data-feature="8">
                 <div class="feature-number">08</div>
-                <h3>
+                <h4>
                     Aptitude & Reasoning Tests
                     <i class="fas fa-calculator feature-icon"></i>
-                </h3>
-                <p>Timed tests in quantitative aptitude, logical reasoning, and verbal ability simulating real hiring
-                    processes.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Aptitude Tests</span>
-                    <span class="feature-tag">Timed Practice</span>
-                </div>
+                </h4>
+                
             </li>
 
             <!-- Feature 9 -->
             <li class="feature-item" data-feature="9">
                 <div class="feature-number">09</div>
-                <h3>
+                <h4>
                     AI Mock Interview System
                     <i class="fas fa-comments feature-icon"></i>
-                </h3>
-                <p>AI-driven mock interviews covering HR, technical, and behavioral questions with comprehensive
-                    feedback.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">AI Interviews</span>
-                    <span class="feature-tag">Feedback</span>
-                </div>
+                </h4>
+                
             </li>
 
             <!-- Feature 10 -->
-            <li class="feature-item" data-feature="10">
-                <div class="feature-number">10</div>
-                <h3>
-                    Progress Tracking & Insights
-                    <i class="fas fa-chart-line feature-icon"></i>
-                </h3>
-                <p>Dashboard tracking skill growth, test performance, interview readiness, and career suggestions.</p>
-                <div class="feature-tags">
-                    <span class="feature-tag">Analytics</span>
-                    <span class="feature-tag">Career Insights</span>
+            <li class="feature-item" data-feature="10" style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number">10</div>
+                        <h4 style="margin-bottom: 8px;">
+                            Progress Tracking & Insights
+                            <i class="fas fa-chart-line feature-icon"></i>
+                        </h4>
+                        
+                    </div>
                 </div>
+                <button onclick="loadProgressPage(); return false;" title="Open Progress Tracking" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </li>
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <!-- Header with User Email Display (dynamic from Django context) -->
         <header class="main-header">
@@ -1628,13 +1623,323 @@
 
         // Skill Gap Analysis Page Integration
         function loadSkillGapPage() {
-            // Navigate directly to the skill gap analysis page
-            window.location.href = '/skill-gap-analysis/';
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Skill Gap Analysis...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the skill gap page content
+            fetch('/skills/skill-gap/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Skill Gap page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Analysis</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the skill gap analysis page. Please try again.</p><button class="btn btn-primary" onclick="loadSkillGapPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="3"]');
+            if(featureTab) featureTab.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                if(mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if(icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
         }
 
         function closeSkillGapPage() {
-            // Navigate back to dashboard
-            window.location.href = '/dashboard/';
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+                document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                    cta.style.display = 'flex';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                const featureTab = document.querySelector('[data-feature="3"]');
+                if(featureTab) featureTab.classList.remove('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        // Internship Finder Page Integration
+        function loadInternshipPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Internship Finder...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the internship finder page content
+            fetch('/internship-finder/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Internship Finder page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Internship Finder</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the internship finder page. Please try again.</p><button class="btn btn-primary" onclick="loadInternshipPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="2"]');
+            if(featureTab) featureTab.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                if(mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if(icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function closeInternshipPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+                document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                    cta.style.display = 'flex';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                const featureTab = document.querySelector('[data-feature="2"]');
+                if(featureTab) featureTab.classList.remove('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        // Progress Tracking Page Integration
+        function loadProgressPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Progress Tracking...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the progress tracking page content
+            fetch('/progress-tracking/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Progress Tracking page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Progress Tracking</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the progress tracking page. Please try again.</p><button class="btn btn-primary" onclick="loadProgressPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="10"]');
+            if(featureTab) featureTab.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                if(mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if(icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function closeProgressPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+                document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                    cta.style.display = 'flex';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                const featureTab = document.querySelector('[data-feature="10"]');
+                if(featureTab) featureTab.classList.remove('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
         }
 
         // Profile Page Integration
@@ -1719,9 +2024,12 @@
                 // Hide profiling container
                 profilingContainer.style.display = 'none';
 
-                // Clear active state
-                document.querySelector('[data-feature="profiling"]').classList.remove('active');
-                document.querySelector('[data-feature="1"]').classList.add('active');
+                // Clear active state safely
+                const currentActive = document.querySelector('[data-feature="profiling"]');
+                if(currentActive) currentActive.classList.remove('active');
+                
+                const defaultActive = document.querySelector('[data-feature="profiling"]'); // restoring to first item
+                if(defaultActive) defaultActive.classList.add('active');
 
                 // Scroll to top
                 window.scrollTo(0, 0);
