@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Certification Recommendations - SkillBridge{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+<div class="cert-container">
+
+    <!-- Header -->
+    <div class="cert-header">
+        <h1><i class="fas fa-certificate"></i> Certification Recommendations</h1>
+        <p>Industry-recognized certifications from top platforms based on current market demand</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" id="total-count">{{ total_certifications|default:"0" }}</div>
+            <div class="stat-label"><i class="fas fa-award"></i> Total Certifications</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="active-count">{{ active_certifications|default:"0" }}</div>
+            <div class="stat-label"><i class="fas fa-check-circle"></i> Active & Synced</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="provider-count">{{ providers_count|default:"0" }}</div>
+            <div class="stat-label"><i class="fas fa-building"></i> Platforms</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="last-sync-display" style="font-size: 1.1rem; padding-top: 10px;">
+                {{ last_sync|default:"Never" }}
+            </div>
+            <div class="stat-label"><i class="fas fa-sync-alt"></i> Last Sync</div>
+        </div>
+    </div>
+
+    <!-- Sync Controls -->
+    <div class="sync-section">
+        <h3><i class="fas fa-sync-alt" style="color: var(--primary); margin-right: 8px;"></i>Sync Certifications</h3>
+        <div class="sync-buttons">
+            <button class="sync-btn sync-btn-primary" onclick="syncAllProviders()">
+                <i class="fas fa-sync-alt"></i> Sync All Platforms
+            </button>
+            <button class="sync-btn sync-btn-secondary" onclick="syncWithForce()">
+                <i class="fas fa-redo"></i> Force Full Sync
+            </button>
+            <button class="sync-btn sync-btn-danger" onclick="clearAllCache()">
+                <i class="fas fa-trash-alt"></i> Clear Cache
+            </button>
+        </div>
+
+        <!-- Provider Status Grid -->
+        <div class="provider-grid" id="provider-grid">
+            {% for provider in providers %}
+            <div class="provider-card">
+                <div class="provider-status">
+                    <span class="provider-name">{{ provider.name }}</span>
+                    <span class="status-dot {{ provider.status }}"></span>
+                </div>
+                <p class="provider-info"><i class="fas fa-award"></i> <strong>{{ provider.count }}</strong> certifications</p>
+                <p class="provider-info"><i class="fas fa-clock"></i> Updated: {{ provider.last_updated|default:"Never" }}</p>
+                <button class="provider-sync-btn" onclick="syncProvider('{{ provider.key }}')">
+                    <i class="fas fa-sync"></i> Sync {{ provider.name }}
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Sync Log -->
+        <div class="sync-log" id="sync-log" style="margin-top: 20px;">
+            <div class="log-entry info">&#9654; Ready to sync certifications from industry platforms...</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-section">
+        <span class="filter-label"><i class="fas fa-filter"></i> Filter:</span>
+        <select class="filter-select" id="domain-filter" onchange="filterCertifications()">
+            <option value="">All Domains</option>
+            <option value="Cloud Computing">☁️ Cloud Computing</option>
+            <option value="Data Science">📊 Data Science</option>
+            <option value="AI & Machine Learning">🤖 AI & Machine Learning</option>
+            <option value="Cybersecurity">🔒 Cybersecurity</option>
+            <option value="DevOps">🚀 DevOps</option>
+            <option value="Software Development">💻 Software Development</option>
+            <option value="Project Management">📋 Project Management</option>
+            <option value="Networking">🌐 Networking</option>
+        </select>
+        <select class="filter-select" id="provider-filter" onchange="filterCertifications()">
+            <option value="">All Platforms</option>
+            <option value="coursera">Coursera</option>
+            <option value="aws">AWS</option>
+            <option value="google">Google</option>
+            <option value="microsoft">Microsoft</option>
+            <option value="cisco">Cisco</option>
+        </select>
+        <select class="filter-select" id="difficulty-filter" onchange="filterCertifications()">
+            <option value="">All Levels</option>
+            <option value="beginner">🟢 Beginner</option>
+            <option value="intermediate">🟡 Intermediate</option>
+            <option value="advanced">🔴 Advanced</option>
+        </select>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="section-header">
+        <i class="fas fa-star" style="color: #F59E0B; font-size: 1.5rem;"></i>
+        <h2>Recommended Certifications</h2>
+        <span class="badge">Based on industry demand</span>
+    </div>
+
+    <div class="recommendation-grid" id="recommendation-grid">
+        {% for cert in recommendations %}
+        <div class="recommendation-card"
+             data-domain="{{ cert.domain }}"
+             data-provider="{{ cert.provider }}"
+             data-difficulty="{{ cert.difficulty_level }}">
+            <div class="card-header">
+                <span class="card-badge">
+                    {% if cert.demand_score >= 90 %}🔥 Hot
+                    {% elif cert.demand_score >= 70 %}📈 Trending
+                    {% else %}🎯 Recommended{% endif %}
+                </span>
+                <span class="provider-icon">
+                    {% if cert.provider == 'aws' %}<i class="fab fa-aws"></i>
+                    {% elif cert.provider == 'google' %}<i class="fab fa-google"></i>
+                    {% elif cert.provider == 'microsoft' %}<i class="fab fa-microsoft"></i>
+                    {% elif cert.provider == 'coursera' %}<i class="fas fa-graduation-cap"></i>
+                    {% elif cert.provider == 'cisco' %}<i class="fas fa-network-wired"></i>
+                    {% else %}<i class="fas fa-certificate"></i>{% endif %}
+                </span>
+                <h3>{{ cert.name }}</h3>
+                <div class="domain-tag">{{ cert.domain }}</div>
+            </div>
+            <div class="card-body">
+                <p class="description">{{ cert.description|truncatewords:30 }}</p>
+                <div class="meta-row">
+                    <span class="difficulty difficulty-{{ cert.difficulty_level }}">
+                        {{ cert.get_difficulty_level_display }}
+                    </span>
+                    <span class="meta-item"><i class="fas fa-clock"></i> {{ cert.duration }}</span>
+                    <span class="meta-item"><i class="fas fa-star" style="color:#FFD700;"></i> {{ cert.rating }}</span>
+                </div>
+                <div class="demand-bar-row">
+                    <span>Industry Demand</span>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: {{ cert.demand_score }}%"></div>
+                    </div>
+                    <span class="score-value">{{ cert.demand_score }}%</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ cert.registration_url }}" target="_blank" class="enroll-btn">
+                    <i class="fas fa-external-link-alt"></i> Enroll Now
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state" style="grid-column: 1 / -1;">
+            <i class="fas fa-database"></i>
+            <h3>No Certifications Yet</h3>
+            <p>Click <strong>"Sync All Platforms"</strong> above to load certifications from industry providers.</p>
+            <p style="font-size: 0.85rem; color: #94A3B8; margin-top: 5px;">Coursera · AWS · Google · Microsoft · Cisco</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let v = null;
+    if (document.cookie) {
+        document.cookie.split(';').forEach(c => {
+            c = c.trim();
+            if (c.startsWith(name + '=')) v = decodeURIComponent(c.slice(name.length + 1));
+        });
+    }
+    return v;
+}
+
+function addLog(msg, type = 'info') {
+    const log = document.getElementById('sync-log');
+    if (!log) return;
+    const el = document.createElement('div');
+    el.className = `log-entry ${type}`;
+    el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+}
+
+async function doSync(payload) {
+    const res = await fetch('/certifications/sync/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify(payload)
+    });
+    return res.json();
+}
+
+// Re-fetch the certification page and swap only the dynamic sections in-place
+// — no location.reload(), so user stays on the certification page inside the dashboard
+async function refreshContent() {
+    addLog('Refreshing certification list…', 'info');
+    try {
+        const res = await fetch('/certification/');
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Swap recommendation grid
+        const newGrid = doc.getElementById('recommendation-grid');
+        const curGrid = document.getElementById('recommendation-grid');
+        if (newGrid && curGrid) curGrid.innerHTML = newGrid.innerHTML;
+
+        // Swap provider grid
+        const newProviders = doc.getElementById('provider-grid');
+        const curProviders = document.getElementById('provider-grid');
+        if (newProviders && curProviders) curProviders.innerHTML = newProviders.innerHTML;
+
+        addLog('Content refreshed successfully.', 'success');
+    } catch (e) {
+        addLog('Refresh error: ' + e.message, 'error');
+    }
+}
+
+async function syncAllProviders() {
+    addLog('Starting sync for all certification platforms…', 'info');
+    try {
+        const data = await doSync({});
+        if (data.error) { addLog('Error: ' + data.error, 'error'); return; }
+        addLog(`Sync complete — ${data.updated} updated, ${data.created} created, ${data.errors || 0} errors`, 'success');
+        await updateStats();
+        await refreshContent();
+    } catch (e) { addLog('Network error: ' + e.message, 'error'); }
+}
+
+async function syncProvider(provider) {
+    addLog(`Syncing ${provider}…`, 'info');
+    try {
+        const data = await doSync({ provider });
+        if (data.error) { addLog('Error: ' + data.error, 'error'); return; }
+        addLog(`${provider} sync complete — ${data.updated} updated, ${data.created} created`, 'success');
+        await updateStats();
+        await refreshContent();
+    } catch (e) { addLog('Network error: ' + e.message, 'error'); }
+}
+
+async function syncWithForce() {
+    addLog('Starting forced full sync…', 'info');
+    try {
+        const data = await doSync({ force: true });
+        if (data.error) { addLog('Error: ' + data.error, 'error'); return; }
+        addLog(`Force sync complete — ${data.updated} updated, ${data.created} created`, 'success');
+        await updateStats();
+        await refreshContent();
+    } catch (e) { addLog('Network error: ' + e.message, 'error'); }
+}
+
+async function clearAllCache() {
+    addLog('Clearing certification cache…', 'info');
+    try {
+        await fetch('/certifications/clear-cache/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') }
+        });
+        addLog('Cache cleared successfully', 'success');
+        await updateStats();
+    } catch (e) { addLog('Error: ' + e.message, 'error'); }
+}
+
+async function updateStats() {
+    try {
+        const res = await fetch('/certifications/stats/');
+        const data = await res.json();
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('total-count', data.total || '0');
+        set('active-count', data.active || '0');
+        set('provider-count', data.providers || '0');
+        set('last-sync-display', data.last_sync ? new Date(data.last_sync).toLocaleDateString() : 'Never');
+    } catch (e) { console.error('Stats update failed:', e); }
+}
+
+function filterCertifications() {
+    const domain = document.getElementById('domain-filter').value;
+    const provider = document.getElementById('provider-filter').value;
+    const difficulty = document.getElementById('difficulty-filter').value;
+    let visible = 0, total = 0;
+    document.querySelectorAll('.recommendation-card').forEach(card => {
+        total++;
+        const show = (!domain || card.dataset.domain === domain)
+                  && (!provider || card.dataset.provider === provider)
+                  && (!difficulty || card.dataset.difficulty === difficulty);
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+    });
+    addLog(`Filter applied — showing ${visible} of ${total} certifications`, 'info');
+}
+
+// Auto-refresh stats every 30 s
+setInterval(updateStats, 30000);
+</script>
+{% endblock %}

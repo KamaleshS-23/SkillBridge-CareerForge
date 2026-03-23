@@ -1,0 +1,1193 @@
+{% load static %}
+<!-- Resume Builder Content for Dashboard Integration -->
+<div class="resume-builder-dashboard">
+    <!-- Close Button -->
+    <button class="close-resume-builder" onclick="closeResumeBuilderPage()" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; border: 2px solid #e2e8f0; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <i class="fas fa-times" style="color: #64748b;"></i>
+    </button>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .resume-builder-dashboard {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            background: #f8f9fa;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: #667eea;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Main Grid */
+        .builder-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Form Panel */
+        .form-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .form-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .form-panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .form-panel::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* Section Cards for Drag & Drop */
+        .sections-container {
+            min-height: 200px;
+        }
+
+        .section-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: grab;
+            position: relative;
+        }
+
+        .section-card:active {
+            cursor: grabbing;
+        }
+
+        .section-card.dragging {
+            opacity: 0.4;
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
+        .section-card.drag-over {
+            border-color: #667eea;
+            background: #f0f0ff;
+            transform: translateY(2px);
+        }
+
+        .section-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.15);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .drag-handle:hover {
+            color: #667eea;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            margin-left: 0.5rem;
+        }
+
+        .section-title i {
+            color: #667eea;
+            width: 20px;
+        }
+
+        .section-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .section-controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .section-controls button:hover {
+            background: #e2e8f0;
+            color: #667eea;
+        }
+
+        .section-content {
+            margin-top: 0.8rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-content input,
+        .section-content textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .section-content input:focus,
+        .section-content textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        .experience-item, .education-item {
+            background: white;
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .experience-item:hover, .education-item:hover {
+            border-color: #667eea;
+        }
+
+        .bullet-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .bullet-item input {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .add-btn {
+            background: #f1f5f9;
+            border: 1px dashed #cbd5e1;
+            padding: 0.5rem;
+            border-radius: 10px;
+            width: 100%;
+            text-align: center;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #e6f0ec;
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        /* Template & Layout Selectors */
+        .selector-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .selector-title {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #1e293b;
+            font-size: 0.85rem;
+        }
+
+        .template-options, .layout-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .template-option, .layout-option {
+            flex: 1;
+            padding: 0.6rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: white;
+        }
+
+        .template-option.active, .layout-option.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .template-option:hover, .layout-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.2);
+        }
+
+        /* ATS Score Card */
+        .ats-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 16px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #bbf7d0;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0.8rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .tips-list {
+            margin-top: 0.8rem;
+            padding-left: 1.2rem;
+        }
+
+        .tips-list li {
+            margin-bottom: 0.4rem;
+            font-size: 0.75rem;
+            color: #166534;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            background: #fafcfc;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .preview-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: #f1f5f9;
+            color: #1e293b;
+            transition: all 0.2s;
+        }
+
+        .preview-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .preview-content {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Resume Templates Styling */
+        .resume-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        /* Classic Template */
+        .template-classic .resume-header {
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Modern Template */
+        .template-modern .resume-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Minimal Template */
+        .template-minimal {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .template-minimal .resume-header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        /* Elegant Template */
+        .template-elegant .resume-header {
+            border-left: 4px solid #667eea;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Single Column Layout */
+        .single-column .resume-section {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Double Column Layout */
+        .double-column-layout {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .double-column-layout .resume-header {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        
+        .double-column-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .double-column-left, .double-column-right {
+            overflow: hidden;
+        }
+        
+        .double-column-layout .resume-section {
+            margin-bottom: 1.5rem;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title-preview {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid #667eea;
+            color: #1e293b;
+        }
+
+        .job-item, .education-item-preview {
+            margin-bottom: 1rem;
+        }
+
+        .job-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .job-meta {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 0.4rem;
+        }
+
+        .bullet-list {
+            padding-left: 1rem;
+            list-style: none;
+        }
+
+        .bullet-list li {
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .bullet-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #f0f0ff 0%, #e6e9ff 100%);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin: 0.2rem;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1000px) {
+            .builder-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-panel {
+                height: auto;
+                position: relative;
+            }
+            .preview-panel {
+                height: auto;
+                min-height: 500px;
+            }
+            .double-column-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+        }
+    </style>
+    
+    <div class="app-container">
+    <div class="header">
+        <h1>✨ <span>Smart Resume Builder</span></h1>
+        <p style="color: #64748b;">Drag & drop sections • ATS-optimized • Professional templates • Real-time scoring</p>
+        <div class="stats-row">
+            <div class="stat-badge"><i class="fas fa-arrows-alt"></i> Drag & Drop Sections</div>
+            <div class="stat-badge"><i class="fas fa-columns"></i> Single/Double Column</div>
+            <div class="stat-badge"><i class="fas fa-chart-line"></i> Live ATS Score</div>
+            <div class="stat-badge"><i class="fas fa-download"></i> PDF/DOCX Export</div>
+        </div>
+    </div>
+
+    <div class="builder-grid">
+        <!-- Left Panel - Section Editor -->
+        <div class="form-panel">
+            <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="color: #1e293b;"><i class="fas fa-grip-vertical"></i> Drag & Drop Sections</h3>
+                <button class="add-btn" id="addSectionBtn" style="width: auto; padding: 0.5rem 1rem;">
+                    <i class="fas fa-plus"></i> Add Section
+                </button>
+            </div>
+            <div id="sectionsContainer" class="sections-container">
+                <!-- Sections will be dynamically added here -->
+            </div>
+
+            <!-- Template & Layout Selection -->
+            <div class="selector-group" style="margin-top: 1rem;">
+                <div class="selector-title"><i class="fas fa-palette"></i> Template Style</div>
+                <div class="template-options" id="templateOptions">
+                    <div class="template-option active" data-template="classic">Classic</div>
+                    <div class="template-option" data-template="modern">Modern</div>
+                    <div class="template-option" data-template="minimal">Minimal</div>
+                    <div class="template-option" data-template="elegant">Elegant</div>
+                </div>
+            </div>
+
+            <div class="selector-group">
+                <div class="selector-title"><i class="fas fa-columns"></i> Column Layout</div>
+                <div class="layout-options" id="layoutOptions">
+                    <div class="layout-option active" data-layout="single">Single Column</div>
+                    <div class="layout-option" data-layout="double">Double Column</div>
+                </div>
+            </div>
+
+            <!-- ATS Score Card -->
+            <div class="ats-card">
+                <div class="score-header">
+                    <span><i class="fas fa-robot"></i> ATS Compatibility Score</span>
+                    <span class="score-value" id="atsScore">0</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="scoreProgress" style="width: 0%"></div>
+                </div>
+                <ul class="tips-list" id="tipsList"></ul>
+            </div>
+        </div>
+
+        <!-- Right Panel - Resume Preview -->
+        <div class="preview-panel">
+            <div class="preview-header">
+                <span><i class="fas fa-eye"></i> Live Resume Preview</span>
+                <div class="preview-actions">
+                    <button class="preview-btn" id="downloadPDFBtn"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button class="preview-btn" id="downloadDOCXBtn"><i class="fas fa-file-word"></i> DOCX</button>
+                </div>
+            </div>
+            <div class="preview-content" id="previewContent">
+                <div class="resume-wrapper"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="scroll-top" id="scrollTop">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script>
+    // Sample initial data
+    let sections = [
+        { id: 'personal', type: 'personal', title: 'Personal Details', content: { name: 'Sarah Johnson', contact: 'sarah.johnson@email.com | (555) 123-4567 | San Francisco, CA' } },
+        { id: 'summary', type: 'summary', title: 'Professional Summary', content: 'Results-driven Marketing Manager with 7+ years of experience in digital strategy and team leadership. Spearheaded campaigns that increased brand engagement by 150% and generated $5M+ in revenue. Expert in SEO, content marketing, and data analytics.' },
+        { id: 'experience', type: 'experience', title: 'Work Experience', content: [
+            { title: 'Senior Marketing Manager', company: 'TechVision Inc.', dates: 'Jan 2021 - Present', bullets: ['Led digital marketing strategy resulting in 45% increase in organic traffic', 'Managed $2M annual budget, optimizing ROI by 35%', 'Built and mentored team of 8 marketing specialists'] },
+            { title: 'Digital Marketing Specialist', company: 'Creative Solutions LLC', dates: 'Jun 2017 - Dec 2020', bullets: ['Executed SEO campaigns that grew traffic from 10k to 85k monthly', 'Increased social media engagement by 200%', 'Reduced customer acquisition cost by 40%'] }
+        ] },
+        { id: 'education', type: 'education', title: 'Education', content: [
+            { degree: 'MBA in Marketing', school: 'University of California, Berkeley', year: '2015-2017' },
+            { degree: 'Bachelor of Arts in Communications', school: 'Stanford University', year: '2011-2015' }
+        ] },
+        { id: 'skills', type: 'skills', title: 'Skills', content: ['Digital Marketing', 'SEO/SEM', 'Google Analytics', 'Content Strategy', 'Team Leadership', 'Data Analysis', 'Project Management'] }
+    ];
+
+    let currentTemplate = 'classic';
+    let currentLayout = 'single';
+    let draggedItem = null;
+
+    // Initialize
+    function init() {
+        renderSectionsEditor();
+        renderResume();
+        updateATSScore();
+        
+        // Template selection
+        document.querySelectorAll('.template-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.template-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                currentTemplate = opt.dataset.template;
+                renderResume();
+            });
+        });
+        
+        // Layout selection
+        document.querySelectorAll('.layout-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                currentLayout = opt.dataset.layout;
+                renderResume();
+            });
+        });
+        
+        // Add section button
+        document.getElementById('addSectionBtn').addEventListener('click', () => addNewSection());
+        
+        // Download buttons
+        document.getElementById('downloadPDFBtn').addEventListener('click', downloadPDF);
+        document.getElementById('downloadDOCXBtn').addEventListener('click', downloadDOCX);
+        
+        // Scroll to top
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+    
+    // Drag and Drop Functions
+    function handleDragStart(e, index) {
+        draggedItem = index;
+        e.dataTransfer.effectAllowed = 'move';
+        e.target.closest('.section-card')?.classList.add('dragging');
+    }
+    
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const card = e.target.closest('.section-card');
+        if (card && !card.classList.contains('drag-over')) {
+            document.querySelectorAll('.section-card').forEach(c => c.classList.remove('drag-over'));
+            card.classList.add('drag-over');
+        }
+    }
+    
+    function handleDrop(e, targetIndex) {
+        e.preventDefault();
+        if (draggedItem !== null && draggedItem !== targetIndex) {
+            const draggedSection = sections[draggedItem];
+            sections.splice(draggedItem, 1);
+            sections.splice(targetIndex, 0, draggedSection);
+            renderSectionsEditor();
+            renderResume();
+            updateATSScore();
+            
+            // Show success feedback
+            const dropZone = e.target.closest('.section-card');
+            if (dropZone) {
+                dropZone.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    if (dropZone) dropZone.style.transform = '';
+                }, 200);
+            }
+        }
+        draggedItem = null;
+        document.querySelectorAll('.section-card').forEach(c => {
+            c.classList.remove('dragging', 'drag-over');
+        });
+    }
+    
+    function handleDragEnd(e) {
+        draggedItem = null;
+        document.querySelectorAll('.section-card').forEach(c => {
+            c.classList.remove('dragging', 'drag-over');
+        });
+    }
+    
+    // Render sections editor with drag and drop
+    function renderSectionsEditor() {
+        const container = document.getElementById('sectionsContainer');
+        container.innerHTML = '';
+        
+        sections.forEach((section, index) => {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'section-card';
+            sectionDiv.setAttribute('data-index', index);
+            sectionDiv.setAttribute('draggable', 'true');
+            
+            sectionDiv.addEventListener('dragstart', (e) => handleDragStart(e, index));
+            sectionDiv.addEventListener('dragover', handleDragOver);
+            sectionDiv.addEventListener('drop', (e) => handleDrop(e, index));
+            sectionDiv.addEventListener('dragend', handleDragEnd);
+            
+            let contentHtml = '';
+            
+            if (section.type === 'personal') {
+                contentHtml = `
+                    <div class="section-content">
+                        <input type="text" value="${section.content.name}" placeholder="Full Name" onchange="updateSectionContent(${index}, 'name', this.value)">
+                        <input type="text" value="${section.content.contact}" placeholder="Contact Info" onchange="updateSectionContent(${index}, 'contact', this.value)" style="margin-top: 0.5rem;">
+                    </div>
+                `;
+            } else if (section.type === 'summary') {
+                contentHtml = `
+                    <div class="section-content">
+                        <textarea onchange="updateSectionContent(${index}, 'text', this.value)">${section.content}</textarea>
+                    </div>
+                `;
+            } else if (section.type === 'experience') {
+                contentHtml = `<div class="section-content" id="exp-${index}">`;
+                section.content.forEach((exp, expIdx) => {
+                    contentHtml += `
+                        <div class="experience-item">
+                            <input type="text" value="${exp.title}" placeholder="Job Title" onchange="updateExperienceField(${index}, ${expIdx}, 'title', this.value)">
+                            <input type="text" value="${exp.company}" placeholder="Company" onchange="updateExperienceField(${index}, ${expIdx}, 'company', this.value)" style="margin-top: 0.3rem;">
+                            <input type="text" value="${exp.dates}" placeholder="Dates" onchange="updateExperienceField(${index}, ${expIdx}, 'dates', this.value)" style="margin-top: 0.3rem;">
+                            <div id="bullets-${index}-${expIdx}">
+                    `;
+                    exp.bullets.forEach((bullet, bIdx) => {
+                        contentHtml += `
+                            <div class="bullet-item">
+                                <input type="text" value="${bullet}" placeholder="Achievement" onchange="updateExperienceBullet(${index}, ${expIdx}, ${bIdx}, this.value)">
+                                <button class="remove-bullet" onclick="removeExperienceBullet(${index}, ${expIdx}, ${bIdx})" style="background: none; border: none; color: #dc2626; cursor: pointer;">✕</button>
+                            </div>
+                        `;
+                    });
+                    contentHtml += `
+                            </div>
+                            <button class="add-btn" style="margin-top: 0.3rem;" onclick="addExperienceBullet(${index}, ${expIdx})">+ Add Bullet Point</button></div>
+                    `;
+                });
+                contentHtml += `<button class="add-btn" onclick="addExperienceItem(${index})">+ Add Another Job</button></div>`;
+            } else if (section.type === 'education') {
+                contentHtml = `<div class="section-content" id="edu-${index}">`;
+                section.content.forEach((edu, eduIdx) => {
+                    contentHtml += `
+                        <div class="experience-item">
+                            <input type="text" value="${edu.degree}" placeholder="Degree" onchange="updateEducationField(${index}, ${eduIdx}, 'degree', this.value)">
+                            <input type="text" value="${edu.school}" placeholder="School" onchange="updateEducationField(${index}, ${eduIdx}, 'school', this.value)" style="margin-top: 0.3rem;">
+                            <input type="text" value="${edu.year}" placeholder="Year" onchange="updateEducationField(${index}, ${eduIdx}, 'year', this.value)" style="margin-top: 0.3rem;">
+                        </div>
+                    `;
+                });
+                contentHtml += `<button class="add-btn" onclick="addEducationItem(${index})">+ Add Education</button></div>`;
+            } else if (section.type === 'skills') {
+                contentHtml = `
+                    <div class="section-content">
+                        <input type="text" value="${section.content.join(', ')}" placeholder="Skills (comma separated)" onchange="updateSkillsContent(${index}, this.value)">
+                    </div>
+                `;
+            } else {
+                contentHtml = `
+                    <div class="section-content">
+                        <textarea placeholder="Content" onchange="updateSectionContent(${index}, 'text', this.value)">${section.content}</textarea>
+                    </div>
+                `;
+            }
+            
+            sectionDiv.innerHTML = `
+                <div class="section-header">
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                    <div class="section-title">
+                        <i class="fas ${getSectionIcon(section.type)}"></i>
+                        <span>${section.title}</span>
+                    </div>
+                    <div class="section-controls">
+                        <button onclick="editSectionTitle(${index})" title="Edit Section"><i class="fas fa-edit"></i></button>
+                        ${section.type !== 'personal' ? `<button onclick="deleteSection(${index})" title="Delete Section"><i class="fas fa-trash-alt"></i></button>` : ''}
+                    </div>
+                </div>
+                ${contentHtml}
+            `;
+            container.appendChild(sectionDiv);
+        });
+    }
+    
+    function getSectionIcon(type) {
+        const icons = {
+            personal: 'fa-user',
+            summary: 'fa-align-left',
+            experience: 'fa-briefcase',
+            education: 'fa-graduation-cap',
+            skills: 'fa-code',
+            custom: 'fa-folder'
+        };
+        return icons[type] || 'fa-file-alt';
+    }
+    
+    // Render resume preview
+    function renderResume() {
+        const wrapper = document.querySelector('.resume-wrapper');
+        if (!wrapper) return;
+        
+        const personal = sections.find(s => s.type === 'personal');
+        const name = personal?.content?.name || 'Your Name';
+        const contact = personal?.content?.contact || '';
+        const otherSections = sections.filter(s => s.type !== 'personal');
+        
+        let html = `<div class="resume-wrapper template-${currentTemplate} ${currentLayout === 'single' ? 'single-column' : 'double-column-layout'}">`;
+        
+        // Header
+        if (currentTemplate === 'classic') {
+            html += `<div class="resume-header"><h2>${name}</h2><div style="color: #64748b;">${contact}</div></div>`;
+        } else if (currentTemplate === 'modern') {
+            html += `<div class="resume-header"><h1>${name}</h1><div>${contact}</div></div>`;
+        } else if (currentTemplate === 'minimal') {
+            html += `<div class="resume-header"><h2>${name}</h2><div style="font-family: monospace;">${contact}</div></div>`;
+        } else {
+            html += `<div class="resume-header"><h2>${name}</h2><div>${contact}</div></div>`;
+        }
+        
+        if (currentLayout === 'single') {
+            html += `<div class="single-column">`;
+            otherSections.forEach(section => {
+                html += renderSectionPreview(section);
+            });
+            html += `</div>`;
+        } else {
+            // Double column - split sections evenly
+            const mid = Math.ceil(otherSections.length / 2);
+            const leftSections = otherSections.slice(0, mid);
+            const rightSections = otherSections.slice(mid);
+            
+            html += `<div class="double-column-content">`;
+            html += `<div class="double-column-left">`;
+            leftSections.forEach(section => {
+                html += renderSectionPreview(section);
+            });
+            html += `</div><div class="double-column-right">`;
+            rightSections.forEach(section => {
+                html += renderSectionPreview(section);
+            });
+            html += `</div></div>`;
+        }
+        
+        html += `</div>`;
+        wrapper.innerHTML = html;
+        document.getElementById('previewContent').innerHTML = wrapper.outerHTML;
+    }
+    
+    function renderSectionPreview(section) {
+        let html = `<div class="resume-section"><div class="section-title-preview">${section.title}</div>`;
+        
+        if (section.type === 'summary') {
+            html += `<p style="font-size: 0.85rem; line-height: 1.5;">${section.content}</p>`;
+        } else if (section.type === 'experience') {
+            section.content.forEach(exp => {
+                html += `
+                    <div class="job-item">
+                        <div class="job-title">${exp.title} | ${exp.company}</div>
+                        <div class="job-meta">${exp.dates}</div>
+                        <ul class="bullet-list">
+                            ${exp.bullets.map(b => `<li>${b}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+        } else if (section.type === 'education') {
+            section.content.forEach(edu => {
+                html += `
+                    <div class="education-item-preview" style="margin-bottom: 0.8rem;"><strong>${edu.degree}</strong><br><span style="font-size: 0.7rem; color: #64748b;">${edu.school}<br><span style="font-size: 0.7rem; color: #64748b;">${edu.year}</span></div>`;
+            });
+        } else if (section.type === 'skills') {
+            html += `<div>`;
+            section.content.forEach(skill => {
+                html += `<span class="skill-tag">${skill}</span>`;
+            });
+            html += `</div>`;
+        } else {
+            html += `<p style="font-size: 0.85rem; white-space: pre-line;">${section.content}</p>`;
+        }
+        
+        html += `</div>`;
+        return html;
+    }
+    
+    // ATS Score Calculation
+    function updateATSScore() {
+        let score = 50;
+        let allText = '';
+        
+        sections.forEach(section => {
+            if (section.type === 'summary') allText += section.content;
+            if (section.type === 'experience') {
+                section.content.forEach(exp => {
+                    allText += exp.title + ' ' + exp.company + ' ' + exp.bullets.join(' ');
+                });
+            }
+            if (section.type === 'skills') {
+                allText += section.content.join(' ');
+            }
+        });
+        
+        const keywords = ['increased', 'managed', 'led', 'developed', 'created', 'achieved', 'optimized', 'revenue', 'strategy', 'results'];
+        let keywordCount = keywords.filter(kw => allText.toLowerCase().includes(kw)).length;
+        score += Math.min(20, keywordCount);
+        
+        const hasMetrics = /\d+%|\$\d+/.test(allText);
+        if (hasMetrics) score += 15;
+        
+        const bulletCount = (allText.match(/•/g) || []).length;
+        if (bulletCount >= 6) score += 10;
+        
+        const skillCount = sections.find(s => s.type === 'skills')?.content?.length || 0;
+        if (skillCount >= 8) score += 5;
+        
+        score = Math.min(100, Math.max(0, score));
+        
+        const atsScoreElement = document.getElementById('atsScore');
+        const scoreProgress = document.getElementById('scoreProgress');
+        
+        if (atsScoreElement) atsScoreElement.innerHTML = Math.round(score) + '/100';
+        if (scoreProgress) scoreProgress.style.width = score + '%';
+        
+        const tips = [];
+        if (keywordCount < 6) tips.push('💡 Add action verbs: increased, managed, led, developed');
+        if (!hasMetrics) tips.push('📊 Include metrics like % and $ to show impact');
+        if (bulletCount < 6) tips.push('🔹 Add more achievement bullet points (aim for 3-5 per job)');
+        if (skillCount < 8) tips.push('🎯 Add more relevant skills (8-12 recommended for better ATS matching)');
+        if (sections.length < 4) tips.push('📝 Add more sections like Certifications, Languages, or Projects');
+        if (tips.length === 0) tips.push('✅ Excellent! Your resume is highly optimized for ATS systems!');
+        
+        const tipsList = document.getElementById('tipsList');
+        if (tipsList) tipsList.innerHTML = tips.map(t => `<li>${t}</li>`).join('');
+    }
+    
+    // Section management functions
+    function addNewSection() {
+        const sectionName = prompt('Enter section name:', 'New Section');
+        if (sectionName && sectionName.trim()) {
+            sections.push({
+                id: 'custom_' + Date.now(),
+                type: 'custom',
+                title: sectionName.trim(),
+                content: 'Add your content here...'
+            });
+            renderSectionsEditor();
+            renderResume();
+            updateATSScore();
+        }
+    }
+    
+    function editSectionTitle(index) {
+        const newTitle = prompt('Edit section title:', sections[index].title);
+        if (newTitle && newTitle.trim()) {
+            sections[index].title = newTitle.trim();
+            renderSectionsEditor();
+            renderResume();
+            updateATSScore();
+        }
+    }
+    
+    function deleteSection(index) {
+        if (sections[index].type !== 'personal') {
+            if (confirm(`Delete "${sections[index].title}" section?`)) {
+                sections.splice(index, 1);
+                renderSectionsEditor();
+                renderResume();
+                updateATSScore();
+            }
+        } else {
+            alert('Personal details section cannot be deleted');
+        }
+    }
+    
+    // Content update functions
+    function updateSectionContent(index, field, value) {
+        if (field === 'text') sections[index].content = value;
+        if (field === 'name') sections[index].content.name = value;
+        if (field === 'contact') sections[index].content.contact = value;
+        renderResume();
+        updateATSScore();
+    }
+    
+    function updateExperienceField(sectionIdx, expIdx, field, value) {
+        sections[sectionIdx].content[expIdx][field] = value;
+        renderResume();
+        updateATSScore();
+    }
+    
+    function updateExperienceBullet(sectionIdx, expIdx, bulletIdx, value) {
+        sections[sectionIdx].content[expIdx].bullets[bulletIdx] = value;
+        renderResume();
+        updateATSScore();
+    }
+    
+    function addExperienceBullet(sectionIdx, expIdx) {
+        sections[sectionIdx].content[expIdx].bullets.push('New achievement');
+        renderSectionsEditor();
+        renderResume();
+        updateATSScore();
+    }
+    
+    function removeExperienceBullet(sectionIdx, expIdx, bulletIdx) {
+        sections[sectionIdx].content[expIdx].bullets.splice(bulletIdx, 1);
+        renderSectionsEditor();
+        renderResume();
+        updateATSScore();
+    }
+    
+    function addExperienceItem(sectionIdx) {
+        sections[sectionIdx].content.push({ title: 'Job Title', company: 'Company Name', dates: 'Date Range', bullets: ['Achievement description'] });
+        renderSectionsEditor();
+        renderResume();
+        updateATSScore();
+    }
+    
+    function addEducationItem(sectionIdx) {
+        sections[sectionIdx].content.push({ degree: 'Degree', school: 'School Name', year: 'Year' });
+        renderSectionsEditor();
+        renderResume();
+        updateATSScore();
+    }
+    
+    function updateEducationField(sectionIdx, eduIdx, field, value) {
+        sections[sectionIdx].content[eduIdx][field] = value;
+        renderResume();
+        updateATSScore();
+    }
+    
+    function updateSkillsContent(sectionIdx, value) {
+        sections[sectionIdx].content = value.split(',').map(s => s.trim()).filter(s => s);
+        renderResume();
+        updateATSScore();
+    }
+    
+    // Download functions
+    function downloadPDF() {
+        const element = document.getElementById('previewContent');
+        html2pdf().from(element).set({ 
+            margin: 0.5, 
+            filename: 'Resume.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, letterRendering: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        }).save();
+    }
+    
+    function downloadDOCX() {
+        const resumeHtml = document.getElementById('previewContent').innerHTML;
+        const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resume</title><style>
+            body{font-family:Arial, sans-serif;padding:40px;max-width:900px;margin:0 auto;}
+            .resume-header{text-align:center;margin-bottom:20px;}
+            .section-title-preview{font-size:18px;font-weight:bold;border-bottom:2px solid #667eea;margin-bottom:10px;}
+            .skill-tag{display:inline-block;background:#f0f0f0;padding:3px 8px;margin:3px;border-radius:5px;}
+            .bullet-list{list-style:none;padding-left:15px;}
+            .bullet-list li:before{content:"•";margin-right:8px;}
+        </style></head><body>${resumeHtml}</body></html>`;
+        const converted = htmlDocx.asBlob(fullHtml);
+        saveAs(converted, 'Resume.docx');
+    }
+    
+    // Make functions global for inline calls
+    window.updateSectionContent = updateSectionContent;
+    window.updateExperienceField = updateExperienceField;
+    window.updateExperienceBullet = updateExperienceBullet;
+    window.addExperienceBullet = addExperienceBullet;
+    window.removeExperienceBullet = removeExperienceBullet;
+    window.addExperienceItem = addExperienceItem;
+    window.addEducationItem = addEducationItem;
+    window.updateEducationField = updateEducationField;
+    window.updateSkillsContent = updateSkillsContent;
+    window.editSectionTitle = editSectionTitle;
+    window.deleteSection = deleteSection;
+    
+    init();
+</script>
+    </div> <!-- End app-container -->
+</div> <!-- End resume-builder-dashboard -->

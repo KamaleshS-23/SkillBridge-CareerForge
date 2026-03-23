@@ -1,0 +1,590 @@
+{
+  "Data Structures": {
+    "Beginner": [
+      {
+        "id": 1,
+        "text": "What is a data structure?",
+        "options": [
+          "A way to organize and store data",
+          "A type of programming language",
+          "A database management system",
+          "A computer hardware component"
+        ],
+        "correct": "A way to organize and store data"
+      },
+      {
+        "id": 2,
+        "text": "Which of the following is a linear data structure?",
+        "options": [
+          "Array",
+          "Tree",
+          "Graph",
+          "Hash Table"
+        ],
+        "correct": "Array"
+      },
+      {
+        "id": 3,
+        "text": "What is the time complexity of accessing an element in an array by index?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n²)"
+        ],
+        "correct": "O(1)"
+      },
+      {
+        "id": 4,
+        "text": "Which data structure uses LIFO (Last In First Out) principle?",
+        "options": [
+          "Queue",
+          "Stack",
+          "Array",
+          "Linked List"
+        ],
+        "correct": "Stack"
+      },
+      {
+        "id": 5,
+        "text": "Which data structure uses FIFO (First In First Out) principle?",
+        "options": [
+          "Stack",
+          "Queue",
+          "Tree",
+          "Graph"
+        ],
+        "correct": "Queue"
+      },
+      {
+        "id": 6,
+        "text": "What is a linked list?",
+        "options": [
+          "A linear collection of data elements whose order is not given by their physical placement",
+          "A collection of elements with index positions",
+          "A tree structure",
+          "A hash-based storage"
+        ],
+        "correct": "A linear collection of data elements whose order is not given by their physical placement"
+      },
+      {
+        "id": 7,
+        "text": "What is the maximum number of children a binary tree node can have?",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "Unlimited"
+        ],
+        "correct": "2"
+      },
+      {
+        "id": 8,
+        "text": "Which traversal method visits the root node first, then left subtree, then right subtree?",
+        "options": [
+          "Inorder",
+          "Preorder",
+          "Postorder",
+          "Level order"
+        ],
+        "correct": "Preorder"
+      },
+      {
+        "id": 9,
+        "text": "What is a hash table?",
+        "options": [
+          "A data structure that implements an associative array",
+          "A type of linked list",
+          "A binary search tree",
+          "A sorting algorithm"
+        ],
+        "correct": "A data structure that implements an associative array"
+      },
+      {
+        "id": 10,
+        "text": "What does the 'push' operation do in a stack?",
+        "options": [
+          "Removes an element",
+          "Adds an element to top",
+          "Adds an element to bottom",
+          "Removes all elements"
+        ],
+        "correct": "Adds an element to top"
+      }
+    ],
+    "Intermediate": [
+      {
+        "id": 11,
+        "text": "What is the time complexity of binary search on a sorted array?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n log n)"
+        ],
+        "correct": "O(log n)"
+      },
+      {
+        "id": 12,
+        "text": "What is a binary search tree (BST)?",
+        "options": [
+          "A tree where left child is smaller than parent and right child is larger",
+          "A tree with exactly two children",
+          "A tree that is always balanced",
+          "A tree with no specific order"
+        ],
+        "correct": "A tree where left child is smaller than parent and right child is larger"
+      },
+      {
+        "id": 13,
+        "text": "What is the worst-case time complexity of quicksort?",
+        "options": [
+          "O(n log n)",
+          "O(n)",
+          "O(n²)",
+          "O(log n)"
+        ],
+        "correct": "O(n²)"
+      },
+      {
+        "id": 14,
+        "text": "Which data structure is used for implementing recursion?",
+        "options": [
+          "Queue",
+          "Stack",
+          "Array",
+          "Tree"
+        ],
+        "correct": "Stack"
+      },
+      {
+        "id": 15,
+        "text": "What is a priority queue?",
+        "options": [
+          "A queue where elements have associated priorities",
+          "A queue that processes elements in order",
+          "A stack with priority",
+          "A type of array"
+        ],
+        "correct": "A queue where elements have associated priorities"
+      },
+      {
+        "id": 16,
+        "text": "What is the time complexity for inserting an element at the beginning of a singly linked list?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n²)"
+        ],
+        "correct": "O(1)"
+      },
+      {
+        "id": 17,
+        "text": "What is a graph?",
+        "options": [
+          "A non-linear data structure consisting of vertices and edges",
+          "A linear data structure",
+          "A type of tree",
+          "A sorting algorithm"
+        ],
+        "correct": "A non-linear data structure consisting of vertices and edges"
+      },
+      {
+        "id": 18,
+        "text": "What is the time complexity of finding an element in a hash table in the average case?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n log n)"
+        ],
+        "correct": "O(1)"
+      },
+      {
+        "id": 19,
+        "text": "What is a balanced tree?",
+        "options": [
+          "A tree where height difference between left and right subtrees is at most 1",
+          "A tree with equal number of nodes",
+          "A tree with all leaves at same level",
+          "A tree with maximum nodes"
+        ],
+        "correct": "A tree where height difference between left and right subtrees is at most 1"
+      },
+      {
+        "id": 20,
+        "text": "What is the purpose of a deque (double-ended queue)?",
+        "options": [
+          "Allows insertion and deletion at both ends",
+          "Only allows insertion at front",
+          "Only allows deletion at rear",
+          "Is a priority queue"
+        ],
+        "correct": "Allows insertion and deletion at both ends"
+      }
+    ],
+    "Advanced": [
+      {
+        "id": 21,
+        "text": "What is the time complexity of finding the shortest path using Dijkstra's algorithm with a binary heap?",
+        "options": [
+          "O(V²)",
+          "O(E + V log V)",
+          "O(V log E)",
+          "O(E log V)"
+        ],
+        "correct": "O(E + V log V)"
+      },
+      {
+        "id": 22,
+        "text": "What is a B-tree used for?",
+        "options": [
+          "Database indexing and file systems",
+          "Graph algorithms",
+          "Sorting large datasets",
+          "Memory management"
+        ],
+        "correct": "Database indexing and file systems"
+      },
+      {
+        "id": 23,
+        "text": "What is the time complexity of Floyd-Warshall algorithm?",
+        "options": [
+          "O(V³)",
+          "O(V²)",
+          "O(E log V)",
+          "O(V + E)"
+        ],
+        "correct": "O(V³)"
+      },
+      {
+        "id": 24,
+        "text": "What is a red-black tree?",
+        "options": [
+          "A self-balancing binary search tree",
+          "A tree with red and black nodes",
+          "A type of heap",
+          "A graph coloring algorithm"
+        ],
+        "correct": "A self-balancing binary search tree"
+      },
+      {
+        "id": 25,
+        "text": "What is the space complexity of merge sort?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n log n)"
+        ],
+        "correct": "O(n)"
+      },
+      {
+        "id": 26,
+        "text": "What is a suffix tree used for?",
+        "options": [
+          "String matching and pattern searching",
+          "Sorting strings",
+          "Compression algorithms",
+          "Encryption"
+        ],
+        "correct": "String matching and pattern searching"
+      },
+      {
+        "id": 27,
+        "text": "What is the amortized time complexity for inserting into a dynamic array?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n²)"
+        ],
+        "correct": "O(1)"
+      },
+      {
+        "id": 28,
+        "text": "What is a trie data structure?",
+        "options": [
+          "A tree structure for storing strings",
+          "A type of hash table",
+          "A sorting algorithm",
+          "A graph traversal method"
+        ],
+        "correct": "A tree structure for storing strings"
+      },
+      {
+        "id": 29,
+        "text": "What is the time complexity of Kruskal's algorithm for MST?",
+        "options": [
+          "O(E log V)",
+          "O(V²)",
+          "O(E + V)",
+          "O(V log E)"
+        ],
+        "correct": "O(E log V)"
+      },
+      {
+        "id": 30,
+        "text": "What is a skip list?",
+        "options": [
+          "A probabilistic data structure for efficient search",
+          "A type of linked list",
+          "A sorting algorithm",
+          "A tree traversal method"
+        ],
+        "correct": "A probabilistic data structure for efficient search"
+      }
+    ],
+    "Expert": [
+      {
+        "id": 49,
+        "text": "What is a Fibonacci heap?",
+        "options": [
+          "A heap data structure with efficient decrease-key operation",
+          "A heap that stores Fibonacci numbers",
+          "A type of binary heap",
+          "A sorting algorithm"
+        ],
+        "correct": "A heap data structure with efficient decrease-key operation"
+      },
+      {
+        "id": 50,
+        "text": "What is the time complexity of union-find with path compression?",
+        "options": [
+          "O(α(n)) where α is the inverse Ackermann function",
+          "O(log n)",
+          "O(n)",
+          "O(1)"
+        ],
+        "correct": "O(α(n)) where α is the inverse Ackermann function"
+      }
+    ]
+  },
+  "Python Programming": {
+    "Beginner": [
+      {
+        "id": 31,
+        "text": "What is the correct way to create a function in Python?",
+        "options": [
+          "function myFunction():",
+          "def myFunction():",
+          "create myFunction():",
+          "func myFunction():"
+        ],
+        "correct": "def myFunction():"
+      },
+      {
+        "id": 32,
+        "text": "Which of the following is used for comments in Python?",
+        "options": [
+          "//",
+          "/* */",
+          "#",
+          "<!-- -->"
+        ],
+        "correct": "#"
+      },
+      {
+        "id": 33,
+        "text": "What is the output of print(2**3)?",
+        "options": [
+          "6",
+          "8",
+          "9",
+          "5"
+        ],
+        "correct": "8"
+      },
+      {
+        "id": 34,
+        "text": "Which data type is immutable in Python?",
+        "options": [
+          "List",
+          "Dictionary",
+          "Tuple",
+          "Set"
+        ],
+        "correct": "Tuple"
+      },
+      {
+        "id": 35,
+        "text": "What is the correct syntax to import a module?",
+        "options": [
+          "import module",
+          "include module",
+          "using module",
+          "require module"
+        ],
+        "correct": "import module"
+      }
+    ]
+  },
+  "Java Programming": {
+    "Beginner": [
+      {
+        "id": 36,
+        "text": "What is the entry point of a Java program?",
+        "options": [
+          "main()",
+          "Main()",
+          "public static void main(String[] args)",
+          "start()"
+        ],
+        "correct": "public static void main(String[] args)"
+      },
+      {
+        "id": 37,
+        "text": "Which keyword is used to create a class in Java?",
+        "options": [
+          "class",
+          "Class",
+          "new",
+          "object"
+        ],
+        "correct": "class"
+      },
+      {
+        "id": 38,
+        "text": "What is the size of int in Java?",
+        "options": [
+          "2 bytes",
+          "4 bytes",
+          "8 bytes",
+          "1 byte"
+        ],
+        "correct": "4 bytes"
+      }
+    ]
+  },
+  "Database Management": {
+    "Beginner": [
+      {
+        "id": 39,
+        "text": "What does SQL stand for?",
+        "options": [
+          "Structured Query Language",
+          "Simple Query Language",
+          "Standard Query Language",
+          "System Query Language"
+        ],
+        "correct": "Structured Query Language"
+      },
+      {
+        "id": 40,
+        "text": "Which command is used to retrieve data from a database?",
+        "options": [
+          "GET",
+          "SELECT",
+          "RETRIEVE",
+          "EXTRACT"
+        ],
+        "correct": "SELECT"
+      }
+    ]
+  },
+  "Operating Systems": {
+    "Beginner": [
+      {
+        "id": 41,
+        "text": "What is a process?",
+        "options": [
+          "A program in execution",
+          "A program on disk",
+          "A system call",
+          "A memory allocation"
+        ],
+        "correct": "A program in execution"
+      },
+      {
+        "id": 42,
+        "text": "What is the function of a scheduler?",
+        "options": [
+          "Decides which process runs next",
+          "Manages memory",
+          "Handles I/O operations",
+          "Manages files"
+        ],
+        "correct": "Decides which process runs next"
+      }
+    ]
+  },
+  "Computer Networks": {
+    "Beginner": [
+      {
+        "id": 43,
+        "text": "What does IP stand for?",
+        "options": [
+          "Internet Protocol",
+          "Internal Protocol",
+          "International Protocol",
+          "Internet Program"
+        ],
+        "correct": "Internet Protocol"
+      },
+      {
+        "id": 44,
+        "text": "What is the OSI model?",
+        "options": [
+          "A conceptual model for network communication",
+          "An operating system",
+          "A programming language",
+          "A database model"
+        ],
+        "correct": "A conceptual model for network communication"
+      }
+    ]
+  },
+  "Algorithms": {
+    "Advanced": [
+      {
+        "id": 45,
+        "text": "What is dynamic programming?",
+        "options": [
+          "Breaking down problems into simpler subproblems",
+          "Programming with dynamic variables",
+          "Runtime code modification",
+          "Automatic code generation"
+        ],
+        "correct": "Breaking down problems into simpler subproblems"
+      },
+      {
+        "id": 46,
+        "text": "What is the time complexity of the Rabin-Karp algorithm?",
+        "options": [
+          "O(n+m)",
+          "O(nm)",
+          "O(n log m)",
+          "O(log n)"
+        ],
+        "correct": "O(n+m)"
+      }
+    ]
+  },
+  "Web Development": {
+    "Beginner": [
+      {
+        "id": 47,
+        "text": "What does HTML stand for?",
+        "options": [
+          "Hyper Text Markup Language",
+          "High Tech Modern Language",
+          "Hyper Transfer Markup Language",
+          "Home Tool Markup Language"
+        ],
+        "correct": "Hyper Text Markup Language"
+      },
+      {
+        "id": 48,
+        "text": "What is CSS used for?",
+        "options": [
+          "Styling web pages",
+          "Creating databases",
+          "Server-side programming",
+          "Network configuration"
+        ],
+        "correct": "Styling web pages"
+      }
+    ]
+  }
+}

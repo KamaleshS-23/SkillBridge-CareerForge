@@ -1,0 +1,1084 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is 25% of 200?",
+      "options": ["25", "50", "75", "100"],
+      "correct": "50"
+    },
+    {
+      "id": 2,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "If a train travels 120 km in 2 hours, what is its speed?",
+      "options": ["40 km/h", "50 km/h", "60 km/h", "70 km/h"],
+      "correct": "60 km/h"
+    },
+    {
+      "id": 3,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is the average of 10, 20, 30, 40, 50?",
+      "options": ["25", "30", "35", "40"],
+      "correct": "30"
+    },
+    {
+      "id": 4,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is 35% of 420?",
+      "options": ["137", "147", "157", "167"],
+      "correct": "147"
+    },
+    {
+      "id": 5,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "Simplify: (15 × 4) ÷ 3 + 8",
+      "options": ["28", "30", "26", "32"],
+      "correct": "28"
+    },
+    {
+      "id": 6,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "Find LCM of 12, 18, 24",
+      "options": ["48", "72", "64", "84"],
+      "correct": "72"
+    },
+    {
+      "id": 7,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is 1/4 of 200?",
+      "options": ["40", "50", "60", "25"],
+      "correct": "50"
+    },
+    {
+      "id": 8,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "Find 0.5 × 0.5 × 0.5",
+      "options": ["0.125", "0.25", "0.5", "1.25"],
+      "correct": "0.125"
+    },
+    {
+      "id": 9,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is 15% of 300?",
+      "options": ["35", "45", "55", "65"],
+      "correct": "45"
+    },
+    {
+      "id": 10,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "If 8 workers complete a task in 5 days, how many days will 10 workers take?",
+      "options": ["3 days", "4 days", "5 days", "6 days"],
+      "correct": "4 days"
+    },
+    {
+      "id": 11,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is the square root of 169?",
+      "options": ["11", "12", "13", "14"],
+      "correct": "13"
+    },
+    {
+      "id": 12,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "Simplify: 3² + 4²",
+      "options": ["25", "20", "15", "30"],
+      "correct": "25"
+    },
+    {
+      "id": 13,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is the product of 12 and 15?",
+      "options": ["160", "170", "180", "190"],
+      "correct": "180"
+    },
+    {
+      "id": 14,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "If a book costs ₹450 and there is a 10% discount, what is the final price?",
+      "options": ["₹395", "₹400", "₹405", "₹410"],
+      "correct": "₹405"
+    },
+    {
+      "id": 15,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Beginner",
+      "text": "What is the HCF of 24 and 36?",
+      "options": ["8", "10", "12", "14"],
+      "correct": "12"
+    },
+    {
+      "id": 16,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "A shopkeeper sold an article at 20% profit for ₹720. What was the cost price?",
+      "options": ["₹580", "₹600", "₹620", "₹650"],
+      "correct": "₹600"
+    },
+    {
+      "id": 17,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "The average of 5 numbers is 28. If one number is excluded, average becomes 25. Find excluded number.",
+      "options": ["35", "40", "38", "42"],
+      "correct": "40"
+    },
+    {
+      "id": 18,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If 20% of a number is 30, find the number.",
+      "options": ["150", "140", "160", "130"],
+      "correct": "150"
+    },
+    {
+      "id": 19,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "What is 2³ × 3²?",
+      "options": ["72", "64", "48", "96"],
+      "correct": "72"
+    },
+    {
+      "id": 20,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If x:y = 2:3 and y:z = 4:5, find x:z.",
+      "options": ["8:15", "6:11", "5:8", "7:12"],
+      "correct": "8:15"
+    },
+    {
+      "id": 21,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "A car travels 240 km in 4 hours. What is its speed in m/s?",
+      "options": ["16.67 m/s", "20 m/s", "15 m/s", "18 m/s"],
+      "correct": "16.67 m/s"
+    },
+    {
+      "id": 22,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If the simple interest on ₹1000 for 2 years is ₹200, find the rate of interest.",
+      "options": ["8%", "9%", "10%", "12%"],
+      "correct": "10%"
+    },
+    {
+      "id": 23,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "What is the value of 5! (5 factorial)?",
+      "options": ["60", "100", "120", "150"],
+      "correct": "120"
+    },
+    {
+      "id": 24,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If a number is increased by 25% becomes 125, find the original number.",
+      "options": ["90", "95", "100", "105"],
+      "correct": "100"
+    },
+    {
+      "id": 25,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "Find the area of a circle with radius 7 cm.",
+      "options": ["154 cm²", "144 cm²", "164 cm²", "174 cm²"],
+      "correct": "154 cm²"
+    },
+    {
+      "id": 26,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If a:b = 3:4 and b:c = 6:7, find a:c.",
+      "options": ["9:14", "7:9", "8:11", "10:13"],
+      "correct": "9:14"
+    },
+    {
+      "id": 27,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "What is the perimeter of a rectangle with length 12 cm and width 8 cm?",
+      "options": ["30 cm", "35 cm", "40 cm", "45 cm"],
+      "correct": "40 cm"
+    },
+    {
+      "id": 28,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If 15 men can build a wall in 20 days, how many men are needed to build it in 12 days?",
+      "options": ["20 men", "22 men", "25 men", "28 men"],
+      "correct": "25 men"
+    },
+    {
+      "id": 29,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "What is the value of 10³ - 10²?",
+      "options": ["900", "800", "700", "1000"],
+      "correct": "900"
+    },
+    {
+      "id": 30,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Intermediate",
+      "text": "If the diameter of a circle is 14 cm, find its circumference.",
+      "options": ["44 cm", "48 cm", "52 cm", "56 cm"],
+      "correct": "44 cm"
+    },
+    {
+      "id": 31,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "If the compound interest on ₹5000 for 2 years at 10% per annum is?",
+      "options": ["₹1000", "₹1050", "₹1100", "₹1150"],
+      "correct": "₹1050"
+    },
+    {
+      "id": 32,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "The ratio of ages of A and B is 3:5. After 5 years, ratio becomes 2:3. Find A's present age.",
+      "options": ["12", "15", "18", "20"],
+      "correct": "15"
+    },
+    {
+      "id": 33,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "If a = 5, b = 2, find (a² - b²)/(a - b)",
+      "options": ["7", "5", "3", "9"],
+      "correct": "7"
+    },
+    {
+      "id": 34,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "A pipe can fill a tank in 6 hours. Another pipe can empty it in 8 hours. If both are opened, how long to fill?",
+      "options": ["20 hours", "22 hours", "24 hours", "26 hours"],
+      "correct": "24 hours"
+    },
+    {
+      "id": 35,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "Find the value of sin 30° + cos 60°",
+      "options": ["0.5", "1", "1.5", "2"],
+      "correct": "1"
+    },
+    {
+      "id": 36,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "If x + 1/x = 3, find x² + 1/x²",
+      "options": ["5", "6", "7", "8"],
+      "correct": "7"
+    },
+    {
+      "id": 37,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "What is the volume of a cube with side 5 cm?",
+      "options": ["100 cm³", "125 cm³", "150 cm³", "175 cm³"],
+      "correct": "125 cm³"
+    },
+    {
+      "id": 38,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "If the sum of two numbers is 25 and their difference is 5, find the numbers.",
+      "options": ["10 and 15", "12 and 13", "14 and 11", "16 and 9"],
+      "correct": "15 and 10"
+    },
+    {
+      "id": 39,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "A man invests ₹5000 at 8% per annum. What is the amount after 3 years (simple interest)?",
+      "options": ["₹6000", "₹6200", "₹6400", "₹6600"],
+      "correct": "₹6200"
+    },
+    {
+      "id": 40,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Advanced",
+      "text": "What is the probability of getting a head when a coin is tossed?",
+      "options": ["0.25", "0.5", "0.75", "1"],
+      "correct": "0.5"
+    },
+    {
+      "id": 41,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Expert",
+      "text": "A train 150m long passes a pole in 6 sec. Find speed in km/hr.",
+      "options": ["72 km/h", "80 km/h", "90 km/h", "108 km/h"],
+      "correct": "90 km/h"
+    },
+    {
+      "id": 42,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Expert",
+      "text": "A boat goes 30 km upstream and 44 km downstream in 10 hrs. Speed of stream = 3 km/h. Find boat speed in still water.",
+      "options": ["8 km/h", "10 km/h", "12 km/h", "14 km/h"],
+      "correct": "8 km/h"
+    },
+    {
+      "id": 43,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Expert",
+      "text": "The sum of digits of a two-digit number is 9. If digits reversed, new number is 27 more than original. Find number.",
+      "options": ["36", "45", "54", "63"],
+      "correct": "36"
+    },
+    {
+      "id": 44,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Expert",
+      "text": "If log₁₀ 2 = 0.3010, find log₁₀ 5",
+      "options": ["0.6990", "0.6980", "0.6995", "0.7000"],
+      "correct": "0.6990"
+    },
+    {
+      "id": 45,
+      "section": "Quantitative Aptitude",
+      "difficulty": "Expert",
+      "text": "What is the value of tan 45° + cot 45°?",
+      "options": ["1", "2", "3", "4"],
+      "correct": "2"
+    },
+    {
+      "id": 46,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Complete the series: 2, 4, 6, 8, ?",
+      "options": ["9", "10", "11", "12"],
+      "correct": "10"
+    },
+    {
+      "id": 47,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Complete series: 3, 6, 11, 18, ?",
+      "options": ["27", "29", "31", "33"],
+      "correct": "27"
+    },
+    {
+      "id": 48,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Which day comes 3 days after Monday?",
+      "options": ["Thursday", "Friday", "Wednesday", "Tuesday"],
+      "correct": "Thursday"
+    },
+    {
+      "id": 49,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Find missing: 2, 5, 10, 17, ?",
+      "options": ["26", "25", "24", "27"],
+      "correct": "26"
+    },
+    {
+      "id": 50,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Complete: A, C, E, G, ?",
+      "options": ["H", "I", "J", "K"],
+      "correct": "I"
+    },
+    {
+      "id": 51,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Find odd one: 2, 4, 6, 9, 10",
+      "options": ["2", "4", "6", "9"],
+      "correct": "9"
+    },
+    {
+      "id": 52,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "If APPLE is coded as BQQMF, how is MANGO coded?",
+      "options": ["NBOHP", "NBOIP", "NCPHP", "NCOHP"],
+      "correct": "NBOHP"
+    },
+    {
+      "id": 53,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Which is the smallest: 0.5, 0.05, 0.005, 0.0005?",
+      "options": ["0.5", "0.05", "0.005", "0.0005"],
+      "correct": "0.0005"
+    },
+    {
+      "id": 54,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "If today is Sunday, what day will it be after 100 days?",
+      "options": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+      "correct": "Tuesday"
+    },
+    {
+      "id": 55,
+      "section": "Logical Reasoning",
+      "difficulty": "Beginner",
+      "text": "Complete: 1, 4, 9, 16, ?",
+      "options": ["20", "22", "24", "25"],
+      "correct": "25"
+    },
+    {
+      "id": 56,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "If all roses are flowers and some flowers are red, then which is true?",
+      "options": ["All roses are red", "Some roses are red", "Some flowers are roses", "Cannot be determined"],
+      "correct": "Cannot be determined"
+    },
+    {
+      "id": 57,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Statement: All pens are pencils. Some pencils are erasers. Conclusion: Some pens are erasers?",
+      "options": ["True", "False", "Uncertain", "None"],
+      "correct": "False"
+    },
+    {
+      "id": 58,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "If 5+3=28, 9+1=810, 8+6=214, then 7+3=?",
+      "options": ["410", "210", "310", "510"],
+      "correct": "410"
+    },
+    {
+      "id": 59,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Find the next: Z, X, V, T, ?",
+      "options": ["R", "S", "U", "Q"],
+      "correct": "R"
+    },
+    {
+      "id": 60,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "If 12th January is Monday, what is 12th February?",
+      "options": ["Wednesday", "Thursday", "Friday", "Saturday"],
+      "correct": "Thursday"
+    },
+    {
+      "id": 61,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Which word is different: Apple, Mango, Orange, Potato",
+      "options": ["Apple", "Mango", "Orange", "Potato"],
+      "correct": "Potato"
+    },
+    {
+      "id": 62,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "If DOG is coded as 4157, then CAT is?",
+      "options": ["3120", "311", "312", "310"],
+      "correct": "3120"
+    },
+    {
+      "id": 63,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Complete: 7, 14, 21, 28, ?",
+      "options": ["32", "33", "34", "35"],
+      "correct": "35"
+    },
+    {
+      "id": 64,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Find the missing number: 3, 6, 9, 12, ?",
+      "options": ["14", "15", "16", "18"],
+      "correct": "15"
+    },
+    {
+      "id": 65,
+      "section": "Logical Reasoning",
+      "difficulty": "Intermediate",
+      "text": "If NORTH is coded as OPSUI, how is SOUTH coded?",
+      "options": ["TPUVI", "TPVUI", "TPUJI", "TPVJI"],
+      "correct": "TPUVI"
+    },
+    {
+      "id": 66,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "Find odd one: 121, 144, 169, 196, 225, 250",
+      "options": ["250", "225", "169", "144"],
+      "correct": "250"
+    },
+    {
+      "id": 67,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "In a family, A is B's sister. C is B's mother. D is C's father. How is A related to D?",
+      "options": ["Granddaughter", "Daughter", "Niece", "Grandmother"],
+      "correct": "Granddaughter"
+    },
+    {
+      "id": 68,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "Complete: 1, 1, 2, 3, 5, 8, ?",
+      "options": ["11", "12", "13", "14"],
+      "correct": "13"
+    },
+    {
+      "id": 69,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "If RED is coded as 27, BLUE as 40, then GREEN is?",
+      "options": ["49", "50", "51", "52"],
+      "correct": "49"
+    },
+    {
+      "id": 70,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "Find next: A1, B2, C3, D4, ?",
+      "options": ["E5", "E4", "F5", "F6"],
+      "correct": "E5"
+    },
+    {
+      "id": 71,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "If 2 = 5, 3 = 10, 4 = 17, then 5 = ?",
+      "options": ["26", "24", "25", "27"],
+      "correct": "26"
+    },
+    {
+      "id": 72,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "Which is the odd one: Square, Triangle, Circle, Rectangle",
+      "options": ["Square", "Triangle", "Circle", "Rectangle"],
+      "correct": "Circle"
+    },
+    {
+      "id": 73,
+      "section": "Logical Reasoning",
+      "difficulty": "Advanced",
+      "text": "If 'FATHER' is coded as 'GZUGDQ', then 'MOTHER' is?",
+      "options": ["NQUGDR", "NPUGDQ", "NQUGDQ", "NPVGDR"],
+      "correct": "NQUGDR"
+    },
+    {
+      "id": 74,
+      "section": "Logical Reasoning",
+      "difficulty": "Expert",
+      "text": "If 'MADAM' is coded as '1314113', what is 'FATHER'?",
+      "options": ["61820518", "61208518", "68120518", "6812085"],
+      "correct": "68120518"
+    },
+    {
+      "id": 75,
+      "section": "Logical Reasoning",
+      "difficulty": "Expert",
+      "text": "If CLOCK is coded as 3-12-15-3-11, then TIME is ?",
+      "options": ["20-9-13-5", "20-9-13-4", "19-8-12-4", "21-10-14-6"],
+      "correct": "20-9-13-5"
+    },
+    {
+      "id": 76,
+      "section": "Logical Reasoning",
+      "difficulty": "Expert",
+      "text": "Complete the pattern: 2, 6, 12, 20, 30, ?",
+      "options": ["40", "42", "44", "46"],
+      "correct": "42"
+    },
+    {
+      "id": 77,
+      "section": "Logical Reasoning",
+      "difficulty": "Expert",
+      "text": "If 'PRESENT' is coded as 'RTEVGNV', then 'FUTURE' is?",
+      "options": ["HWVWTG", "HWVWSG", "HWVWTG", "HWVWTH"],
+      "correct": "HWVWTG"
+    },
+    {
+      "id": 78,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Choose the synonym of 'Happy'",
+      "options": ["Sad", "Joyful", "Angry", "Tired"],
+      "correct": "Joyful"
+    },
+    {
+      "id": 79,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Choose the antonym of 'Difficult'",
+      "options": ["Hard", "Easy", "Complex", "Tough"],
+      "correct": "Easy"
+    },
+    {
+      "id": 80,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Which word is spelled correctly?",
+      "options": ["Recieve", "Receive", "Recive", "Receeve"],
+      "correct": "Receive"
+    },
+    {
+      "id": 81,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Synonym of 'Benevolent'",
+      "options": ["Kind", "Cruel", "Greedy", "Angry"],
+      "correct": "Kind"
+    },
+    {
+      "id": 82,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Antonym of 'Loquacious'",
+      "options": ["Talkative", "Silent", "Fluent", "Articulate"],
+      "correct": "Silent"
+    },
+    {
+      "id": 83,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Choose the correct spelling:",
+      "options": ["Neccessary", "Necessary", "Necesary", "Nessessary"],
+      "correct": "Necessary"
+    },
+    {
+      "id": 84,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Synonym of 'Quick'",
+      "options": ["Slow", "Fast", "Lazy", "Dull"],
+      "correct": "Fast"
+    },
+    {
+      "id": 85,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Antonym of 'Beautiful'",
+      "options": ["Pretty", "Ugly", "Lovely", "Gorgeous"],
+      "correct": "Ugly"
+    },
+    {
+      "id": 86,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Which is a noun?",
+      "options": ["Run", "Jump", "Table", "Fast"],
+      "correct": "Table"
+    },
+    {
+      "id": 87,
+      "section": "Verbal Ability",
+      "difficulty": "Beginner",
+      "text": "Synonym of 'Brave'",
+      "options": ["Coward", "Fearful", "Courageous", "Timid"],
+      "correct": "Courageous"
+    },
+    {
+      "id": 88,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Select the correctly spelled word:",
+      "options": ["Accommodate", "Acommodate", "Accommodate", "Acomodate"],
+      "correct": "Accommodate"
+    },
+    {
+      "id": 89,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Fill blank: She is ___ university professor.",
+      "options": ["a", "an", "the", "none"],
+      "correct": "a"
+    },
+    {
+      "id": 90,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Choose the correct meaning: 'Brevity' means",
+      "options": ["Long", "Shortness", "Width", "Height"],
+      "correct": "Shortness"
+    },
+    {
+      "id": 91,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Antonym of 'Famous'",
+      "options": ["Renowned", "Popular", "Obscure", "Well-known"],
+      "correct": "Obscure"
+    },
+    {
+      "id": 92,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Synonym of 'Abundant'",
+      "options": ["Scarce", "Plentiful", "Rare", "Limited"],
+      "correct": "Plentiful"
+    },
+    {
+      "id": 93,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Choose the correct sentence:",
+      "options": ["He go to school", "He goes to school", "He going to school", "He gone to school"],
+      "correct": "He goes to school"
+    },
+    {
+      "id": 94,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "What is the past tense of 'write'?",
+      "options": ["Writed", "Wrote", "Written", "Writing"],
+      "correct": "Wrote"
+    },
+    {
+      "id": 95,
+      "section": "Verbal Ability",
+      "difficulty": "Intermediate",
+      "text": "Choose the idiom: 'To be in the same boat' means:",
+      "options": ["Same problem", "Same journey", "Floating", "Uncertain"],
+      "correct": "Same problem"
+    },
+    {
+      "id": 96,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "Select the correct passive: 'They will have completed the project.'",
+      "options": ["The project will have been completed", "The project will be completed", "Project completed", "They have completed"],
+      "correct": "The project will have been completed"
+    },
+    {
+      "id": 97,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "Find the error: Neither the manager nor his assistants was present.",
+      "options": ["was", "nor", "assistants", "no error"],
+      "correct": "was"
+    },
+    {
+      "id": 98,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "Spot error: 'Each of the boys have done his work.'",
+      "options": ["have", "each", "his", "boys"],
+      "correct": "have"
+    },
+    {
+      "id": 99,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "Synonym of 'Ephemeral'",
+      "options": ["Permanent", "Short-lived", "Eternal", "Long-lasting"],
+      "correct": "Short-lived"
+    },
+    {
+      "id": 100,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "Antonym of 'Vivid'",
+      "options": ["Bright", "Lively", "Dull", "Clear"],
+      "correct": "Dull"
+    },
+    {
+      "id": 101,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "Choose the correct word: 'He is ___ to succeed.'",
+      "options": ["Bound", "Bounded", "Binding", "Bonds"],
+      "correct": "Bound"
+    },
+    {
+      "id": 102,
+      "section": "Verbal Ability",
+      "difficulty": "Advanced",
+      "text": "What is the meaning of 'Cacophony'?",
+      "options": ["Harmony", "Pleasant sound", "Harsh sound", "Melody"],
+      "correct": "Harsh sound"
+    },
+    {
+      "id": 103,
+      "section": "Verbal Ability",
+      "difficulty": "Expert",
+      "text": "Identify the figure of speech: 'Life is a roller coaster'",
+      "options": ["Simile", "Metaphor", "Personification", "Hyperbole"],
+      "correct": "Metaphor"
+    },
+    {
+      "id": 104,
+      "section": "Verbal Ability",
+      "difficulty": "Expert",
+      "text": "Choose the correct word: 'The jury ___ divided in their opinion.'",
+      "options": ["was", "were", "is", "are"],
+      "correct": "were"
+    },
+    {
+      "id": 105,
+      "section": "Verbal Ability",
+      "difficulty": "Expert",
+      "text": "Synonym of 'Ubiquitous'",
+      "options": ["Rare", "Everywhere", "Scarce", "Limited"],
+      "correct": "Everywhere"
+    },
+    {
+      "id": 106,
+      "section": "Data Interpretation",
+      "difficulty": "Beginner",
+      "text": "If a pie chart shows 40% sales for Product A, angle in degrees?",
+      "options": ["144°", "120°", "100°", "90°"],
+      "correct": "144°"
+    },
+    {
+      "id": 107,
+      "section": "Data Interpretation",
+      "difficulty": "Beginner",
+      "text": "If ratio of boys:girls = 3:2 and total 50, number of boys?",
+      "options": ["30", "20", "25", "35"],
+      "correct": "30"
+    },
+    {
+      "id": 108,
+      "section": "Data Interpretation",
+      "difficulty": "Beginner",
+      "text": "In a bar graph, Jan sales 100, Feb 150, March 200. What is total sales?",
+      "options": ["400", "450", "500", "550"],
+      "correct": "450"
+    },
+    {
+      "id": 109,
+      "section": "Data Interpretation",
+      "difficulty": "Beginner",
+      "text": "If 25% of students like cricket, and total students 200, how many like cricket?",
+      "options": ["40", "45", "50", "55"],
+      "correct": "50"
+    },
+    {
+      "id": 110,
+      "section": "Data Interpretation",
+      "difficulty": "Beginner",
+      "text": "A table shows marks: Math 80, Science 70, English 90. What is average?",
+      "options": ["75", "80", "85", "90"],
+      "correct": "80"
+    },
+    {
+      "id": 111,
+      "section": "Data Interpretation",
+      "difficulty": "Intermediate",
+      "text": "A bar graph: Jan sales 200, Feb 250, March 300. Percentage increase from Jan to March?",
+      "options": ["50%", "40%", "25%", "30%"],
+      "correct": "50%"
+    },
+    {
+      "id": 112,
+      "section": "Data Interpretation",
+      "difficulty": "Intermediate",
+      "text": "If 5% of total = 250, find total.",
+      "options": ["5000", "4000", "4500", "5500"],
+      "correct": "5000"
+    },
+    {
+      "id": 113,
+      "section": "Data Interpretation",
+      "difficulty": "Intermediate",
+      "text": "In a line graph, sales: 2019: 300, 2020: 450, 2021: 600. What is growth from 2019 to 2021?",
+      "options": ["50%", "75%", "100%", "125%"],
+      "correct": "100%"
+    },
+    {
+      "id": 114,
+      "section": "Data Interpretation",
+      "difficulty": "Intermediate",
+      "text": "A pie chart: A=30%, B=45%, C=25%. What is central angle for B?",
+      "options": ["162°", "108°", "90°", "126°"],
+      "correct": "162°"
+    },
+    {
+      "id": 115,
+      "section": "Data Interpretation",
+      "difficulty": "Intermediate",
+      "text": "If mean of 5 numbers is 12, what is their sum?",
+      "options": ["50", "55", "60", "65"],
+      "correct": "60"
+    },
+    {
+      "id": 116,
+      "section": "Data Interpretation",
+      "difficulty": "Advanced",
+      "text": "Table: 2019: 5000, 2020: 6200, 2021: 7500. Approx growth rate (CAGR) 2019-2021?",
+      "options": ["22.5%", "18.2%", "25%", "20.5%"],
+      "correct": "22.5%"
+    },
+    {
+      "id": 117,
+      "section": "Data Interpretation",
+      "difficulty": "Advanced",
+      "text": "In a graph, sales grew from 400 to 600 in 2 years. Annual growth rate?",
+      "options": ["22.5%", "25%", "20%", "18%"],
+      "correct": "22.5%"
+    },
+    {
+      "id": 118,
+      "section": "Data Interpretation",
+      "difficulty": "Advanced",
+      "text": "A company's profit: 2018: 120, 2019: 150, 2020: 180, 2021: 210. What is the trend?",
+      "options": ["Increasing by 20", "Increasing by 30", "Decreasing", "Constant"],
+      "correct": "Increasing by 30"
+    },
+    {
+      "id": 119,
+      "section": "Data Interpretation",
+      "difficulty": "Advanced",
+      "text": "If 20% of A = 30% of B, find A:B",
+      "options": ["2:3", "3:2", "4:5", "5:4"],
+      "correct": "3:2"
+    },
+    {
+      "id": 120,
+      "section": "Data Interpretation",
+      "difficulty": "Advanced",
+      "text": "A pie chart shows expenses: Rent 40%, Food 25%, Transport 15%, Others 20%. If total budget is ₹50000, what is rent amount?",
+      "options": ["₹20000", "₹25000", "₹15000", "₹10000"],
+      "correct": "₹20000"
+    },
+    {
+      "id": 121,
+      "section": "Abstract Reasoning",
+      "difficulty": "Beginner",
+      "text": "Which shape completes pattern: Circle, Triangle, Square, ?",
+      "options": ["Pentagon", "Hexagon", "Rectangle", "Oval"],
+      "correct": "Pentagon"
+    },
+    {
+      "id": 122,
+      "section": "Abstract Reasoning",
+      "difficulty": "Beginner",
+      "text": "Which is the odd one: Red, Blue, Green, Circle",
+      "options": ["Circle", "Red", "Blue", "Green"],
+      "correct": "Circle"
+    },
+    {
+      "id": 123,
+      "section": "Abstract Reasoning",
+      "difficulty": "Beginner",
+      "text": "Find next: ▲, ■, ●, ▲, ■, ?",
+      "options": ["●", "▲", "■", "◆"],
+      "correct": "●"
+    },
+    {
+      "id": 124,
+      "section": "Abstract Reasoning",
+      "difficulty": "Beginner",
+      "text": "Complete: ✪, ✫, ✪, ✫, ?",
+      "options": ["✪", "✫", "★", "☆"],
+      "correct": "✪"
+    },
+    {
+      "id": 125,
+      "section": "Abstract Reasoning",
+      "difficulty": "Beginner",
+      "text": "Which is different: ↑, ↓, ←, →, ●",
+      "options": ["↑", "↓", "←", "●"],
+      "correct": "●"
+    },
+    {
+      "id": 126,
+      "section": "Abstract Reasoning",
+      "difficulty": "Intermediate",
+      "text": "If all A are B and some B are C, which is true?",
+      "options": ["All A are C", "Some A are C", "No conclusion", "All C are A"],
+      "correct": "No conclusion"
+    },
+    {
+      "id": 127,
+      "section": "Abstract Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Pattern: ▲◆▲◆◆▲◆◆◆? Next symbol?",
+      "options": ["▲", "◆", "▲◆", "◆◆◆◆"],
+      "correct": "▲"
+    },
+    {
+      "id": 128,
+      "section": "Abstract Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Find next: 1, 3, 6, 10, 15, ?",
+      "options": ["20", "21", "22", "23"],
+      "correct": "21"
+    },
+    {
+      "id": 129,
+      "section": "Abstract Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Which completes: ◇, □, ○, ◇, □, ?",
+      "options": ["○", "◇", "□", "△"],
+      "correct": "○"
+    },
+    {
+      "id": 130,
+      "section": "Abstract Reasoning",
+      "difficulty": "Intermediate",
+      "text": "Find odd one: 2, 4, 8, 16, 20, 32",
+      "options": ["20", "16", "8", "32"],
+      "correct": "20"
+    },
+    {
+      "id": 131,
+      "section": "Abstract Reasoning",
+      "difficulty": "Advanced",
+      "text": "Pattern: 2, 4, 8, 16, ?",
+      "options": ["24", "30", "32", "36"],
+      "correct": "32"
+    },
+    {
+      "id": 132,
+      "section": "Abstract Reasoning",
+      "difficulty": "Advanced",
+      "text": "Complete: ●, ●●, ●●●, ●●●●, ?",
+      "options": ["●●●●●", "●●●●", "●●●", "●●"],
+      "correct": "●●●●●"
+    },
+    {
+      "id": 133,
+      "section": "Abstract Reasoning",
+      "difficulty": "Advanced",
+      "text": "If ★ = 1, ★★ = 2, ★★★ = 3, then ★★★★★★ = ?",
+      "options": ["4", "5", "6", "7"],
+      "correct": "6"
+    },
+    {
+      "id": 134,
+      "section": "Abstract Reasoning",
+      "difficulty": "Advanced",
+      "text": "Find next: △, □, ○, △, □, ?",
+      "options": ["○", "△", "□", "◇"],
+      "correct": "○"
+    },
+    {
+      "id": 135,
+      "section": "Abstract Reasoning",
+      "difficulty": "Advanced",
+      "text": "Which is different: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 24",
+      "options": ["24", "21", "23", "19"],
+      "correct": "24"
+    }
+  ]
+}

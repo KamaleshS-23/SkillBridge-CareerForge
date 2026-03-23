@@ -1,0 +1,602 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AI Mock Interview - Real LLM Powered | SkillBridge & CareerForge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+    </head>
+<body class="min-h-screen">
+
+<div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-72 sidebar-bg border-r border-purple-900/20 flex flex-col">
+        <div class="p-6 border-b border-purple-900/20">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl logo-font">AI</div>
+                <div>
+                    <h1 class="text-2xl font-semibold tracking-tight logo-font text-white">Mock Interview</h1>
+                    <p class="text-xs text-purple-200">Real AI • Adaptive • Feedback</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-5 space-y-1">
+            <div class="text-xs uppercase font-semibold text-purple-300 mb-3 px-2">Choose Type</div>
+            
+            <button onclick="selectType('hr')" id="btn-hr"
+                class="type-btn w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-purple-800/30 transition-all text-white">
+                <i class="fas fa-user-tie text-purple-300 text-lg"></i>
+                <div>
+                    <div class="font-medium">HR / Behavioral</div>
+                    <div class="text-xs text-purple-400">Classic & situational</div>
+                </div>
+            </button>
+
+            <button onclick="selectType('technical')" id="btn-technical"
+                class="type-btn w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-purple-800/30 transition-all text-white">
+                <i class="fas fa-code text-purple-300 text-lg"></i>
+                <div>
+                    <div class="font-medium">Technical</div>
+                    <div class="text-xs text-purple-400">Coding • DSA • Design</div>
+                </div>
+            </button>
+
+            <button onclick="selectType('communication')" id="btn-communication"
+                class="type-btn w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-purple-800/30 transition-all text-white">
+                <i class="fas fa-comment-dots text-purple-300 text-lg"></i>
+                <div>
+                    <div class="font-medium">Communication</div>
+                    <div class="text-xs text-purple-400">Explaining • Storytelling</div>
+                </div>
+            </button>
+        </div>
+
+        <div class="p-5 space-y-1 border-t border-purple-900/20">
+            <div class="text-xs uppercase font-semibold text-purple-300 mb-3 px-2">Difficulty Level</div>
+            
+            <button onclick="selectDifficulty('easy')" id="btn-easy"
+                class="difficulty-btn w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-purple-800/30 transition-all text-white">
+                <i class="fas fa-seedling text-green-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Easy</div>
+                    <div class="text-xs text-purple-400">Basic questions • More hints</div>
+                </div>
+            </button>
+
+            <button onclick="selectDifficulty('medium')" id="btn-medium"
+                class="difficulty-btn w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-purple-800/30 transition-all text-white">
+                <i class="fas fa-fire text-orange-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Medium</div>
+                    <div class="text-xs text-purple-400">Standard • Balanced challenge</div>
+                </div>
+            </button>
+
+            <button onclick="selectDifficulty('advanced')" id="btn-advanced"
+                class="difficulty-btn w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-purple-800/30 transition-all text-white">
+                <i class="fas fa-rocket text-red-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Advanced</div>
+                    <div class="text-xs text-purple-400">Complex • Probing questions</div>
+                </div>
+            </button>
+        </div>
+
+        <div class="mt-auto p-5 border-t border-purple-900/20 text-xs text-purple-400">
+            Powered by real AI • 6–8 questions per session
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col bg-white/95 backdrop-blur-sm">
+
+        <!-- Top Bar -->
+        <header class="h-16 bg-white/90 backdrop-blur-sm border-b border-purple-100 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-5">
+                <button onclick="closeAIMockInterview()" class="flex items-center gap-2 text-purple-600 hover:text-purple-800 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </button>
+                <div id="interview-info" class="hidden flex items-center gap-4">
+                    <div class="px-4 py-1.5 bg-purple-100 rounded-full text-sm font-medium flex items-center gap-2">
+                        <span id="interview-type-display" class="text-purple-700 uppercase font-semibold"></span>
+                        <span class="text-purple-400">•</span>
+                        <span class="text-purple-500">Powered by Gemini API</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-5 text-sm">
+                <div class="connected-indicator flex items-center gap-2 px-4 py-1.5 rounded-full">
+                    <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-green-600 text-xs font-medium">Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Home -->
+        <div id="home" class="flex-1 flex items-center justify-center p-8">
+            <div class="text-center max-w-xl">
+                <div class="text-6xl mb-6 floating">🧠</div>
+                <h2 class="text-4xl font-bold tracking-tight logo-font mb-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Real AI Interview Coach</h2>
+                <p class="text-gray-600 mb-10 text-lg">Adaptive questions • Smart follow-ups • Personalized feedback</p>
+                
+                <button onclick="startInterview()" 
+                    class="btn-primary text-white font-semibold text-lg px-12 py-5 rounded-3xl transition-all active:scale-95 flex items-center gap-3 mx-auto">
+                    <i class="fas fa-play"></i>
+                    START REAL MOCK INTERVIEW
+                </button>
+            </div>
+        </div>
+
+        <!-- Interview Screen -->
+        <div id="interview" class="hidden flex-1 flex flex-col">
+            <div class="bg-white border-b border-purple-100 p-4 flex items-center justify-between px-6">
+                <div class="flex items-center gap-5">
+                    <div class="px-5 py-2 bg-purple-100 rounded-full text-sm font-mono font-bold flex items-center gap-2">
+                        <span id="turn-count" class="text-purple-700">1</span>
+                        <span class="text-purple-400">/</span>
+                        <span class="text-purple-500">~8</span>
+                    </div>
+                    <div id="current-question-text" class="text-lg font-medium max-w-2xl line-clamp-2 text-gray-800"></div>
+                </div>
+                <div class="flex items-center gap-3 bg-purple-100 px-6 py-2.5 rounded-full">
+                    <i class="fas fa-clock text-purple-600"></i>
+                    <span id="timer-display" class="font-mono text-xl font-semibold timer text-purple-700">02:00</span>
+                </div>
+            </div>
+
+            <div id="chat" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container bg-gray-50"></div>
+
+            <div class="bg-white border-t border-purple-100 p-6">
+                <div class="relative">
+                    <textarea id="answer-input" rows="3"
+                        class="w-full bg-gray-50 border border-purple-200 focus:border-purple-500 rounded-3xl px-6 py-4 text-base resize-none focus:outline-none placeholder-purple-300 text-gray-800"
+                        placeholder="Type your answer... (Ctrl + Enter to send)"></textarea>
+                    <button onclick="sendAnswer()"
+                        class="absolute bottom-5 right-5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-7 py-3 rounded-3xl font-semibold flex items-center gap-2 transition active:scale-95">
+                        Send <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between text-xs text-purple-500 mt-3 px-4">
+                    <div>Press <kbd class="bg-purple-100 px-2 py-1 rounded">ESC</kbd> to skip</div>
+                    <div id="char-counter">0 / 1500</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback -->
+        <div id="feedback" class="hidden flex-1 overflow-auto p-8 bg-gray-50">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-start mb-10">
+                    <div>
+                        <h2 class="text-4xl font-bold logo-font bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Interview Complete</h2>
+                        <div class="text-8xl font-extrabold text-purple-600 mt-3" id="score-final">—</div>
+                        <p class="text-gray-600">Estimated Readiness</p>
+                    </div>
+                    <button onclick="restart()"
+                        class="flex items-center gap-3 bg-white border border-purple-200 hover:bg-purple-50 px-8 py-4 rounded-3xl font-medium text-purple-700 transition-colors">
+                        <i class="fas fa-rotate-right"></i> Try Again
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-3xl p-7 border border-purple-100">
+                        <div class="uppercase text-xs text-green-600 mb-4 font-semibold flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> Strengths
+                        </div>
+                        <ul id="strengths" class="space-y-3 text-sm text-gray-700"></ul>
+                    </div>
+                    <div class="bg-white rounded-3xl p-7 border border-purple-100">
+                        <div class="uppercase text-xs text-orange-600 mb-4 font-semibold flex items-center gap-2">
+                            <i class="fas fa-lightbulb"></i> Improvement Areas
+                        </div>
+                        <ul id="improvements" class="space-y-3 text-sm text-gray-700"></ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-3xl p-7 border border-purple-100">
+                    <div class="uppercase text-xs text-gray-500 mb-4 font-semibold">Full Transcript</div>
+                    <div id="transcript-area" class="text-sm leading-relaxed text-gray-700 max-h-80 overflow-auto space-y-6 pr-4"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-8 right-8 bg-white border border-purple-300 text-purple-700 px-6 py-4 rounded-3xl shadow-2xl flex items-center gap-3 z-50">
+    <i class="fas fa-circle-info"></i>
+    <span id="toast-msg"></span>
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+let currentType = null;
+let currentDifficulty = null;
+let conversationHistory = [];
+let userAnswers = [];
+let turnCount = 0;
+let timerInterval = null;
+let timeLeft = 120;
+
+const MAX_TURNS = 7; // ~6-8 questions + feedback
+
+// ─── API Config ──────────────────────────────────
+// WARNING: Do NOT commit this key to git or share the file publicly!
+// For production → use a backend proxy
+const API_KEY = "AIzaSyCr-OEGcC9JwgzPSHzCgVtnxue-3Wq4cPA";   // ← your Gemini API key
+const MODEL = "gemini-2.5-flash";                   // fast, capable, and cheap Gemini model
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+
+// ─── Helpers ─────────────────────────────────────
+function addMessage(role, html) {
+    const chat = document.getElementById("chat");
+    const div = document.createElement("div");
+    div.className = `flex ${role === 'ai' ? '' : 'justify-end'}`;
+    div.innerHTML = `
+        <div class="message-bubble ${role === 'ai' ? 'ai-bubble' : 'user-bubble'}">
+            ${html}
+        </div>
+    `;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timeLeft = 120;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            addMessage("ai", "<i>Time's up — let's continue.</i>");
+            askAI(false);
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    document.getElementById("timer-display").textContent = 
+        `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+async function askAI(isStart = false) {
+    if (timerInterval) clearInterval(timerInterval);
+
+    const thinkingId = Date.now();
+    addMessage("ai", `<div id="thinking-${thinkingId}" class="flex items-center gap-3"><div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-150"></div><div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-300"></div> AI thinking...</div>`);
+
+    const systemPrompt = `You are a professional, supportive but realistic ${currentType.toUpperCase()} interviewer preparing candidates for real tech/startup interviews (FAANG-style, product-based companies, etc.).
+
+Difficulty Level: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}
+- EASY: Basic questions, more guidance, simpler scenarios
+- MEDIUM: Standard interview questions, balanced complexity  
+- ADVANCED: Complex scenarios, probing questions, senior-level expectations
+
+Rules:
+- Ask ONE clear question or give short, targeted feedback at a time
+- Use STAR method guidance for behavioral answers when appropriate
+- Adapt difficulty based on the selected level: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}
+- Occasionally give quick tips (filler words, structure, metrics, confidence)
+- Keep replies concise unless giving detailed feedback
+- Do NOT break character
+- End interview naturally after ~6-8 turns if appropriate
+
+Interview type: ${currentType.toUpperCase()} | Difficulty: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}`;
+
+    const userPrompt = isStart 
+        ? "Start a realistic mock interview now. Begin with your first question."
+        : (userAnswers.length > 0 ? userAnswers[userAnswers.length-1].answer : "Continue with next question or follow-up.");
+
+    let conversationText = systemPrompt + "\n\nConversation history:\n";
+    conversationHistory.forEach(msg => {
+        conversationText += `${msg.role}: ${msg.content}\n`;
+    });
+
+    conversationText += `user: ${userPrompt}\n\nassistant:`;
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: conversationText
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 450,
+                }
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            throw new Error(err);
+        }
+
+        const data = await res.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Sorry — no response received.";
+
+        // Remove thinking
+        const thinking = document.getElementById(`thinking-${thinkingId}`);
+        if (thinking) thinking.parentElement.remove();
+
+        addMessage("ai", reply);
+        conversationHistory.push({ role: "user", content: userPrompt });
+        conversationHistory.push({ role: "assistant", content: reply });
+
+        turnCount++;
+        document.getElementById("turn-count").textContent = turnCount;
+
+        if (turnCount >= MAX_TURNS || reply.toLowerCase().includes("thank you") || reply.toLowerCase().includes("end of interview")) {
+            finishInterview();
+        } else {
+            startTimer();
+        }
+
+    } catch (err) {
+        console.error(err);
+        addMessage("ai", `Error: Could not connect to AI (${err.message}).<br>Please check API key or try again later.`);
+    }
+}
+
+// ─── Core Actions ─────────────────────────────────
+function selectType(type) {
+    currentType = type;
+    document.querySelectorAll(".type-btn").forEach(el => {
+        el.classList.remove("active-btn");
+    });
+    document.getElementById(`btn-${type}`).classList.add("active-btn");
+}
+
+function selectDifficulty(difficulty) {
+    currentDifficulty = difficulty;
+    document.querySelectorAll(".difficulty-btn").forEach(el => {
+        el.classList.remove("active-btn");
+    });
+    document.getElementById(`btn-${difficulty}`).classList.add("active-btn");
+}
+
+function startInterview() {
+    if (!currentType) {
+        selectType("hr");
+        showToast("Defaulted to HR / Behavioral");
+    }
+    
+    if (!currentDifficulty) {
+        selectDifficulty("medium");
+        showToast("Defaulted to Medium difficulty");
+    }
+
+    conversationHistory = [];
+    userAnswers = [];
+    turnCount = 0;
+
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("interview").classList.remove("hidden");
+    document.getElementById("interview-info").classList.remove("hidden");
+    document.getElementById("interview-type-display").textContent = `${currentType.toUpperCase()} • ${currentDifficulty.toUpperCase()}`;
+
+    document.getElementById("chat").innerHTML = "";
+    addMessage("ai", `Welcome! I'm your real AI interviewer for <b>${currentType.toUpperCase()}</b> at <b>${currentDifficulty.toUpperCase()}</b> difficulty.<br>We'll have an adaptive conversation — answer naturally. Good luck!`);
+
+    setTimeout(() => askAI(true), 1200);
+}
+
+function sendAnswer() {
+    const input = document.getElementById("answer-input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    userAnswers.push({ answer: text });
+
+    input.value = "";
+    if (timerInterval) clearInterval(timerInterval);
+
+    setTimeout(() => askAI(false), 800);
+}
+
+async function finishInterview() {
+    clearInterval(timerInterval);
+
+    document.getElementById("interview").classList.add("hidden");
+    document.getElementById("feedback").classList.remove("hidden");
+
+    // Get AI-generated personalized feedback
+    const feedback = await getFeedbackFromAI();
+
+    // Mock score (you can later ask AI for real evaluation)
+    const score = 65 + Math.floor(Math.random() * 30);
+    document.getElementById("score-final").textContent = score;
+
+    document.getElementById("strengths").innerHTML = feedback.strengths.map(s => `<li class="flex gap-3"><span class="text-green-600">✔</span> ${s}</li>`).join('');
+    document.getElementById("improvements").innerHTML = feedback.improvements.map(i => `<li class="flex gap-3"><span class="text-orange-600">→</span> ${i}</li>`).join('');
+
+    let transcript = "";
+    userAnswers.forEach((item, i) => {
+        transcript += `
+            <div class="border-l-4 border-purple-200 pl-4">
+                <div class="font-medium text-purple-700 mb-1">Your Answer #${i+1}</div>
+                <div class="text-gray-700">${item.answer}</div>
+            </div>
+        `;
+    });
+    document.getElementById("transcript-area").innerHTML = transcript;
+
+    showToast("Great session! Review your performance.");
+}
+
+async function getFeedbackFromAI() {
+    const feedbackPrompt = `You are an expert interview coach analyzing a mock interview performance. Based on the conversation below, provide specific, personalized feedback.
+
+Interview type: ${currentType.toUpperCase()}
+Difficulty level: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}
+
+Full conversation:
+${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
+
+Please analyze the candidate's performance and provide:
+
+STRENGTHS (3-4 specific points based on their actual answers):
+- What they did well in this specific interview
+- Specific examples from their answers
+- Communication skills they demonstrated
+
+IMPROVEMENT AREAS (3-4 specific points based on their actual answers):
+- Specific gaps in their responses
+- Where they could provide more detail or structure
+- Interview techniques they should improve
+
+Format your response as JSON:
+{
+  "strengths": ["point 1", "point 2", "point 3"],
+  "improvements": ["point 1", "point 2", "point 3"]
+}
+
+Make the feedback specific to this interview, not generic advice.`;
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: feedbackPrompt
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.3,
+                    maxOutputTokens: 500,
+                }
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            throw new Error(err);
+        }
+
+        const data = await res.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+        
+        // Try to parse JSON response
+        try {
+            const jsonMatch = reply.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
+            }
+        } catch (parseError) {
+            console.error("Failed to parse AI feedback:", parseError);
+        }
+
+        // Fallback if JSON parsing fails
+        return {
+            strengths: ["Engaged well with most questions", "Clear communication in places"],
+            improvements: ["Add more specific examples / metrics", "Practice reducing filler words", "Structure behavioral answers (STAR)"]
+        };
+
+    } catch (err) {
+        console.error("Error getting AI feedback:", err);
+        // Fallback feedback
+        return {
+            strengths: ["Engaged well with most questions", "Clear communication in places"],
+            improvements: ["Add more specific examples / metrics", "Practice reducing filler words", "Structure behavioral answers (STAR)"]
+        };
+    }
+}
+
+function restart() {
+    document.getElementById("feedback").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("interview-info").classList.add("hidden");
+}
+
+function goHome() {
+    // Check if we're in an iframe or embedded context
+    if (window.parent !== window) {
+        // We're embedded in the dashboard, so close the embedded view
+        try {
+            window.parent.closeProfilePage();
+        } catch (error) {
+            // Fallback: try to reload the dashboard
+            window.parent.location.href = '/dashboard/';
+        }
+    } else {
+        // We're on a standalone page, use the original behavior
+        if (confirm("End session? Progress lost.")) restart();
+    }
+}
+
+// Add a function to handle the dashboard close button specifically
+function closeAIMockInterview() {
+    if (window.parent !== window) {
+        // We're in an iframe, try to communicate with parent
+        try {
+            window.parent.closeProfilePage();
+        } catch (error) {
+            console.error('Could not close AI Mock Interview:', error);
+            // Fallback: navigate parent to dashboard
+            try {
+                window.parent.location.href = '/dashboard/';
+            } catch (e) {
+                console.error('Could not navigate parent:', e);
+            }
+        }
+    } else {
+        // We're on a standalone page, navigate to dashboard
+        window.location.href = '/dashboard/';
+    }
+}
+
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    document.getElementById("toast-msg").textContent = msg;
+    t.classList.remove("hidden");
+    setTimeout(() => t.classList.add("hidden"), 3400);
+}
+
+// ─── Listeners ───────────────────────────────────
+document.getElementById("answer-input").addEventListener("input", function() {
+    document.getElementById("char-counter").textContent = `${this.value.length} / 1500`;
+});
+
+document.addEventListener("keydown", e => {
+    if (e.ctrlKey && e.key === "Enter") {
+        if (!document.getElementById("interview").classList.contains("hidden")) sendAnswer();
+    }
+    if (e.key === "Escape") {
+        if (!document.getElementById("interview").classList.contains("hidden")) {
+            addMessage("ai", "<i>Skipped — moving on...</i>");
+            askAI(false);
+        }
+    }
+});
+
+// Init
+window.addEventListener("load", () => {
+    selectType("hr");
+    selectDifficulty("medium");
+    showToast("Choose type & difficulty → real AI interview begins!");
+});
+</script>
+</body>
+</html>

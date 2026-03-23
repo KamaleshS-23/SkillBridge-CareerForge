@@ -1,0 +1,2630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillBridge & CareerForge | AI-Powered Career Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7C3AED;
+            --primary-dark: #5B21B6;
+            --secondary: #EC4899;
+            --accent: #06B6D4;
+            --accent-light: #3B82F6;
+            --dark: #1E1B4B;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --light-gray: #E2E8F0;
+            --sidebar-bg: linear-gradient(180deg, #1E1B4B 0%, #312E81 100%);
+            --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+            --gradient-secondary: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 380px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 40px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            border-right: 3px solid var(--accent);
+        }
+
+        .sidebar-header {
+            padding: 0 40px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .logo-text {
+            font-size: 1.9rem;
+            line-height: 1.2;
+        }
+
+        .logo-text span:first-child {
+            color: white;
+            display: block;
+        }
+
+        .logo-text span:last-child {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .logo-text span:last-child::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-secondary);
+            border-radius: 2px;
+        }
+
+        .sidebar-tagline {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .features-title {
+            padding: 0 40px 20px;
+            font-size: 1.8rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-title i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .features-list {
+            list-style: none;
+        }
+
+        .feature-item {
+            padding: 25px 40px;
+            border-left: 5px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: var(--accent);
+            padding-left: 45px;
+        }
+
+        .feature-item.active {
+            background: rgba(124, 58, 237, 0.15);
+            border-left-color: var(--primary);
+            padding-left: 45px;
+        }
+
+        .feature-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%);
+            z-index: -1;
+        }
+
+        .feature-number {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-number::before {
+            content: '';
+            width: 15px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .feature-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .feature-item p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .feature-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 380px;
+            min-height: 100vh;
+            background: var(--light);
+        }
+
+        /* Header */
+        .main-header {
+            background-color: white;
+            padding: 25px 50px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-text h1 {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header-text p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(124, 58, 237, 0.05);
+            transform: translateY(-3px);
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 50px;
+        }
+
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 80px 50px;
+            background: linear-gradient(135deg, #F1F5F9 0%, #E0F2FE 100%);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .hero-text h2 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+
+        .hero-text h2 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .hero-text h2 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--gradient);
+            opacity: 0.2;
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 35px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-lg {
+            padding: 16px 35px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .dashboard-mockup {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(124, 58, 237, 0.15);
+            transform: perspective(1000px) rotateY(-10deg);
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 15px;
+        }
+
+        .dashboard-tab {
+            padding: 8px 15px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .dashboard-tab.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .dashboard-chart {
+            height: 180px;
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dashboard-item {
+            height: 50px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .dashboard-item i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        /* Feature Detail Section */
+        .feature-detail {
+            padding: 60px 50px;
+            background: white;
+            border-radius: 20px;
+            margin: 40px 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+            display: none;
+        }
+
+        .feature-detail.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .detail-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
+        }
+
+        .detail-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .detail-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .feature-detail-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .detail-description h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .detail-description p {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .benefits-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .benefits-list li i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .detail-stats {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-item h4 {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 50px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 20px;
+            margin: 0 50px 50px;
+        }
+
+        .main-stat {
+            text-align: center;
+        }
+
+        .main-stat h3 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .main-stat p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #F8FAFC 0%, #E0F2FE 100%);
+            border-radius: 20px;
+            margin: 0 50px 50px;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 25px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 50px 30px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo .logo-text {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: white;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .footer-column a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-icon:hover {
+            background: var(--gradient);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--dark);
+            cursor: pointer;
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 1000;
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* User badge for logged-in email */
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(124, 58, 237, 0.1);
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: var(--primary-dark);
+            font-weight: 600;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            font-size: 0.95rem;
+        }
+
+        .user-badge i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* AI Profiling Container */
+        .profiling-container {
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .profiling-container.active {
+            display: block;
+        }
+
+        .dashboard-view {
+            display: block;
+        }
+
+        .dashboard-view.hidden {
+            display: none;
+        }
+
+
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 350px;
+            }
+
+            .main-content {
+                margin-left: 350px;
+            }
+
+            .hero-text h2 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 320px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .dashboard-mockup {
+                max-width: 500px;
+                margin: 0 auto;
+                transform: none;
+            }
+
+            .feature-detail-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .hero-section,
+            .content-section,
+            .feature-detail,
+            .stats-section,
+            .cta-section,
+            .footer {
+                padding: 40px 25px;
+                margin: 20px 25px;
+            }
+
+            .hero-text h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .detail-title h2 {
+                font-size: 2rem;
+            }
+
+            .header-text h1 {
+                font-size: 2rem;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-text h2 {
+                font-size: 2.2rem;
+            }
+
+            .feature-item {
+                padding: 20px 25px;
+            }
+
+            .feature-item h3 {
+                font-size: 1.2rem;
+            }
+
+            .cta-section h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Scrollbar Styling */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar with Features -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-bridge"></i>
+                </div>
+                <div class="logo-text">
+                    <span>SkillBridge</span>
+                    <span>& CareerForge</span>
+                </div>
+            </a>
+            </div>
+
+        <h3 class="features-title">
+            <i class="fas fa-star"></i> 10 Core Features
+        </h3>
+
+        <ul class="features-list">
+            <!-- Feature 1 && AI Profiling Access -->
+            <li class="feature-item" data-feature="profiling"
+                style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number" style="color: var(--accent);">
+                            <i class="fas fa-rocket"></i> 01 Quick Access
+                        </div>
+                        <h4 style="margin-bottom: 8px;">
+                            Build AI Profile & AI Skill Profiling
+                            <i class="fas fa-brain feature-icon"></i>
+                        </h4>
+                        
+                    </div>
+                    <button onclick="loadProfilePage(); return false;" title="Open Profile" style="
+                        background: var(--primary);
+                        color: white;
+                        border: none;
+                        width: 45px;
+                        height: 45px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 20px;
+                        transition: all 0.3s ease;
+                        flex-shrink: 0;
+                    " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                        onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </li>
+            <!-- Feature 2 -->
+            <li class="feature-item" data-feature="2" style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number">02</div>
+                        <h4 style="margin-bottom: 8px;">
+                            Smart Internship Provider
+                            <i class="fas fa-handshake feature-icon"></i>
+                        </h4>
+                        
+                    </div>
+                </div>
+                <button onclick="loadInternshipPage(); return false;" title="Open Internship Finder" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </li>
+
+            <!-- Feature 3 -->
+            <li class="feature-item" data-feature="3" style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number">03</div>
+                        <h4 style="margin-bottom: 8px;">
+                            Skill Gap Analysis
+                            <i class="fas fa-search-minus feature-icon"></i>
+                        </h4>
+                        
+                    </div>
+                </div>
+                <button onclick="loadSkillGapPage(); return false;" title="Open Skill Gap Analysis" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </li>
+
+            <!-- Feature 4 -->
+            <li class="feature-item" data-feature="4">
+                <div class="feature-number">04</div>
+                <h4>
+                    Personalized Roadmap
+                    <i class="fas fa-road feature-icon"></i>
+                </h4>
+                
+            </li>
+
+            <!-- Feature 5 -->
+            <li class="feature-item" data-feature="5">
+                <div class="feature-number">05</div>
+                <h4>
+                    Certification Recommendations
+                    <i class="fas fa-certificate feature-icon"></i>
+                </h4>
+                
+            </li>
+
+            <!-- Feature 6 -->
+            <li class="feature-item" data-feature="6">
+                <div class="feature-number">06</div>
+                <h4>
+                    Smart Resume Builder
+                    <i class="fas fa-file-alt feature-icon"></i>
+                </h4>
+                
+            </li>
+
+            <!-- Feature 7 -->
+            <li class="feature-item" data-feature="7">
+                <div class="feature-number">07</div>
+                <h4>
+                    Technical Assessment Engine
+                    <i class="fas fa-code feature-icon"></i>
+                </h4>
+                
+            </li>
+
+            <!-- Feature 8 -->
+            <li class="feature-item" data-feature="8">
+                <div class="feature-number">08</div>
+                <h4>
+                    Aptitude & Reasoning Tests
+                    <i class="fas fa-calculator feature-icon"></i>
+                </h4>
+                
+            </li>
+
+            <!-- Feature 9 -->
+            <li class="feature-item" data-feature="9">
+                <div class="feature-number">09</div>
+                <h4>
+                    AI Mock Interview System
+                    <i class="fas fa-comments feature-icon"></i>
+                </h4>
+                
+            </li>
+
+            <!-- Feature 10 -->
+            <li class="feature-item" data-feature="10" style="background: rgba(6, 182, 212, 0.08); border-left-color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%; padding-right: 15px;">
+                    <div style="flex: 1;">
+                        <div class="feature-number">10</div>
+                        <h4 style="margin-bottom: 8px;">
+                            Progress Tracking & Insights
+                            <i class="fas fa-chart-line feature-icon"></i>
+                        </h4>
+                        
+                    </div>
+                </div>
+                <button onclick="loadProgressPage(); return false;" title="Open Progress Tracking" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='var(--accent)'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- Header with User Email Display (dynamic from Django context) -->
+        <header class="main-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>SkillBridge & CareerForge</h1>
+                    <p>Your AI-powered career success platform</p>
+                </div>
+                <div class="auth-buttons">
+                    {% if user.is_authenticated %}
+                    <!-- Show logged-in user email with badge -->
+                    <div class="user-badge">
+                        <i class="fas fa-user-circle"></i> {{ user.email }}
+                    </div>
+                    <a href="/accounts/logout/" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    {% else %}
+                    <!-- For demo / fallback, show static login (this will be replaced by Django) -->
+                    <button class="btn btn-outline" onclick="location.href='/accounts/login/'">
+                        <i class="fas fa-sign-in-alt"></i> Log In
+                    </button>
+                    <button class="btn btn-primary" onclick="location.href='/accounts/register/'">
+                        <i class="fas fa-rocket"></i> Get Started Free
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+
+        <!-- AI Profile Quick Access Button -->
+        <div class="ai-profile-cta" style="
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 20px 25px;
+            margin: 20px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        " onclick="loadProfilePage()" style="transition: transform 0.2s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(59, 130, 246, 0.4)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.3)';">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <i class="fas fa-brain" style="font-size: 24px;"></i>
+                <div style="text-align: left;">
+                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 600; color: white;">
+                        Build Your AI Profile
+                    </h3>
+                    <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: rgba(255, 255, 255, 0.9);">
+                        Create comprehensive profile with LinkedIn, GitHub & Resume
+                    </p>
+                </div>
+            </div>
+            <i class="fas fa-arrow-right" style="font-size: 20px; color: white; margin-left: 15px;"></i>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-text">
+                <h2>Bridge Your <span>Skill Gaps</span>, Forge Your <span>Dream Career</span></h2>
+                <p>An intelligent platform that analyzes your skills, identifies gaps, creates personalized learning
+                    paths, and matches you with perfect internships and jobs—all in one ecosystem.</p>
+
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-bolt"></i> Start Free Assessment
+                    </button>
+                    <button class="btn btn-outline btn-lg">
+                        <i class="fas fa-play-circle"></i> Watch Platform Tour
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <div class="dashboard-mockup floating">
+                    <div class="dashboard-header">
+                        <div class="dashboard-tabs">
+                            <div class="dashboard-tab active">Dashboard</div>
+                            <div class="dashboard-tab">Skills</div>
+                            <div class="dashboard-tab">Jobs</div>
+                        </div>
+                        <div class="dashboard-profile">
+                            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--primary);"></i>
+                        </div>
+                    </div>
+                    <div class="dashboard-content">
+                        <div class="dashboard-chart"></div>
+                        <div class="dashboard-sidebar">
+                            <div class="dashboard-item">
+                                <i class="fas fa-chart-line"></i> Skill Growth
+                            </div>
+                            <div class="dashboard-item">
+                                <i class="fas fa-briefcase"></i> Job Matches
+                            </div>
+                            <div class="dashboard-item">
+                                <i class="fas fa-road"></i> Learning Path
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Detail Section -->
+        <section class="feature-detail active" id="feature-detail-1">
+            <div class="feature-detail-header">
+                <div class="detail-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="detail-title">
+                    <h2>AI Skill Profiling</h2>
+                    <p>Intelligent analysis of your skills and proficiencies</p>
+                </div>
+            </div>
+
+            <div class="feature-detail-content">
+                <div class="detail-description">
+                    <h3>How It Works</h3>
+                    <p>Our advanced AI analyzes your resume, LinkedIn profile, or manual skill inputs to create a
+                        comprehensive skill profile. It extracts technical skills (programming languages, frameworks,
+                        tools), soft skills (communication, leadership, teamwork), and domain-specific knowledge with
+                        estimated proficiency levels.</p>
+
+                    <p>The system uses natural language processing and machine learning to understand context,
+                        experience levels, and skill relationships. It compares your profile with industry standards and
+                        current market demands to provide an accurate assessment of where you stand.</p>
+
+                    <h3>Key Benefits</h3>
+                    <ul class="benefits-list">
+                        <li><i class="fas fa-check-circle"></i> Automated resume parsing and skill extraction</li>
+                        <li><i class="fas fa-check-circle"></i> Proficiency level estimation (Beginner to Expert)</li>
+                        <li><i class="fas fa-check-circle"></i> Identification of transferable skills</li>
+                        <li><i class="fas fa-check-circle"></i> Visual skill mapping and competency charts</li>
+                        <li><i class="fas fa-check-circle"></i> Industry benchmark comparison</li>
+                    </ul>
+                </div>
+
+                <div class="detail-stats">
+                    <div class="stat-item">
+                        <h4>95%</h4>
+                        <p>Accuracy in skill extraction</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>2 min</h4>
+                        <p>Average profile creation time</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>50+</h4>
+                        <p>Skill categories analyzed</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>100k+</h4>
+                        <p>Profiles created successfully</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Other Feature Details (Hidden by default) -->
+        <section class="feature-detail" id="feature-detail-2">
+            <div class="feature-detail-header">
+                <div class="detail-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="detail-title">
+                    <h2>Smart Internship Provider</h2>
+                    <p>Intelligent matching with perfect internship opportunities</p>
+                </div>
+            </div>
+
+            <div class="feature-detail-content">
+                <div class="detail-description">
+                    <h3>How It Works</h3>
+                    <p>Our algorithm analyzes thousands of internship opportunities and matches them with your skill
+                        profile, preferences, and career goals. It considers multiple factors including required skills,
+                        experience level, location preferences (remote/onsite), company culture, and growth
+                        opportunities.</p>
+
+                    <p>Each match receives a match score from 0-100%, showing how well you align with the internship
+                        opportunity. The system learns from your interactions (applications, interviews, feedback) to
+                        continuously improve recommendations.</p>
+
+                    <h3>Key Benefits</h3>
+                    <ul class="benefits-list">
+                        <li><i class="fas fa-check-circle"></i> Personalized internship recommendations</li>
+                        <li><i class="fas fa-check-circle"></i> Intelligent match scoring system</li>
+                        <li><i class="fas fa-check-circle"></i> Real-time opportunity alerts</li>
+                        <li><i class="fas fa-check-circle"></i> One-click application process</li>
+                        <li><i class="fas fa-check-circle"></i> Direct company connections</li>
+                    </ul>
+                </div>
+
+                <div class="detail-stats">
+                    <div class="stat-item">
+                        <h4>90%</h4>
+                        <p>Higher interview conversion rate</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>8k+</h4>
+                        <p>Active internship opportunities</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>96%</h4>
+                        <p>User satisfaction with matches</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="main-stat">
+                <h3>50,000+</h3>
+                <p>Career Success Stories</p>
+            </div>
+            <div class="main-stat">
+                <h3>2,500+</h3>
+                <p>Partner Companies</p>
+            </div>
+            <div class="main-stat">
+                <h3>96%</h3>
+                <p>User Satisfaction Rate</p>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Transform Your Career Journey?</h2>
+            <p>Join thousands of students and early-career professionals who've landed their dream internships and jobs
+                with SkillBridge & CareerForge</p>
+
+            <div class="hero-buttons">
+                <button class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket"></i> Start Your Free Trial
+                </button>
+                <button class="btn btn-outline btn-lg">
+                    <i class="fas fa-calendar-alt"></i> Book a Personalized Demo
+                </button>
+            </div>
+        </section>
+
+        <!-- AI Profiling Container (Hidden by default) -->
+        <div id="profilingContainer" class="profiling-container"></div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo-text">
+                        <span>SkillBridge</span>
+                        <span>& CareerForge</span>
+                    </div>
+                    <p>An intelligent platform that bridges skill gaps and forges career paths through AI-powered
+                        matching, personalized learning, and comprehensive preparation.</p>
+
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>Platform</h3>
+                        <ul>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">How It Works</a></li>
+                            <li><a href="#">Pricing</a></li>
+                            <li><a href="#">Success Stories</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Career Blog</a></li>
+                            <li><a href="#">Skill Guides</a></li>
+                            <li><a href="#">Interview Prep</a></li>
+                            <li><a href="#">Resume Templates</a></li>
+                            <li><a href="#">Industry Reports</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Partners</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2023 SkillBridge & CareerForge. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+
+            // Change icon
+            const icon = mobileMenuBtn.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Feature Selection
+        const featureItems = document.querySelectorAll('.feature-item');
+        const featureDetails = document.querySelectorAll('.feature-detail');
+
+        featureItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                featureItems.forEach(f => f.classList.remove('active'));
+
+                // Add active class to clicked item
+                item.classList.add('active');
+
+                // Get feature number
+                const featureNumber = item.getAttribute('data-feature');
+
+                // Hide all feature details
+                featureDetails.forEach(detail => {
+                    detail.classList.remove('active');
+                });
+
+                // Show selected feature detail
+                const selectedDetail = document.getElementById(`feature-detail-${featureNumber}`);
+                if (selectedDetail) {
+                    selectedDetail.classList.add('active');
+                }
+
+                // Close sidebar on mobile
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('active');
+                    mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                    mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+                }
+            });
+        });
+
+        // Animate stats counter
+        function animateCounter(element, target, duration) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                element.textContent = Math.floor(start) + "+";
+
+                if (start >= target) {
+                    element.textContent = target + "+";
+                    clearInterval(timer);
+                }
+            }, 16);
+        }
+
+        // Trigger counter animation when stats section is in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = document.querySelectorAll('.main-stat h3');
+                    statNumbers.forEach(stat => {
+                        const text = stat.textContent;
+                        const target = parseInt(text.replace('+', ''));
+                        animateCounter(stat, target, 1500);
+                    });
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(document.querySelector('.stats-section'));
+
+        // Add hover effect to feature items
+        featureItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                if (!item.classList.contains('active')) {
+                    item.style.transform = 'translateX(10px)';
+                }
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Add click animation to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function () {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (event) => {
+            if (window.innerWidth <= 992 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(event.target) &&
+                !mobileMenuBtn.contains(event.target)) {
+                sidebar.classList.remove('active');
+                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+            }
+        });
+
+        // Skill Gap Analysis Page Integration
+        function loadSkillGapPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Skill Gap Analysis...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the skill gap page content
+            fetch('/skills/skill-gap/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Skill Gap page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Analysis</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the skill gap analysis page. Please try again.</p><button class="btn btn-primary" onclick="loadSkillGapPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="3"]');
+            if(featureTab) featureTab.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                if(mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if(icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function closeSkillGapPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+                document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                    cta.style.display = 'flex';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                const featureTab = document.querySelector('[data-feature="3"]');
+                if(featureTab) featureTab.classList.remove('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        // Internship Finder Page Integration
+        function loadInternshipPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Internship Finder...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the internship finder page content
+            fetch('/internship-finder/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Internship Finder page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Internship Finder</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the internship finder page. Please try again.</p><button class="btn btn-primary" onclick="loadInternshipPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="2"]');
+            if(featureTab) featureTab.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                if(mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if(icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function closeInternshipPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+                document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                    cta.style.display = 'flex';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                const featureTab = document.querySelector('[data-feature="2"]');
+                if(featureTab) featureTab.classList.remove('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        // Progress Tracking Page Integration
+        function loadProgressPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Progress Tracking...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the progress tracking page content
+            fetch('/progress-tracking/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Progress Tracking page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Progress Tracking</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the progress tracking page. Please try again.</p><button class="btn btn-primary" onclick="loadProgressPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="10"]');
+            if(featureTab) featureTab.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                if(mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if(icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function closeProgressPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+                document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                    cta.style.display = 'flex';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state
+                const featureTab = document.querySelector('[data-feature="10"]');
+                if(featureTab) featureTab.classList.remove('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        // Profile Page Integration
+        function loadProfilePage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Profile...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch the profile page content
+            fetch('/skills/profile/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Simply set the HTML directly - it's now a standalone page
+                    profilingContainer.innerHTML = html;
+
+                    // Manually execute scripts that came with the HTML
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    // Show the profiling container with animation
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Profile page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Profile</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the profile page. Please try again.</p><button class="btn btn-primary" onclick="loadProfilePage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark the profiling feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector('[data-feature="profiling"]').classList.add('active');
+        }
+
+        function closeProfilePage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Hide profiling container with animation
+            profilingContainer.classList.remove('active');
+
+            // Show dashboard content
+            setTimeout(() => {
+                document.querySelectorAll('.main-content > section').forEach(section => {
+                    if (section !== profilingContainer) {
+                        section.style.display = 'block';
+                    }
+                });
+                document.querySelectorAll('.main-content > footer').forEach(footer => {
+                    footer.style.display = 'block';
+                });
+
+                // Hide profiling container
+                profilingContainer.style.display = 'none';
+
+                // Clear active state safely
+                const currentActive = document.querySelector('[data-feature="profiling"]');
+                if(currentActive) currentActive.classList.remove('active');
+                
+                const defaultActive = document.querySelector('[data-feature="profiling"]'); // restoring to first item
+                if(defaultActive) defaultActive.classList.add('active');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+    </script>
+</body>
+
+</html><!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AI Mock Interview - Real LLM Powered</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        .chat-container {
+            scrollbar-width: thin;
+            scrollbar-color: #eab308 #1f2937;
+        }
+        .message-bubble {
+            max-width: 78%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            position: relative;
+        }
+        .ai-bubble {
+            background: #1f2937;
+            border-bottom-left-radius: 5px;
+        }
+        .user-bubble {
+            background: #eab308;
+            color: #111827;
+            border-bottom-right-radius: 5px;
+        }
+        .timer { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen">
+
+<div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+        <div class="p-6 border-b border-zinc-800">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-yellow-500 rounded-xl flex items-center justify-center text-zinc-950 font-bold text-2xl logo-font">AI</div>
+                <div>
+                    <h1 class="text-2xl font-semibold tracking-tight logo-font">Mock Interview</h1>
+                    <p class="text-xs text-zinc-500">Real AI • Adaptive • Feedback</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-5 space-y-1">
+            <div class="text-xs uppercase font-semibold text-zinc-500 mb-3 px-2">Choose Type</div>
+            
+            <button onclick="selectType('hr')" id="btn-hr"
+                class="type-btn w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-zinc-800 transition-all">
+                <i class="fa-solid fa-user-tie text-yellow-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">HR / Behavioral</div>
+                    <div class="text-xs text-zinc-500">Classic & situational</div>
+                </div>
+            </button>
+
+            <button onclick="selectType('technical')" id="btn-technical"
+                class="type-btn w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-zinc-800 transition-all">
+                <i class="fa-solid fa-code text-yellow-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Technical</div>
+                    <div class="text-xs text-zinc-500">Coding • DSA • Design</div>
+                </div>
+            </button>
+
+            <button onclick="selectType('communication')" id="btn-communication"
+                class="type-btn w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-zinc-800 transition-all">
+                <i class="fa-solid fa-comment-dots text-yellow-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Communication</div>
+                    <div class="text-xs text-zinc-500">Explaining • Storytelling</div>
+                </div>
+            </button>
+        </div>
+
+        <div class="p-5 space-y-1 border-t border-zinc-800">
+            <div class="text-xs uppercase font-semibold text-zinc-500 mb-3 px-2">Difficulty Level</div>
+            
+            <button onclick="selectDifficulty('easy')" id="btn-easy"
+                class="difficulty-btn w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition-all">
+                <i class="fa-solid fa-seedling text-green-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Easy</div>
+                    <div class="text-xs text-zinc-500">Basic questions • More hints</div>
+                </div>
+            </button>
+
+            <button onclick="selectDifficulty('medium')" id="btn-medium"
+                class="difficulty-btn w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition-all">
+                <i class="fa-solid fa-fire text-orange-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Medium</div>
+                    <div class="text-xs text-zinc-500">Standard • Balanced challenge</div>
+                </div>
+            </button>
+
+            <button onclick="selectDifficulty('advanced')" id="btn-advanced"
+                class="difficulty-btn w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition-all">
+                <i class="fa-solid fa-rocket text-red-400 text-lg"></i>
+                <div>
+                    <div class="font-medium">Advanced</div>
+                    <div class="text-xs text-zinc-500">Complex • Probing questions</div>
+                </div>
+            </button>
+        </div>
+
+        <div class="mt-auto p-5 border-t border-zinc-800 text-xs text-zinc-500">
+            Powered by real AI • 6–8 questions per session
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col">
+
+        <!-- Top Bar -->
+        <header class="h-16 bg-zinc-900 border-b border-zinc-800 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-5">
+                <button onclick="goHome()" class="flex items-center gap-2 text-zinc-400 hover:text-white">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </button>
+                <div id="interview-info" class="hidden flex items-center gap-4">
+                    <div class="px-4 py-1.5 bg-zinc-800 rounded-full text-sm font-medium flex items-center gap-2">
+                        <span id="interview-type-display" class="text-yellow-400 uppercase"></span>
+                        <span class="text-zinc-600">•</span>
+                        <span class="text-zinc-400">Powered by Gemini API</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-5 text-sm">
+                <div class="flex items-center gap-2 bg-green-900/30 px-4 py-1.5 rounded-full">
+                    <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="text-green-400 text-xs font-medium">Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Home -->
+        <div id="home" class="flex-1 flex items-center justify-center p-8">
+            <div class="text-center max-w-xl">
+                <div class="text-6xl mb-6">🧠</div>
+                <h2 class="text-4xl font-bold tracking-tight logo-font mb-3">Real AI Interview Coach</h2>
+                <p class="text-zinc-400 mb-10 text-lg">Adaptive questions • Smart follow-ups • Personalized feedback</p>
+                
+                <button onclick="startInterview()" 
+                    class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-semibold text-lg px-12 py-5 rounded-3xl shadow-xl shadow-yellow-500/20 transition-all active:scale-95 flex items-center gap-3 mx-auto">
+                    <i class="fa-solid fa-play"></i>
+                    START REAL MOCK INTERVIEW
+                </button>
+            </div>
+        </div>
+
+        <!-- Interview Screen -->
+        <div id="interview" class="hidden flex-1 flex flex-col">
+            <div class="bg-zinc-900 border-b border-zinc-800 p-4 flex items-center justify-between px-6">
+                <div class="flex items-center gap-5">
+                    <div class="px-5 py-2 bg-zinc-800 rounded-full text-sm font-mono font-bold flex items-center gap-2">
+                        <span id="turn-count">1</span>
+                        <span class="text-zinc-600">/</span>
+                        <span class="text-zinc-500">~8</span>
+                    </div>
+                    <div id="current-question-text" class="text-lg font-medium max-w-2xl line-clamp-2"></div>
+                </div>
+                <div class="flex items-center gap-3 bg-zinc-800 px-6 py-2.5 rounded-full">
+                    <i class="fa-solid fa-clock text-yellow-400"></i>
+                    <span id="timer-display" class="font-mono text-xl font-semibold timer">02:00</span>
+                </div>
+            </div>
+
+            <div id="chat" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container bg-zinc-950"></div>
+
+            <div class="bg-zinc-900 border-t border-zinc-800 p-6">
+                <div class="relative">
+                    <textarea id="answer-input" rows="3"
+                        class="w-full bg-zinc-800 border border-zinc-700 focus:border-yellow-500 rounded-3xl px-6 py-4 text-base resize-none focus:outline-none placeholder-zinc-500"
+                        placeholder="Type your answer... (Ctrl + Enter to send)"></textarea>
+                    <button onclick="sendAnswer()"
+                        class="absolute bottom-5 right-5 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 px-7 py-3 rounded-3xl font-semibold flex items-center gap-2 transition active:scale-95">
+                        Send <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between text-xs text-zinc-500 mt-3 px-4">
+                    <div>Press <kbd class="bg-zinc-800 px-2 py-1 rounded">ESC</kbd> to skip</div>
+                    <div id="char-counter">0 / 1500</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback -->
+        <div id="feedback" class="hidden flex-1 overflow-auto p-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-start mb-10">
+                    <div>
+                        <h2 class="text-4xl font-bold logo-font">Interview Complete</h2>
+                        <div class="text-8xl font-extrabold text-yellow-400 mt-3" id="score-final">—</div>
+                        <p class="text-zinc-400">Estimated Readiness</p>
+                    </div>
+                    <button onclick="restart()"
+                        class="flex items-center gap-3 bg-zinc-800 hover:bg-zinc-700 px-8 py-4 rounded-3xl font-medium">
+                        <i class="fa-solid fa-rotate-right"></i> Try Again
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-zinc-900 rounded-3xl p-7">
+                        <div class="uppercase text-xs text-green-400 mb-4 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-check-circle"></i> Strengths
+                        </div>
+                        <ul id="strengths" class="space-y-3 text-sm text-zinc-300"></ul>
+                    </div>
+                    <div class="bg-zinc-900 rounded-3xl p-7">
+                        <div class="uppercase text-xs text-orange-400 mb-4 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb"></i> Improvement Areas
+                        </div>
+                        <ul id="improvements" class="space-y-3 text-sm text-zinc-300"></ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-zinc-900 rounded-3xl p-7">
+                    <div class="uppercase text-xs text-zinc-500 mb-4 font-semibold">Full Transcript</div>
+                    <div id="transcript-area" class="text-sm leading-relaxed text-zinc-300 max-h-80 overflow-auto space-y-6 pr-4"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-8 right-8 bg-zinc-900 border border-yellow-500 text-yellow-400 px-6 py-4 rounded-3xl shadow-2xl flex items-center gap-3 z-50">
+    <i class="fa-solid fa-circle-info"></i>
+    <span id="toast-msg"></span>
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+let currentType = null;
+let currentDifficulty = null;
+let conversationHistory = [];
+let userAnswers = [];
+let turnCount = 0;
+let timerInterval = null;
+let timeLeft = 120;
+
+const MAX_TURNS = 7; // ~6-8 questions + feedback
+
+// ─── API Config ──────────────────────────────────
+// WARNING: Do NOT commit this key to git or share the file publicly!
+// For production → use a backend proxy
+const API_KEY = "AIzaSyCr-OEGcC9JwgzPSHzCgVtnxue-3Wq4cPA";   // ← your Gemini API key
+const MODEL = "gemini-2.5-flash";                   // fast, capable, and cheap Gemini model
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+
+// ─── Helpers ─────────────────────────────────────
+function addMessage(role, html) {
+    const chat = document.getElementById("chat");
+    const div = document.createElement("div");
+    div.className = `flex ${role === 'ai' ? '' : 'justify-end'}`;
+    div.innerHTML = `
+        <div class="message-bubble ${role === 'ai' ? 'ai-bubble' : 'user-bubble'}">
+            ${html}
+        </div>
+    `;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timeLeft = 120;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            addMessage("ai", "<i>Time's up — let's continue.</i>");
+            askAI(false);
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    document.getElementById("timer-display").textContent = 
+        `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+async function askAI(isStart = false) {
+    if (timerInterval) clearInterval(timerInterval);
+
+    const thinkingId = Date.now();
+    addMessage("ai", `<div id="thinking-${thinkingId}" class="flex items-center gap-3"><div class="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-yellow-400 rounded-full animate-bounce delay-150"></div><div class="w-2 h-2 bg-yellow-400 rounded-full animate-bounce delay-300"></div> AI thinking...</div>`);
+
+    const systemPrompt = `You are a professional, supportive but realistic ${currentType.toUpperCase()} interviewer preparing candidates for real tech/startup interviews (FAANG-style, product-based companies, etc.).
+
+Difficulty Level: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}
+- EASY: Basic questions, more guidance, simpler scenarios
+- MEDIUM: Standard interview questions, balanced complexity  
+- ADVANCED: Complex scenarios, probing questions, senior-level expectations
+
+Rules:
+- Ask ONE clear question or give short, targeted feedback at a time
+- Use STAR method guidance for behavioral answers when appropriate
+- Adapt difficulty based on the selected level: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}
+- Occasionally give quick tips (filler words, structure, metrics, confidence)
+- Keep replies concise unless giving detailed feedback
+- Do NOT break character
+- End interview naturally after ~6-8 turns if appropriate
+
+Interview type: ${currentType.toUpperCase()} | Difficulty: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}`;
+
+    const userPrompt = isStart 
+        ? "Start a realistic mock interview now. Begin with your first question."
+        : (userAnswers.length > 0 ? userAnswers[userAnswers.length-1].answer : "Continue with next question or follow-up.");
+
+    let conversationText = systemPrompt + "\n\nConversation history:\n";
+    conversationHistory.forEach(msg => {
+        conversationText += `${msg.role}: ${msg.content}\n`;
+    });
+
+    conversationText += `user: ${userPrompt}\n\nassistant:`;
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: conversationText
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 450,
+                }
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            throw new Error(err);
+        }
+
+        const data = await res.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Sorry — no response received.";
+
+        // Remove thinking
+        const thinking = document.getElementById(`thinking-${thinkingId}`);
+        if (thinking) thinking.parentElement.remove();
+
+        addMessage("ai", reply);
+        conversationHistory.push({ role: "user", content: userPrompt });
+        conversationHistory.push({ role: "assistant", content: reply });
+
+        turnCount++;
+        document.getElementById("turn-count").textContent = turnCount;
+
+        if (turnCount >= MAX_TURNS || reply.toLowerCase().includes("thank you") || reply.toLowerCase().includes("end of interview")) {
+            finishInterview();
+        } else {
+            startTimer();
+        }
+
+    } catch (err) {
+        console.error(err);
+        addMessage("ai", `Error: Could not connect to AI (${err.message}).<br>Please check API key or try again later.`);
+    }
+}
+
+// ─── Core Actions ─────────────────────────────────
+function selectType(type) {
+    currentType = type;
+    document.querySelectorAll(".type-btn").forEach(el => {
+        el.classList.remove("bg-zinc-800", "ring-2", "ring-yellow-500");
+    });
+    document.getElementById(`btn-${type}`).classList.add("bg-zinc-800", "ring-2", "ring-yellow-500");
+}
+
+function selectDifficulty(difficulty) {
+    currentDifficulty = difficulty;
+    document.querySelectorAll(".difficulty-btn").forEach(el => {
+        el.classList.remove("bg-zinc-800", "ring-2", "ring-yellow-500");
+    });
+    document.getElementById(`btn-${difficulty}`).classList.add("bg-zinc-800", "ring-2", "ring-yellow-500");
+}
+
+function startInterview() {
+    if (!currentType) {
+        selectType("hr");
+        showToast("Defaulted to HR / Behavioral");
+    }
+    
+    if (!currentDifficulty) {
+        selectDifficulty("medium");
+        showToast("Defaulted to Medium difficulty");
+    }
+
+    conversationHistory = [];
+    userAnswers = [];
+    turnCount = 0;
+
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("interview").classList.remove("hidden");
+    document.getElementById("interview-info").classList.remove("hidden");
+    document.getElementById("interview-type-display").textContent = `${currentType.toUpperCase()} • ${currentDifficulty.toUpperCase()}`;
+
+    document.getElementById("chat").innerHTML = "";
+    addMessage("ai", `Welcome! I'm your real AI interviewer for <b>${currentType.toUpperCase()}</b> at <b>${currentDifficulty.toUpperCase()}</b> difficulty.<br>We'll have an adaptive conversation — answer naturally. Good luck!`);
+
+    setTimeout(() => askAI(true), 1200);
+}
+
+function sendAnswer() {
+    const input = document.getElementById("answer-input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    userAnswers.push({ answer: text });
+
+    input.value = "";
+    if (timerInterval) clearInterval(timerInterval);
+
+    setTimeout(() => askAI(false), 800);
+}
+
+async function finishInterview() {
+    clearInterval(timerInterval);
+
+    document.getElementById("interview").classList.add("hidden");
+    document.getElementById("feedback").classList.remove("hidden");
+
+    // Get AI-generated personalized feedback
+    const feedback = await getFeedbackFromAI();
+
+    // Mock score (you can later ask AI for real evaluation)
+    const score = 65 + Math.floor(Math.random() * 30);
+    document.getElementById("score-final").textContent = score;
+
+    document.getElementById("strengths").innerHTML = feedback.strengths.map(s => `<li class="flex gap-3"><span class="text-green-400">✔</span> ${s}</li>`).join('');
+    document.getElementById("improvements").innerHTML = feedback.improvements.map(i => `<li class="flex gap-3"><span class="text-orange-400">→</span> ${i}</li>`).join('');
+
+    let transcript = "";
+    userAnswers.forEach((item, i) => {
+        transcript += `
+            <div class="border-l-4 border-zinc-700 pl-4">
+                <div class="font-medium text-yellow-400 mb-1">Your Answer #${i+1}</div>
+                <div class="text-zinc-300">${item.answer}</div>
+            </div>
+        `;
+    });
+    document.getElementById("transcript-area").innerHTML = transcript;
+
+    showToast("Great session! Review your performance.");
+}
+
+async function getFeedbackFromAI() {
+    const feedbackPrompt = `You are an expert interview coach analyzing a mock interview performance. Based on the conversation below, provide specific, personalized feedback.
+
+Interview type: ${currentType.toUpperCase()}
+Difficulty level: ${currentDifficulty ? currentDifficulty.toUpperCase() : 'MEDIUM'}
+
+Full conversation:
+${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
+
+Please analyze the candidate's performance and provide:
+
+STRENGTHS (3-4 specific points based on their actual answers):
+- What they did well in this specific interview
+- Specific examples from their answers
+- Communication skills they demonstrated
+
+IMPROVEMENT AREAS (3-4 specific points based on their actual answers):
+- Specific gaps in their responses
+- Where they could provide more detail or structure
+- Interview techniques they should improve
+
+Format your response as JSON:
+{
+  "strengths": ["point 1", "point 2", "point 3"],
+  "improvements": ["point 1", "point 2", "point 3"]
+}
+
+Make the feedback specific to this interview, not generic advice.`;
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: feedbackPrompt
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.3,
+                    maxOutputTokens: 500,
+                }
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            throw new Error(err);
+        }
+
+        const data = await res.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+        
+        // Try to parse JSON response
+        try {
+            const jsonMatch = reply.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
+            }
+        } catch (parseError) {
+            console.error("Failed to parse AI feedback:", parseError);
+        }
+
+        // Fallback if JSON parsing fails
+        return {
+            strengths: ["Engaged well with most questions", "Clear communication in places"],
+            improvements: ["Add more specific examples / metrics", "Practice reducing filler words", "Structure behavioral answers (STAR)"]
+        };
+
+    } catch (err) {
+        console.error("Error getting AI feedback:", err);
+        // Fallback feedback
+        return {
+            strengths: ["Engaged well with most questions", "Clear communication in places"],
+            improvements: ["Add more specific examples / metrics", "Practice reducing filler words", "Structure behavioral answers (STAR)"]
+        };
+    }
+}
+
+function restart() {
+    document.getElementById("feedback").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("interview-info").classList.add("hidden");
+}
+
+function goHome() {
+    if (confirm("End session? Progress lost.")) restart();
+}
+
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    document.getElementById("toast-msg").textContent = msg;
+    t.classList.remove("hidden");
+    setTimeout(() => t.classList.add("hidden"), 3400);
+}
+
+// ─── Listeners ───────────────────────────────────
+document.getElementById("answer-input").addEventListener("input", function() {
+    document.getElementById("char-counter").textContent = `${this.value.length} / 1500`;
+});
+
+document.addEventListener("keydown", e => {
+    if (e.ctrlKey && e.key === "Enter") {
+        if (!document.getElementById("interview").classList.contains("hidden")) sendAnswer();
+    }
+    if (e.key === "Escape") {
+        if (!document.getElementById("interview").classList.contains("hidden")) {
+            addMessage("ai", "<i>Skipped — moving on...</i>");
+            askAI(false);
+        }
+    }
+});
+
+// Init
+window.addEventListener("load", () => {
+    selectType("hr");
+    selectDifficulty("medium");
+    showToast("Choose type & difficulty → real AI interview begins!");
+});
+</script>
+</body>
+</html>

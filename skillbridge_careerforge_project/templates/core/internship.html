@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Internship Finder - {{ page_title }}{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/styles.css' %}">
 <style>
 .internship-finder * {
     margin: 0;
@@ -498,6 +500,5 @@
 {% endblock %}
 
 {% block extra_js %}
-{% load static %}
 <script src="{% static 'js/internship.js' %}"></script>
 {% endblock %}

@@ -7,6 +7,7 @@ import json
 from apps.skills.models import UserSkill, Skill, SkillCategory
 from apps.jobs.models import Job
 
+
 class HomeView(TemplateView):
     template_name = 'core/home.html'
     
@@ -18,6 +19,58 @@ class HomeView(TemplateView):
 @login_required
 def dashboard(request):
     return render(request, 'core/dashboard.html')
+
+
+def certification_recommendations(request):
+    """
+    Certification Recommendations Page
+    Displays industry-recognized certifications from top providers
+    """
+    from apps.certifications.models import Certification
+
+    demand_weights = {
+        'Cloud Computing': 95, 'AI & Machine Learning': 92, 'Data Science': 90,
+        'Cybersecurity': 88, 'DevOps': 85, 'Software Development': 82,
+        'Project Management': 75, 'Digital Marketing': 70,
+    }
+
+    certifications = Certification.objects.filter(is_active=True, is_synced=True)
+    recommendations = []
+    for cert in certifications:
+        recommendations.append({
+            'id': cert.id,
+            'name': cert.name,
+            'provider': cert.provider,
+            'domain': cert.domain,
+            'description': cert.description,
+            'rating': cert.rating,
+            'duration': cert.duration,
+            'difficulty_level': cert.difficulty_level,
+            'get_difficulty_level_display': cert.get_difficulty_level_display(),
+            'registration_url': cert.registration_url,
+            'demand_score': demand_weights.get(cert.domain, 65),
+        })
+    recommendations.sort(key=lambda x: x['demand_score'], reverse=True)
+
+    providers = [
+        {'key': p, 'name': p.capitalize(),
+         'status': 'active' if Certification.objects.filter(provider=p).exists() else 'pending',
+         'count': Certification.objects.filter(provider=p, is_active=True).count(),
+         'last_updated': Certification.objects.filter(provider=p).order_by('-last_updated').first().last_updated
+                         if Certification.objects.filter(provider=p).exists() else None}
+        for p in ['coursera', 'aws', 'google', 'microsoft', 'cisco']
+    ]
+
+    context = {
+        'total_certifications': Certification.objects.filter(is_active=True).count(),
+        'active_certifications': Certification.objects.filter(is_active=True, is_synced=True).count(),
+        'providers_count': Certification.objects.values('provider').distinct().count(),
+        'last_sync': Certification.objects.order_by('-last_updated').first().last_updated
+                     if Certification.objects.exists() else None,
+        'providers': providers,
+        'recommendations': recommendations[:20],
+    }
+    return render(request, 'core/certification.html', context)
 
 def skill_gap_analysis(request):
     """
@@ -504,3 +557,63 @@ def progress_tracking(request):
     }
     
     return render(request, 'core/progress_tracking.html', context)
+
+
+def ai_mock_interview(request):
+    """
+    AI Mock Interview Page - Real LLM Powered Interview Practice
+    Interactive mock interviews with personalized feedback using Gemini API
+    """
+    context = {
+        'page_title': 'AI Mock Interview',
+        'page_description': 'Practice interviews with real AI-powered feedback and analysis',
+    }
+    return render(request, 'core/aimockinterview.html', context)
+
+
+def roadmap(request):
+    """
+    Skill Roadmap Page - Choose Your Career Path
+    Interactive career roadmaps with comprehensive skill tracking and learning resources
+    """
+    context = {
+        'page_title': 'Skill Roadmap',
+        'page_description': 'Choose your career path and follow comprehensive skill roadmaps with learning resources',
+    }
+    return render(request, 'core/roadmap.html', context)
+
+
+def technical_assessment(request):
+    """
+    Technical Assessment Page - Comprehensive Technical Test Engine
+    Interactive technical tests with timer, progress tracking, and detailed scoring
+    """
+    context = {
+        'page_title': 'Technical Assessment Engine',
+        'page_description': 'Test your technical knowledge with comprehensive questions across multiple subjects and difficulty levels',
+    }
+    return render(request, 'core/technical.html', context)
+
+
+def resume_builder(request):
+    """
+    Smart ATS Resume Builder Page - Drag & Drop Resume Builder
+    Interactive resume builder with ATS optimization, templates, and export functionality
+    """
+    context = {
+        'page_title': 'Smart ATS Resume Builder',
+        'page_description': 'Build professional resumes with drag & drop sections, ATS optimization, and multiple templates',
+    }
+    return render(request, 'core/resume_builder.html', context)
+
+
+def aptitude_test(request):
+    """
+    Aptitude & Reasoning Test Page - 150+ Questions Pool
+    Comprehensive aptitude test with quantitative, verbal, logical reasoning, data interpretation, and abstract reasoning
+    """
+    context = {
+        'page_title': 'Aptitude & Reasoning Tests',
+        'page_description': '150+ curated questions across 5 sections with multiple difficulty levels',
+    }
+    return render(request, 'core/aptitude.html', context)
