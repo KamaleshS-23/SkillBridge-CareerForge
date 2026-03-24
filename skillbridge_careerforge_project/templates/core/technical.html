@@ -56,6 +56,45 @@
             box-shadow: 0 14px 30px rgba(124, 58, 237, 0.3);
         }
 
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            font-style: italic;
+        }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -289,6 +328,19 @@
                 <i class="fas fa-info-circle"></i> Select subject and difficulty to see available questions
             </div>
             <button type="button" class="btn" id="startTestBtn" disabled><i class="fas fa-play"></i> Start Technical Test</button>
+        </div>
+
+        <!-- Test Results History Section -->
+        <div id="resultsSection" class="card" style="margin-top: 20px;">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-bar"></i> Your Technical Test History</h3>
+                <button class="btn btn-small" onclick="loadTestResults()" style="margin-left: auto;">
+                    <i class="fas fa-refresh"></i> Refresh
+                </button>
+            </div>
+            <div id="resultsContainer">
+                <div class="loading">Loading your test history...</div>
+            </div>
         </div>
 
         <!-- Test Questions Section (Initially Hidden) -->
@@ -596,23 +648,199 @@
                     `❌ Incorrect: ${incorrectList.join(', ') || 'None'}\n\n` +
                     `💾 Results saved to your progress!`;
                 
-                alert(resultMessage);
+                // Show results in UI instead of alert
+                showTestResults(score, currentQuestions.length, percentage, grade, correctList, incorrectList);
                 
-                const results = JSON.parse(localStorage.getItem('technicalResults') || '[]');
-                results.push({
-                    date: new Date().toISOString(),
-                    subject: document.getElementById('subjectSelect').value,
-                    difficulty: document.getElementById('difficultySelect').value,
-                    score: score,
-                    total: currentQuestions.length,
-                    percentage: percentage,
-                    grade: grade,
-                    correctCount: correctList.length
-                });
-                localStorage.setItem('technicalResults', JSON.stringify(results));
+                // Save to database
+                saveTestResultsToDatabase(score, currentQuestions.length, percentage, grade, correctList, incorrectList);
                 
                 localStorage.removeItem('technical_currentAnswers');
                 resetTest();
+            }
+
+            function showTestResults(score, totalQuestions, percentage, grade, correctList, incorrectList) {
+                const subject = document.getElementById('subjectSelect').value;
+                const difficulty = document.getElementById('difficultySelect').value;
+                
+                // Create results modal
+                const modalHtml = `
+                    <div id="resultsModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                        <div class="card" style="max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                            <div class="card-header">
+                                <h3><i class="fas fa-trophy"></i> Test Results</h3>
+                                <button onclick="closeResultsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                            </div>
+                            <div style="padding: 20px;">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <div style="font-size: 48px; margin-bottom: 10px;">${grade === 'Excellent' ? '🏆' : grade === 'Very Good' ? '👍' : grade === 'Good' ? '📚' : grade === 'Needs Improvement' ? '📝' : '🎯'}</div>
+                                    <h2>${grade}</h2>
+                                </div>
+                                <div style="display: grid; gap: 10px; margin-bottom: 20px;">
+                                    <div><strong>Subject:</strong> ${subject}</div>
+                                    <div><strong>Difficulty:</strong> ${difficulty}</div>
+                                    <div><strong>Score:</strong> ${score}/${totalQuestions}</div>
+                                    <div><strong>Percentage:</strong> ${percentage.toFixed(1)}%</div>
+                                </div>
+                                <div style="margin-bottom: 20px;">
+                                    <div><strong>Correct Answers:</strong> ${correctList.join(', ') || 'None'}</div>
+                                    <div><strong>Incorrect Answers:</strong> ${incorrectList.join(', ') || 'None'}</div>
+                                </div>
+                                <div style="text-align: center; color: var(--success);">
+                                    <i class="fas fa-check-circle"></i> Results saved to your profile!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+
+            // Make closeResultsModal globally available
+            window.closeResultsModal = function() {
+                const modal = document.getElementById('resultsModal');
+                if (modal) {
+                    modal.remove();
+                }
+                // Refresh results after closing
+                loadTestResults();
+            }
+
+            // Make functions globally available
+            window.loadTestResults = async function() {
+                try {
+                    const response = await fetch('/api/technical-test-results/');
+                    if (response.ok) {
+                        const data = await response.json();
+                        displayTestResults(data.results || []);
+                    } else {
+                        console.error('Failed to load test results:', response.statusText);
+                        displayTestResults([]);
+                    }
+                } catch (error) {
+                    console.error('Error loading test results:', error);
+                    displayTestResults([]);
+                }
+            }
+
+            window.displayTestResults = function(results) {
+                const container = document.getElementById('resultsContainer');
+                
+                if (results.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--muted);">
+                            <i class="fas fa-chart-line" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>No test results yet. Take a technical test to see your results here!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: 16px;">';
+                
+                results.forEach(result => {
+                    const gradeColor = result.grade === 'Excellent' ? 'var(--success)' : 
+                                     result.grade === 'Very Good' ? 'var(--primary)' : 
+                                     result.grade === 'Good' ? 'var(--secondary)' : 
+                                     result.grade === 'Needs Improvement' ? 'var(--warning)' : 'var(--danger)';
+                    
+                    const gradeEmoji = result.grade === 'Excellent' ? '🏆' : 
+                                     result.grade === 'Very Good' ? '👍' : 
+                                     result.grade === 'Good' ? '📚' : 
+                                     result.grade === 'Needs Improvement' ? '📝' : '🎯';
+                    
+                    html += `
+                        <div class="result-card" style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: var(--card);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <h4 style="margin: 0 0 4px 0;">${result.subject}</h4>
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <span class="badge" style="background: var(--primary); color: white;">${result.difficulty}</span>
+                                        <span style="font-size: 12px; color: var(--muted);">${new Date(result.test_date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 24px; margin-bottom: 4px;">${gradeEmoji}</div>
+                                    <div style="color: ${gradeColor}; font-weight: bold;">${result.grade}</div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                <div>
+                                    <div style="font-size: 24px; font-weight: bold; color: var(--primary);">${result.score}/${result.total_questions}</div>
+                                    <div style="font-size: 12px; color: var(--muted);">Score</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 24px; font-weight: bold; color: var(--secondary);">${result.percentage.toFixed(1)}%</div>
+                                    <div style="font-size: 12px; color: var(--muted);">Percentage</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 24px; font-weight: bold; color: var(--success);">${result.correct_answers.length}</div>
+                                    <div style="font-size: 12px; color: var(--muted);">Correct</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 24px; font-weight: bold; color: var(--danger);">${result.incorrect_answers.length}</div>
+                                    <div style="font-size: 12px; color: var(--muted);">Incorrect</div>
+                                </div>
+                            </div>
+                            ${result.time_taken ? `<div style="font-size: 12px; color: var(--muted);"><i class="fas fa-clock"></i> Time taken: ${Math.floor(result.time_taken / 60)}m ${result.time_taken % 60}s</div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+
+            async function saveTestResultsToDatabase(score, totalQuestions, percentage, grade, correctList, incorrectList) {
+                try {
+                    const subject = document.getElementById('subjectSelect').value;
+                    const difficulty = document.getElementById('difficultySelect').value;
+                    const defaultTime = getTimeForQuestions(totalQuestions);
+                    const timeTaken = defaultTime - timeRemaining; // Calculate actual time taken
+                    
+                    const response = await fetch('/api/submit-technical-test/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        body: JSON.stringify({
+                            subject: subject,
+                            difficulty: difficulty,
+                            score: score,
+                            total_questions: totalQuestions,
+                            percentage: percentage,
+                            grade: grade,
+                            correct_answers: correctList,
+                            incorrect_answers: incorrectList,
+                            time_taken: timeTaken
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Test results saved successfully:', data);
+                    } else {
+                        console.error('Failed to save test results:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error saving test results:', error);
+                }
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
             }
 
             function resetTest() {
@@ -709,6 +937,7 @@
                 await loadQuestionsFromJSON();
                 initializeEventListeners();
                 window.updateQuestionCount();
+                loadTestResults(); // Load test results on page load
                 console.log('Technical test script initialized');
                 console.log('Available functions:', {
                     updateQuestionCount: typeof window.updateQuestionCount,

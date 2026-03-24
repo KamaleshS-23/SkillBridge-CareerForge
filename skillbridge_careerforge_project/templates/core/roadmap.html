@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body{% if user.is_authenticated %} data-user-authenticated="true"{% endif %}>
 <div class="app-container">
     <style>
         :root {
@@ -670,11 +670,78 @@
                 skillNameSpan.innerText = skill.toUpperCase();
                 const categories = roadmapLibrary[skill] || roadmapLibrary["Software Engineer"];
 
-                checkedState = {};
-                categories.forEach((_, idx) => {
-                    checkedState[idx] = new Array(categories[idx].skills.length).fill(false);
-                });
+                // Load user progress from database
+                loadRoadmapProgressFromDB(skill, categories);
+            }
 
+            // Load roadmap progress from database
+            function loadRoadmapProgressFromDB(skill, categories) {
+                // Check if user is authenticated by looking for user info in the page
+                var isAuthenticated = document.body.dataset.userAuthenticated === 'true';
+                
+                if (isAuthenticated) {
+                    fetch(`/api/roadmap/load-progress/?career_path=${encodeURIComponent(skill)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Initialize checkedState from database
+                                checkedState = {};
+                                categories.forEach((cat, idx) => {
+                                    checkedState[idx] = new Array(cat.skills.length).fill(false);
+                                });
+                                
+                                // Apply loaded progress
+                                data.progress.forEach(progress => {
+                                    const categoryIndex = progress.category_index;
+                                    const skillIndex = progress.skill_index;
+                                    if (checkedState[categoryIndex] && skillIndex < checkedState[categoryIndex].length) {
+                                        checkedState[categoryIndex][skillIndex] = progress.is_completed;
+                                    }
+                                });
+                            } else {
+                                // Initialize empty progress if no data found
+                                checkedState = {};
+                                categories.forEach((cat, idx) => {
+                                    checkedState[idx] = new Array(cat.skills.length).fill(false);
+                                });
+                            }
+                            
+                            // Now render the roadmap with loaded progress
+                            renderRoadmapContent(skill, categories);
+                        })
+                        .catch(error => {
+                            console.error('Error loading roadmap progress:', error);
+                            // Initialize empty progress on error
+                            checkedState = {};
+                            categories.forEach((cat, idx) => {
+                                checkedState[idx] = new Array(cat.skills.length).fill(false);
+                            });
+                            renderRoadmapContent(skill, categories);
+                        });
+                } else {
+                    // User not authenticated - use local storage only
+                    const savedProgress = localStorage.getItem(`roadmap_progress_${skill}`);
+                    if (savedProgress) {
+                        try {
+                            checkedState = JSON.parse(savedProgress);
+                        } catch (e) {
+                            console.error('Error parsing saved progress:', e);
+                            checkedState = {};
+                            categories.forEach((cat, idx) => {
+                                checkedState[idx] = new Array(cat.skills.length).fill(false);
+                            });
+                        }
+                    } else {
+                        checkedState = {};
+                        categories.forEach((cat, idx) => {
+                            checkedState[idx] = new Array(cat.skills.length).fill(false);
+                        });
+                    }
+                    renderRoadmapContent(skill, categories);
+                }
+            }
+
+            function renderRoadmapContent(skill, categories) {
                 let htmlStr = '';
                 categories.forEach((cat, idx) => {
                     let skillsHtml = '';
@@ -682,7 +749,7 @@
                         const isChecked = checkedState[idx][sIdx] ? 'checked' : '';
                         skillsHtml += `
                             <div class="skill-item" onclick="window.skillClickHandler('${skillName}')">
-                                <input type="checkbox" id="chk_${idx}_${sIdx}" data-category-index="${idx}" data-skill-index="${sIdx}" ${isChecked} onclick="event.stopPropagation()">
+                                <input type="checkbox" id="chk_${idx}_${sIdx}" data-category-index="${idx}" data-skill-index="${sIdx}" data-skill-name="${skillName}" ${isChecked} onclick="event.stopPropagation(); saveSkillProgress('${skill}', '${cat.category}', ${idx}, ${sIdx}, this.checked)">
                                 <label for="chk_${idx}_${sIdx}">${skillName}</label>
                                 <i class="fas fa-external-link-alt gfg-icon"></i>
                             </div>
@@ -706,7 +773,7 @@
 
                 categoryContainer.innerHTML = htmlStr;
                 levelDisplay.innerText = `comprehensive · ${categories.reduce((acc, cat) => acc + cat.skills.length, 0)} skills`;
-                footnote.innerHTML = `<i class="fas fa-hand-pointer"></i> click any skill → opens GeeksforGeeks (falls back to MDN/W3Schools if 404)`;
+                footnote.innerHTML = `<i class="fas fa-hand-pointer"></i> click any skill → opens GeeksforGeeks (falls back to MDN/W3Schools if 404)>`;
 
                 // Attach event listeners to dynamically created elements
                 document.querySelectorAll('.category-header').forEach(header => {
@@ -719,22 +786,89 @@
                     });
                 });
 
-                document.querySelectorAll('input[type=checkbox]').forEach(chk => {
-                    chk.addEventListener('change', (e) => {
-                        e.stopPropagation();
-                        const catIdx = chk.dataset.categoryIndex;
-                        const skillIdx = chk.dataset.skillIndex;
-                        if (catIdx === undefined || skillIdx === undefined) return;
-                        checkedState[catIdx][skillIdx] = chk.checked;
-                        const categoryData = categories[catIdx];
-                        updateCategoryStatus(catIdx, categoryData);
-                    });
-                });
-
+                // Update category statuses
                 categories.forEach((cat, idx) => updateCategoryStatus(idx, cat));
 
                 page1.classList.add('hidden');
                 page2.classList.remove('hidden');
+            }
+
+            // Save individual skill progress to database
+            function saveSkillProgress(careerPath, categoryName, categoryIndex, skillIndex, isCompleted) {
+                const skillName = document.querySelector(`#chk_${categoryIndex}_${skillIndex}`).dataset.skillName;
+                
+                // Update local state immediately
+                checkedState[categoryIndex][skillIndex] = isCompleted;
+                updateCategoryStatus(categoryIndex, { skills: roadmapLibrary[careerPath].find(cat => cat.category === categoryName).skills });
+                
+                var isAuthenticated = document.body.dataset.userAuthenticated === 'true';
+                
+                if (isAuthenticated) {
+                    // Save to database if authenticated
+                    fetch('/api/roadmap/save-progress/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            career_path: careerPath,
+                            category_name: categoryName,
+                            skill_name: skillName,
+                            is_completed: isCompleted,
+                            category_index: categoryIndex,
+                            skill_index: skillIndex
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            console.log('Progress saved successfully to database');
+                        } else {
+                            console.error('Error saving progress:', data.message);
+                            // Fallback to local storage
+                            saveProgressToLocalStorage(careerPath);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving progress:', error);
+                        // Fallback to local storage
+                        saveProgressToLocalStorage(careerPath);
+                    });
+                } else {
+                    // Save to local storage if not authenticated
+                    saveProgressToLocalStorage(careerPath);
+                }
+            }
+
+            // Expose functions to global scope for dashboard integration
+            window.saveSkillProgress = saveSkillProgress;
+            window.loadRoadmapProgressFromDB = loadRoadmapProgressFromDB;
+            window.renderRoadmapContent = renderRoadmapContent;
+            window.updateCategoryStatus = updateCategoryStatus;
+            window.saveProgressToLocalStorage = saveProgressToLocalStorage;
+            window.getCookie = getCookie;
+
+            // Save progress to local storage (fallback)
+            function saveProgressToLocalStorage(careerPath) {
+                localStorage.setItem(`roadmap_progress_${careerPath}`, JSON.stringify(checkedState));
+                console.log('Progress saved to local storage');
+            }
+
+            // Get CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
             }
 
             // Back button

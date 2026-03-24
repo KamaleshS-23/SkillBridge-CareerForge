@@ -297,3 +297,53 @@ class SkillGap(models.Model):
     
     def __str__(self):
         return f"{self.user.email} - {self.skill.name} Gap"
+
+
+class UserRoadmapProgress(models.Model):
+    """Track user's progress through career roadmap skills"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='roadmap_progress')
+    career_path = models.CharField(max_length=100)  # e.g., "Software Engineer", "Data Scientist"
+    category_name = models.CharField(max_length=100)  # e.g., "Frontend", "Backend"
+    skill_name = models.CharField(max_length=100)  # e.g., "React", "Python"
+    is_completed = models.BooleanField(default=False)
+    category_index = models.IntegerField(default=0)  # Position in roadmap
+    skill_index = models.IntegerField(default=0)  # Position within category
+    completed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ['user', 'career_path', 'skill_name']
+        ordering = ['career_path', 'category_index', 'skill_index']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.career_path}: {self.skill_name} ({'✓' if self.is_completed else '○'})"
+
+
+class TechnicalTestResult(models.Model):
+    """Store user's technical assessment test results"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='technical_test_results')
+    subject = models.CharField(max_length=100)  # e.g., "Data Structures", "Operating Systems", "Algorithms"
+    difficulty = models.CharField(max_length=20, choices=[
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'), 
+        ('advanced', 'Advanced')
+    ])
+    score = models.IntegerField()  # Number of correct answers
+    total_questions = models.IntegerField()  # Total questions in test
+    percentage = models.FloatField()  # Score percentage
+    grade = models.CharField(max_length=20)  # e.g., "Excellent", "Good", "Need More Practice"
+    correct_answers = models.TextField()  # JSON string of correct question numbers
+    incorrect_answers = models.TextField()  # JSON string of incorrect question numbers
+    time_taken = models.IntegerField(null=True, blank=True)  # Time taken in seconds
+    test_date = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-test_date']
+        indexes = [
+            models.Index(fields=['user', 'subject']),
+            models.Index(fields=['user', 'test_date']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.subject}: {self.score}/{self.total_questions} ({self.percentage:.1f}%)" 

@@ -12,3 +12,5 @@ celery==5.2.7  # For background tasks
 redis==4.5.4
 django-celery-beat==2.5.0
 django-celery-results==2.4.0
+beautifulsoup4==4.12.2  # For web scraping
+lxml==4.9.3  # XML/HTML parser

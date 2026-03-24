@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Profiling System · Unified</title>
-    <!-- Font Awesome & Google Fonts (shared) -->
+    <title>AI Profiling · Gemini Resume Parser</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* === RESET + GLOBAL (merged, deduped) === */
-        .ai-profiling-unified * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        .ai-profiling-unified {
+        body {
             --primary: #7C3AED;
             --primary-dark: #5B21B6;
             --secondary: #EC4899;
@@ -2230,7 +2226,17 @@
                             'X-CSRFToken': getCookie('csrftoken')
                         },
                         body: JSON.stringify(eduData)
-                    }).then(r => r.json()).catch(e => console.log('Education sync:', e));
+                    }).then(response => {
+                        if (response.status === 302 || response.redirected) {
+                            console.log('User not authenticated, skipping education sync');
+                            return null;
+                        }
+                        return response.json();
+                    }).then(result => {
+                        if (result) {
+                            console.log('Education sync result:', result);
+                        }
+                    }).catch(e => console.log('Education sync error:', e));
                 });
             }
             
@@ -2242,8 +2248,8 @@
                         issuing_organization: cert.issuer,
                         issue_date: cert.issueDate,
                         expiry_date: cert.expiryDate || null,
-                        credential_id: '',
-                        credential_url: cert.url || '',
+                        credential_id: cert.credentialId || '',
+                        credential_url: cert.credentialUrl || cert.url || '',
                         is_active: true
                     };
                     
@@ -2254,7 +2260,17 @@
                             'X-CSRFToken': getCookie('csrftoken')
                         },
                         body: JSON.stringify(certData)
-                    }).then(r => r.json()).catch(e => console.log('Certification sync:', e));
+                    }).then(response => {
+                        if (response.status === 302 || response.redirected) {
+                            console.log('User not authenticated, skipping certification sync');
+                            return null;
+                        }
+                        return response.json();
+                    }).then(result => {
+                        if (result) {
+                            console.log('Certification sync result:', result);
+                        }
+                    }).catch(e => console.log('Certification sync error:', e));
                 });
             }
             
@@ -2301,7 +2317,17 @@
                             'X-CSRFToken': getCookie('csrftoken')
                         },
                         body: JSON.stringify(projData)
-                    }).then(r => r.json()).catch(e => console.log('Project sync:', e));
+                    }).then(response => {
+                        if (response.status === 302 || response.redirected) {
+                            console.log('User not authenticated, skipping project sync');
+                            return null;
+                        }
+                        return response.json();
+                    }).then(result => {
+                        if (result) {
+                            console.log('Project sync result:', result);
+                        }
+                    }).catch(e => console.log('Project sync error:', e));
                 });
             }
             
@@ -2314,7 +2340,9 @@
                         proficiency_level: skill.proficiency || 'intermediate',
                         years_experience: skill.years || 0,
                         context_of_use: skill.context || '',
-                        source: skill.source || 'manual'
+                        source: skill.source || 'manual',
+                        skill_level: skill.skillLevel || 'intermediate',
+                        skill_type: skill.skillType || 'technical'
                     };
                     
                     fetch('/api/add-skill/', {
@@ -2324,7 +2352,17 @@
                             'X-CSRFToken': getCookie('csrftoken')
                         },
                         body: JSON.stringify(skillData)
-                    }).then(r => r.json()).catch(e => console.log('Skill sync:', e));
+                    }).then(response => {
+                        if (response.status === 302 || response.redirected) {
+                            console.log('User not authenticated, skipping skill sync');
+                            return null;
+                        }
+                        return response.json();
+                    }).then(result => {
+                        if (result) {
+                            console.log('Skill sync result:', result);
+                        }
+                    }).catch(e => console.log('Skill sync error:', e));
                 });
             }
             
@@ -2343,7 +2381,17 @@
                             'X-CSRFToken': getCookie('csrftoken')
                         },
                         body: JSON.stringify(langData)
-                    }).then(r => r.json()).catch(e => console.log('Language sync:', e));
+                    }).then(response => {
+                        if (response.status === 302 || response.redirected) {
+                            console.log('User not authenticated, skipping language sync');
+                            return null;
+                        }
+                        return response.json();
+                    }).then(result => {
+                        if (result) {
+                            console.log('Language sync result:', result);
+                        }
+                    }).catch(e => console.log('Language sync error:', e));
                 });
             }
         }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Debug Test</title>
+</head>
+<body>
+    <h1>API Debug Test</h1>
+    <button onclick="testEducationAPI()">Test Education API</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testEducationAPI() {
+            try {
+                const response = await fetch('/api/add-education/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        degree_type: 'bachelor',
+                        field_of_study: 'Computer Science',
+                        school_name: 'Test University',
+                        graduation_year: 2023
+                    })
+                });
+                
+                const result = await response.text();
+                document.getElementById('result').innerHTML = `
+                    <h3>Status: ${response.status}</h3>
+                    <h3>Headers:</h3>
+                    <pre>${JSON.stringify(Object.fromEntries(response.headers), null, 2)}</pre>
+                    <h3>Response:</h3>
+                    <pre>${result}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<h3>Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>

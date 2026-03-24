@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     Skill, SkillCategory, ProfessionalIdentity, Education, Certification, Course,
-    Project, Language, UserSkill, SkillContextMetadata, AIProfilingSession, SkillGap
+    Project, Language, UserSkill, SkillContextMetadata, AIProfilingSession, SkillGap,
+    TechnicalTestResult, UserRoadmapProgress
 )
 
 @admin.register(SkillCategory)
@@ -86,3 +87,19 @@ class SkillGapAdmin(admin.ModelAdmin):
     list_filter = ['priority', 'target_role', 'created_at']
     search_fields = ['user__email', 'skill__name', 'target_role']
     readonly_fields = ['created_at']
+
+@admin.register(TechnicalTestResult)
+class TechnicalTestResultAdmin(admin.ModelAdmin):
+    list_display = ['user', 'subject', 'difficulty', 'score', 'total_questions', 'percentage', 'grade', 'test_date']
+    list_filter = ['subject', 'difficulty', 'grade', 'test_date']
+    search_fields = ['user__email', 'subject', 'grade']
+    readonly_fields = ['test_date']
+    ordering = ['-test_date']
+
+@admin.register(UserRoadmapProgress)
+class UserRoadmapProgressAdmin(admin.ModelAdmin):
+    list_display = ['user', 'career_path', 'category_name', 'skill_name', 'is_completed', 'completed_at']
+    list_filter = ['career_path', 'category_name', 'is_completed', 'completed_at']
+    search_fields = ['user__email', 'career_path', 'category_name', 'skill_name']
+    readonly_fields = ['created_at', 'updated_at', 'completed_at']
+    ordering = ['-updated_at']

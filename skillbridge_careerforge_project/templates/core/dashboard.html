@@ -894,25 +894,53 @@
                     if (roadmapContent) {
                         profilingContainer.innerHTML = roadmapContent.innerHTML;
 
-                        // Manually execute scripts
+                        // Execute all scripts properly to make functions globally available
                         const scripts = profilingContainer.querySelectorAll('script');
                         scripts.forEach(oldScript => {
-                            const newScript = document.createElement('script');
-                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                            try {
+                                // Create a new script element
+                                const newScript = document.createElement('script');
+                                
+                                // Copy all attributes
+                                Array.from(oldScript.attributes).forEach(attr => {
+                                    newScript.setAttribute(attr.name, attr.value);
+                                });
+                                
+                                // Set the script content
+                                newScript.textContent = oldScript.innerHTML;
+                                
+                                // Add to document head for better global scope access
+                                document.head.appendChild(newScript);
+                                
+                                // Remove the old script
+                                oldScript.remove();
+                            } catch (error) {
+                                console.warn('Script execution warning:', error);
+                            }
                         });
 
                         profilingContainer.classList.add('active');
                         profilingContainer.style.display = 'block';
 
-                        // Initialize roadmap functionality
+                        // Initialize roadmap functionality with longer delay for script loading
                         setTimeout(() => {
-                            // Re-initialize roadmap scripts
+                            // Ensure functions are available globally
                             if (typeof window.initializeRoadmap === 'function') {
                                 window.initializeRoadmap();
                             }
-                        }, 100);
+                            
+                            // Verify that saveSkillProgress is available
+                            if (typeof window.saveSkillProgress === 'function') {
+                                console.log('saveSkillProgress function is available');
+                            } else {
+                                console.warn('saveSkillProgress function not found, trying to expose it');
+                                // Try to expose the function from the roadmap scope
+                                const roadmapScript = profilingContainer.querySelector('script');
+                                if (roadmapScript) {
+                                    eval(roadmapScript.innerHTML);
+                                }
+                            }
+                        }, 300);
                     } else {
                         throw new Error('Could not load roadmap content');
                     }

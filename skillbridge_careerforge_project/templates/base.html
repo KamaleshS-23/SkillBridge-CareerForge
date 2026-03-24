@@ -16,7 +16,7 @@
     <!-- Your existing sidebar and main content structure -->
     {% block content %}{% endblock %}
     
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}?v={{ timestamp }}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
