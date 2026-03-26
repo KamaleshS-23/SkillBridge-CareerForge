@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,380 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #F8FAFC;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .progress-tracking {
-            --primary: #7C3AED;
-            --primary-dark: #5B21B6;
-            --secondary: #EC4899;
-            --accent: #06B6D4;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --dark: #1E1B4B;
-            --light: #F8FAFC;
-            --gray: #64748B;
-            --light-gray: #E2E8F0;
-            --gradient: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
-            --info: #3B82F6;
-            --purple-light: #EDE9FE;
-
-            width: 100%;
-            background: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 25px 50px;
-        }
-
-        /* Header */
-        .header {
-            background: var(--gradient);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.2);
-            position: relative;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header p {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        .dashboard-btn {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .dashboard-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--light-gray);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.1);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gradient);
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: var(--gray);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stat-trend {
-            font-size: 0.9rem;
-            padding: 4px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 8px;
-        }
-
-        .trend-up { background: #d1fae5; color: #065f46; }
-        .trend-down { background: #fee2e2; color: #991b1b; }
-        .trend-neutral { background: #fef3c7; color: #92400e; }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--light-gray);
-            overflow-x: auto;
-            background: white;
-            border-radius: 12px 12px 0 0;
-            padding: 10px 10px 0;
-        }
-
-        .tab-btn {
-            padding: 15px 25px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--gray);
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-weight: 500;
-        }
-
-        .tab-btn:hover {
-            color: var(--primary);
-            background: rgba(124, 58, 237, 0.05);
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-            background: rgba(124, 58, 237, 0.1);
-        }
-
-        .tab-pane {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-pane.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--light-gray);
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chart-container {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid var(--light-gray);
-            height: 350px;
-            position: relative;
-        }
-
-        .full-width-chart {
-            height: 300px;
-        }
-
-        /* Test Grid */
-        .test-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .test-card {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary);
-        }
-
-        .test-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .test-score {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-
-        .test-detail-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            padding: 6px 0;
-            border-bottom: 1px dashed var(--light-gray);
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-danger { background: #fee2e2; color: #991b1b; }
-        .badge-primary { background: var(--purple-light); color: var(--primary); }
-
-        /* Goals */
-        .goals-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .goal-card {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid;
-        }
-        .goal-short { border-color: var(--warning); }
-        .goal-medium { border-color: var(--primary); }
-        .goal-long { border-color: var(--success); }
-
-        .goal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .goal-title { font-weight: 600; }
-        .goal-item {
-            background: white;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-        .btn-primary {
-            background: var(--gradient);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
-        }
-        .btn-secondary {
-            background: var(--light-gray);
-            color: var(--dark);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.show { display: flex; }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-        }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--light-gray);
-            border-radius: 8px;
-        }
-        @media (max-width: 992px) {
-            .goals-container { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .container { padding: 10px 15px; }
-            .dashboard-btn { position: static; margin-top: 15px; width: fit-content; }
-        }
-    </style>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{% static 'core/styles.css' %}?v=1.0">
 </head>
 <body>
 <div class="progress-tracking">
@@ -392,8 +21,9 @@
             <button class="dashboard-btn" onclick="goToDashboard()">
                 <i class="fas fa-arrow-left"></i> Dashboard
             </button>
-            <h1><i class="fas fa-chart-line"></i> Progress Tracking & Career Insights</h1>
-            <p>Monitor your test performance, skill proficiency, and learning goals</p>
+            <h1 style="color: white;">
+  <i class="fas fa-chart-line" style="color: white;"></i>Progress Tracking & Career Insights</h1>
+<p>Monitor your test performance, skill proficiency, and learning goals</p>
         </div>
 
         <!-- Stats Overview -->
@@ -422,14 +52,14 @@
 
         <!-- Tabs: Overview + Test Performance + Goals (removed skill growth & career insights) -->
         <div class="tabs">
-            <button class="tab-btn" onclick="switchTab(this, 'test-performance')">
+            <button class="tab-btn" onclick="switchTab(this, 'test-performance-tab')">
                 <i class="fas fa-vial"></i> Test Performance
             </button>
-            <button class="tab-btn active" onclick="switchTab(this, 'overview')">
+            <button class="tab-btn active" onclick="switchTab(this, 'overview-tab')">
                 <i class="fas fa-chart-pie"></i> Overview Dashboard
             </button>
             
-            <button class="tab-btn" onclick="switchTab(this, 'goals')">
+            <button class="tab-btn" onclick="switchTab(this, 'goals-tab')">
                 <i class="fas fa-flag-checkered"></i> Goals & Achievements
             </button>
         </div>
@@ -554,6 +184,13 @@
 </div>
 
 <script>
+(function() {
+    // Ensure Chart.js is loaded
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded. Please ensure Chart.js is included.');
+        return;
+    }
+    
     // ======================= SAMPLE DATA (based on user test details) =======================
     const testData = [
         { name: "Data Structures (Beginner)", date: "2026-03-24", score: 40, total: 100, percentage: 40, correct: 4, incorrect: 6, time: "0m 19s", category: "Technical", subjectBreakdown: { "Quantitative": 0, "Verbal": 0, "Logical": 0, "Data": 0, "Abstract": 0 } },
@@ -733,6 +370,7 @@
     updateStats();
     // For dynamic chart resizing
     window.addEventListener('resize', () => { renderOverviewCharts(); renderTestPerformanceTab(); });
+})(); // Close IIFE
 </script>
 </body>
 </html>

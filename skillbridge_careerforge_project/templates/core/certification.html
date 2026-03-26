@@ -147,7 +147,7 @@
                 <div class="demand-bar-row">
                     <span>Industry Demand</span>
                     <div class="score-bar">
-                        <div class="score-fill" style="width: {{ cert.demand_score }}%"></div>
+                        <div class="score-fill" data-width="{{ cert.demand_score }}"></div>
                     </div>
                     <span class="score-value">{{ cert.demand_score }}%</span>
                 </div>
@@ -285,6 +285,17 @@ async function updateStats() {
         set('last-sync-display', data.last_sync ? new Date(data.last_sync).toLocaleDateString() : 'Never');
     } catch (e) { console.error('Stats update failed:', e); }
 }
+
+// Initialize score bars on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set width for score bars from data attributes
+    document.querySelectorAll('.score-fill').forEach(bar => {
+        const width = bar.getAttribute('data-width');
+        if (width) {
+            bar.style.width = width + '%';
+        }
+    });
+});
 
 function filterCertifications() {
     const domain = document.getElementById('domain-filter').value;

@@ -10,7 +10,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+    <!-- Chart.js for progress tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'core/styles.css' %}?v=1.0">
 </head>
 
 <body>
@@ -1879,6 +1881,9 @@
                 .then(html => {
                     // Simply set HTML directly
                     profilingContainer.innerHTML = html;
+                    
+                    // Add aptitude-content class for styling
+                    profilingContainer.classList.add('aptitude-content');
 
                     // Manually execute scripts
                     const scripts = profilingContainer.querySelectorAll('script');
@@ -1893,29 +1898,84 @@
                         }
                     });
 
-                    // Show container with animation
-                    setTimeout(() => {
-                        profilingContainer.classList.add('active');
-
-                        // Hide other dashboard content
-                        document.querySelectorAll('.main-content > section').forEach(section => {
-                            section.style.display = 'none';
-                        });
-                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
-                            cta.style.display = 'none';
-                        });
-                        document.querySelectorAll('.main-content > footer').forEach(footer => {
-                            footer.style.display = 'none';
-                        });
-
-                        // Scroll to top
-                        window.scrollTo(0, 0);
+                    // Load aptitude test script if aptitude page is loaded
+                    if (profilingContainer.querySelector('.aptitude-page') || profilingContainer.querySelector('#aptitudeTestForm') || profilingContainer.querySelector('#startTestBtn')) {
+                        console.log('🧠 Loading aptitude test script for dashboard...');
                         
-                        // Re-initialize event listeners after content is loaded
-                        if (typeof initializeEventListeners === 'function') {
-                            setTimeout(initializeEventListeners, 100);
+                        // Remove any existing aptitude script to prevent conflicts
+                        const existingScript = document.querySelector('script[src*="aptitude_test.js"]');
+                        if (existingScript) {
+                            existingScript.remove();
                         }
-                    }, 100);
+                        
+                        const aptitudeScript = document.createElement('script');
+                        aptitudeScript.src = '/static/js/aptitude_test.js?v=' + Date.now();
+                        aptitudeScript.onload = function() {
+                            console.log('✅ Aptitude test script loaded successfully in dashboard');
+                            
+                            // Wait a moment for the script to initialize, then setup button
+                            setTimeout(() => {
+                                const startBtn = document.getElementById('startTestBtn');
+                                const sectionSelect = document.getElementById('sectionSelect');
+                                const difficultySelect = document.getElementById('difficultySelect');
+                                const questionCount = document.getElementById('questionCount');
+                                
+                                console.log('🔍 Dashboard elements found:', {
+                                    startBtn: !!startBtn,
+                                    sectionSelect: !!sectionSelect,
+                                    difficultySelect: !!difficultySelect,
+                                    questionCount: !!questionCount
+                                });
+                                
+                                // Enable button if form is filled
+                                if (sectionSelect && difficultySelect && startBtn) {
+                                    const updateButtonState = () => {
+                                        startBtn.disabled = !(sectionSelect.value && difficultySelect.value);
+                                        console.log('🎯 Button state updated - disabled:', startBtn.disabled);
+                                    };
+                                    
+                                    sectionSelect.addEventListener('change', updateButtonState);
+                                    difficultySelect.addEventListener('change', updateButtonState);
+                                    questionCount.addEventListener('change', updateButtonState);
+                                    
+                                    // Initial state
+                                    updateButtonState();
+                                    
+                                    // Add direct click event listener for start button
+                                    startBtn.addEventListener('click', function(e) {
+                                        console.log('🚀 Dashboard start button clicked!');
+                                        e.preventDefault();
+                                        
+                                        const section = sectionSelect.value;
+                                        const difficulty = difficultySelect.value;
+                                        const count = parseInt(questionCount.value) || 10;
+                                        
+                                        if (!section || !difficulty) {
+                                            alert('Please select section and difficulty');
+                                            return;
+                                        }
+                                        
+                                        console.log('📝 Starting test with:', { section, difficulty, count });
+                                        
+                                        // Check if startTest function is available
+                                        if (typeof startTest === 'function') {
+                                            startTest();
+                                        } else if (typeof window.startTest === 'function') {
+                                            window.startTest();
+                                        } else {
+                                            // Fallback: manually start the test
+                                            console.log('🔄 Using fallback test start...');
+                                            startAptitudeTestFallback(section, difficulty, count);
+                                        }
+                                    });
+                                }
+                            }, 100);
+                        }
+                        aptitudeScript.onerror = function() {
+                            console.error('❌ Failed to load aptitude test script in dashboard');
+                        };
+                        document.head.appendChild(aptitudeScript);
+                    }
                 })
                 .catch(error => {
                     console.error('Error loading Aptitude Test page:', error);
@@ -1923,6 +1983,7 @@
                     profilingContainer.classList.add('active');
                     profilingContainer.style.display = 'block';
                 });
+            }
 
             // Mark feature as active
             document.querySelectorAll('.feature-item').forEach(item => {
@@ -1944,7 +2005,7 @@
                     }
                 }
             }
-        }
+        
 
         function closeAptitudeTestPage() {
             const profilingContainer = document.getElementById('profilingContainer');
@@ -2117,6 +2178,521 @@
                 // Scroll to top
                 window.scrollTo(0, 0);
             }, 300);
+        }
+
+        // Fallback test start function
+        function startAptitudeTestFallback(section, difficulty, count) {
+            console.log('🔄 Starting fallback test function...');
+            
+            // Filter questions based on section
+            let selectedQuestions = [];
+            if (typeof window.currentTest !== 'undefined' && window.currentTest.questions) {
+                console.log('📊 Found currentTest with', window.currentTest.questions.length, 'questions');
+                selectedQuestions = window.currentTest.questions.filter(q => q.type === section);
+                selectedQuestions = selectedQuestions.sort(() => Math.random() - 0.5).slice(0, count);
+                console.log('📝 Filtered to', selectedQuestions.length, 'questions for section:', section);
+            } else {
+                console.error('❌ currentTest not found or has no questions');
+                alert('Test data not loaded. Please refresh and try again.');
+                return;
+            }
+            
+            if (selectedQuestions.length === 0) {
+                alert('No questions available for this section');
+                return;
+            }
+            
+            console.log('📍 Redirecting to full aptitude test page...');
+            
+            // Redirect to the actual aptitude test page with test parameters
+            const params = new URLSearchParams({
+                section: section,
+                difficulty: difficulty,
+                count: count
+            });
+            
+            window.location.href = `/aptitude-test/?${params.toString()}`;
+        }
+
+        // Dashboard page loader functions
+        function loadProfilePage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Profile...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch profile page content
+            fetch('/profile/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    profilingContainer.innerHTML = html;
+                    
+                    // Execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Profile page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Profile</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the profile page. Please try again.</p><button class="btn btn-primary" onclick="loadProfilePage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="profiling"]');
+            if (featureTab) featureTab.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                if (mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function loadInternshipPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Internships...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch internship page content
+            fetch('/internship/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    profilingContainer.innerHTML = html;
+                    
+                    // Execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Internships page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Internships</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the internships page. Please try again.</p><button class="btn btn-primary" onclick="loadInternshipPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="2"]');
+            if (featureTab) featureTab.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                if (mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function loadSkillGapPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Skill Gap Analysis...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch skill gap page content
+            fetch('/skill-gap-analysis/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    profilingContainer.innerHTML = html;
+                    
+                    // Execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Skill Gap page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Skill Gap Analysis</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the skill gap analysis page. Please try again.</p><button class="btn btn-primary" onclick="loadSkillGapPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="3"]');
+            if (featureTab) featureTab.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                if (mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function loadRoadmapPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Roadmap...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch roadmap page content
+            fetch('/roadmap/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    profilingContainer.innerHTML = html;
+                    
+                    // Execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Roadmap page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Roadmap</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the roadmap page. Please try again.</p><button class="btn btn-primary" onclick="loadRoadmapPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="4"]');
+            if (featureTab) featureTab.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                if (mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function loadProgressPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading Progress Tracking...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch progress page content
+            fetch('/progress-tracking/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    profilingContainer.innerHTML = html;
+                    
+                    // Execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading Progress page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading Progress Tracking</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the progress tracking page. Please try again.</p><button class="btn btn-primary" onclick="loadProgressPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="10"]');
+            if (featureTab) featureTab.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                if (mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+
+        function loadAIMockInterviewPage() {
+            const profilingContainer = document.getElementById('profilingContainer');
+
+            // Show loading state
+            profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 20px; color: var(--gray);">Loading AI Mock Interview...</p></div>';
+            profilingContainer.style.display = 'block';
+
+            // Fetch AI mock interview page content
+            fetch('/ai-mock-interview/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    profilingContainer.innerHTML = html;
+                    
+                    // Execute scripts
+                    const scripts = profilingContainer.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
+                    setTimeout(() => {
+                        profilingContainer.classList.add('active');
+                        // Hide other dashboard content
+                        document.querySelectorAll('.main-content > section').forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > .ai-profile-cta').forEach(cta => {
+                            cta.style.display = 'none';
+                        });
+                        document.querySelectorAll('.main-content > footer').forEach(footer => {
+                            footer.style.display = 'none';
+                        });
+                        window.scrollTo(0, 0);
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading AI Mock Interview page:', error);
+                    profilingContainer.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i><h2 style="color: #dc2626; margin-bottom: 10px;">Error Loading AI Mock Interview</h2><p style="color: var(--gray); margin-bottom: 20px;">There was an error loading the AI mock interview page. Please try again.</p><button class="btn btn-primary" onclick="loadAIMockInterviewPage()" style="padding: 12px 28px;"><i class="fas fa-redo"></i> Retry</button></div>';
+                    profilingContainer.classList.add('active');
+                    profilingContainer.style.display = 'block';
+                });
+
+            // Mark feature as active
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const featureTab = document.querySelector('[data-feature="9"]');
+            if (featureTab) featureTab.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                if (mobileMenuBtn) {
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        }
+        
+        // Global utility functions for dynamically loaded content
+        function switchTab(btn, tabId) {
+            try {
+                // Check if button exists
+                if (!btn) {
+                    console.warn('switchTab: Button element not found');
+                    return;
+                }
+                
+                // Remove active class from all tab buttons
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    if (b) b.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Remove active class from all tab panes
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    if (pane) pane.classList.remove('active');
+                });
+                
+                // Add active class to target tab pane
+                const targetPane = document.getElementById(tabId);
+                if (targetPane) {
+                    targetPane.classList.add('active');
+                } else {
+                    console.warn('switchTab: Target tab pane not found:', tabId);
+                }
+            } catch (error) {
+                console.error('switchTab error:', error);
+            }
+        }
+        
+        function goToDashboard() {
+            // Hide all content containers
+            const containers = ['profilingContainer', 'mainContent', 'contentArea'];
+            containers.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.display = 'none';
+                    element.innerHTML = '';
+                }
+            });
+            
+            // Show main dashboard
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.style.display = 'block';
+                // Reload main dashboard content if needed
+                location.reload();
+            }
         }
     </script>
 </body>

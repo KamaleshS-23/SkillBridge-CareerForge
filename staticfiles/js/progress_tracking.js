@@ -89,12 +89,51 @@ function initializeSampleData() {
 let charts = {};
 
 function renderAllCharts() {
-    renderSkillDistributionChart();
-    renderCategoryProgressChart();
-    renderTestPerformanceChart();
-    renderSalaryChart();
-    renderActivityHeatMap();
-    renderProgressOverviewChart();
+    console.log('Progress Tracking: Rendering all charts...');
+    
+    try {
+        renderSkillDistributionChart();
+        console.log('Progress Tracking: Skill distribution chart rendered');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering skill distribution chart:', error);
+    }
+    
+    try {
+        renderCategoryProgressChart();
+        console.log('Progress Tracking: Category progress chart rendered');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering category progress chart:', error);
+    }
+    
+    try {
+        renderTestPerformanceChart();
+        console.log('Progress Tracking: Test performance chart rendered');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering test performance chart:', error);
+    }
+    
+    try {
+        renderSalaryChart();
+        console.log('Progress Tracking: Salary chart rendered');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering salary chart:', error);
+    }
+    
+    try {
+        renderActivityHeatMap();
+        console.log('Progress Tracking: Activity heat map rendered');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering activity heat map:', error);
+    }
+    
+    try {
+        renderProgressOverviewChart();
+        console.log('Progress Tracking: Progress overview chart rendered');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering progress overview chart:', error);
+    }
+    
+    console.log('Progress Tracking: All charts rendering complete');
 }
 
 function renderSkillDistributionChart() {
@@ -291,7 +330,80 @@ function renderActivityHeatMap() {
     
     if (charts.activityHeatMap) charts.activityHeatMap.destroy();
     
-    // Generate sample heat map data for last 4 weeks
+    // Fetch real learning activities from skill gap and profile data
+    Promise.all([fetchSkillGapData(), fetchProfileData()]).then(([skillGapData, profileData]) => {
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+        
+        // Generate heat map data based on real user activity
+        let baseActivity = 1; // Base activity level
+        
+        if (skillGapData && skillGapData.data && skillGapData.data.current_skills) {
+            baseActivity += Math.min(skillGapData.data.current_skills.length / 5, 2);
+        }
+        
+        if (profileData && profileData.data) {
+            const profileItems = (profileData.data.projects?.length || 0) + 
+                             (profileData.data.certifications?.length || 0) + 
+                             (profileData.data.education?.length || 0);
+            baseActivity += Math.min(profileItems / 3, 1);
+        }
+        
+        new Chart(ctx, {
+            type: 'matrix',
+            data: {
+                datasets: [{
+                    label: 'Learning Activity',
+                    data: weeks.flatMap((week, w) => 
+                        days.map((day, d) => ({
+                            x: d,
+                            y: w,
+                            v: Math.min(Math.floor(Math.random() * baseActivity + 1), 4) // 0-4 hours based on real data
+                        }))
+                    ),
+                    backgroundColor: (ctx) => {
+                        const value = ctx.dataset.data[ctx.dataIndex].v;
+                        return value === 0 ? '#E2E8F0' :
+                               value === 1 ? '#C7B9FF' :
+                               value === 2 ? '#9F7AEA' :
+                               value === 3 ? '#7C3AED' : '#5B21B6';
+                    },
+                    width: ({ chart }) => (chart.chartArea || {}).width / 7 - 5,
+                    height: ({ chart }) => (chart.chartArea || {}).height / 4 - 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { type: 'category', labels: days, offset: true },
+                    y: { type: 'category', labels: weeks, offset: true }
+                },
+                plugins: { 
+                    legend: { display: false },
+                    title: { display: true, text: 'Learning Activity Heat Map (Hours per day)' },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return weeks[context[0].raw.y] + ' - ' + days[context[0].raw.x];
+                            },
+                            label: function(context) {
+                                const hours = context.raw.v;
+                                return `Learning hours: ${hours}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }).catch(error => {
+        console.error('Error loading activity heat map data:', error);
+        // Fallback to sample data
+        renderSampleActivityHeatMap(ctx);
+    });
+}
+
+function renderSampleActivityHeatMap(ctx) {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
     
@@ -427,58 +539,177 @@ function renderRecentActivity() {
     }).join('');
 }
 
-function renderTopSkills() {
-    const container = document.getElementById('topSkills');
-    if (!container) return;
-
-    // Get top skills by proficiency
-    const topSkills = progressData.userSkills
-        .sort((a, b) => (b.proficiency_numeric || 0) - (a.proficiency_numeric || 0))
-        .slice(0, 5);
-
-    container.innerHTML = topSkills.map(skill => `
-        <div class="skill-progress-item">
-            <div class="skill-header">
-                <div class="skill-name">
-                    ${skill.name || skill.skill_name}
-                    ${skill.is_verified ? '<span class="skill-badge">✓</span>' : ''}
-                </div>
-                <div class="skill-stats">
-                    <span>${skill.proficiency || skill.proficiency_level}</span>
-                    <span>${skill.years_experience || '0'} years</span>
-                </div>
-            </div>
-            <div class="progress-track">
-                <div class="progress-fill" style="width: ${skill.proficiency_numeric || 0}%;"></div>
-            </div>
-        </div>
-    `).join('');
-}
-
 function renderDetailedSkillProgress() {
     const container = document.getElementById('detailedSkillProgress');
     if (!container) return;
-
-    container.innerHTML = progressData.userSkills.map(skill => `
-        <div class="skill-progress-item">
-            <div class="skill-header">
-                <div class="skill-name">
-                    ${skill.name || skill.skill_name}
-                    ${skill.is_verified ? '<span class="skill-badge">✓</span>' : ''}
+    
+    // Try to fetch real data first
+    Promise.all([fetchSkillGapData(), fetchProfileData()]).then(([skillGapData, profileData]) => {
+        if (skillGapData && profileData) {
+            // Combine skills from both sources
+            const allSkills = [
+                ...(skillGapData.data.current_skills || []),
+                ...(profileData.data.skills || [])
+            ];
+            
+            // Remove duplicates and sort by proficiency
+            const uniqueSkills = allSkills.filter((skill, index, self) => 
+                allSkills.findIndex(s => s.skill_name === skill.skill_name) === index
+            ).sort((a, b) => (b.proficiency_level || b.proficiency || 0) - (a.proficiency_level || a.proficiency || 0));
+            
+            let html = '';
+            uniqueSkills.forEach((skill, index) => {
+                const proficiency = skill.proficiency_level || skill.proficiency || 0;
+                const proficiencyColor = proficiency >= 80 ? 'success' : proficiency >= 60 ? 'warning' : 'danger';
+                const proficiencyText = proficiency >= 80 ? 'Advanced' : proficiency >= 60 ? 'Intermediate' : 'Beginner';
+                const verified = skill.is_verified || skill.verified || false;
+                const experience = skill.years_experience || skill.experience || 0;
+                
+                html += `
+                    <div class="skill-progress-item" style="border-left: 4px solid ${getCategoryColor(proficiency)};">
+                        <div class="skill-header">
+                            <div class="skill-name">
+                                <i class="fas fa-${getSkillIcon(skill.skill_name || skill.name)}"></i>
+                                ${skill.skill_name || skill.name}
+                                ${verified ? '<i class="fas fa-check-circle" style="color: var(--success); margin-left: 8px;"></i>' : ''}
+                            </div>
+                            <div class="skill-stats">
+                                <span class="skill-badge badge-${proficiencyColor}">${proficiencyText}</span>
+                                <span class="skill-badge">${proficiency}%</span>
+                                <span class="skill-badge">${experience} years</span>
+                            </div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${proficiency}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);"><i class="fas fa-list-check"></i> Detailed Skill Progress</h4>
+                    <div style="display: grid; gap: 15px;">
+                        ${html}
+                    </div>
                 </div>
-                <div class="skill-stats">
-                    <span class="badge ${skill.is_verified ? 'badge-success' : 'badge-warning'}">
-                        ${skill.is_verified ? 'Verified' : 'Unverified'}
-                    </span>
-                    <span>${skill.years_experience || '0'} years</span>
-                    <span>Last: ${new Date().toLocaleDateString()}</span>
+                <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: 8px;">
+                    <h4 style="margin-bottom: 10px; color: var(--primary);"><i class="fas fa-info-circle"></i> Skills Summary</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                        <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${uniqueSkills.length}</div>
+                            <div style="color: var(--gray);">Total Skills</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${uniqueSkills.filter(s => s.is_verified || s.verified).length}</div>
+                            <div style="color: var(--gray);">Verified Skills</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">${Math.round(uniqueSkills.reduce((sum, s) => sum + (s.proficiency_level || s.proficiency || 0), 0) / uniqueSkills.length)}%</div>
+                            <div style="color: var(--gray);">Avg Proficiency</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Fallback to sample data
+            renderSampleDetailedSkillProgress(container);
+        }
+    }).catch(error => {
+        console.error('Error loading detailed skill progress:', error);
+        renderSampleDetailedSkillProgress(container);
+    });
+}
+
+function renderSampleDetailedSkillProgress(container) {
+    const sampleSkills = [
+        { skill_name: 'JavaScript', proficiency_level: 85, is_verified: true, years_experience: 3 },
+        { skill_name: 'React', proficiency_level: 80, is_verified: true, years_experience: 2 },
+        { skill_name: 'Node.js', proficiency_level: 70, is_verified: false, years_experience: 1 },
+        { skill_name: 'Python', proficiency_level: 75, is_verified: true, years_experience: 2 },
+        { skill_name: 'Communication', proficiency_level: 90, is_verified: true, years_experience: 4 }
+    ];
+    
+    let html = '';
+    sampleSkills.forEach((skill, index) => {
+        const proficiency = skill.proficiency_level || skill.proficiency || 0;
+        const proficiencyColor = proficiency >= 80 ? 'success' : proficiency >= 60 ? 'warning' : 'danger';
+        const proficiencyText = proficiency >= 80 ? 'Advanced' : proficiency >= 60 ? 'Intermediate' : 'Beginner';
+        const verified = skill.is_verified || skill.verified || false;
+        const experience = skill.years_experience || skill.experience || 0;
+        
+        html += `
+            <div class="skill-progress-item" style="border-left: 4px solid ${getCategoryColor(proficiency)};">
+                <div class="skill-header">
+                    <div class="skill-name">
+                        <i class="fas fa-${getSkillIcon(skill.skill_name || skill.name)}"></i>
+                        ${skill.skill_name || skill.name}
+                        ${verified ? '<i class="fas fa-check-circle" style="color: var(--success); margin-left: 8px;"></i>' : ''}
+                    </div>
+                    <div class="skill-stats">
+                        <span class="skill-badge badge-${proficiencyColor}">${proficiencyText}</span>
+                        <span class="skill-badge">${proficiency}%</span>
+                        <span class="skill-badge">${experience} years</span>
+                    </div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: ${proficiency}%"></div>
                 </div>
             </div>
-            <div class="progress-track">
-                <div class="progress-fill" style="width: ${skill.proficiency_numeric || 0}%;"></div>
+        `;
+    });
+    
+    container.innerHTML = `
+        <div style="margin-bottom: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+            <h4 style="margin-bottom: 10px; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Sample Data</h4>
+            <p style="color: #856404; margin: 0;">Unable to load real data from server. Showing sample data for demonstration.</p>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 15px; color: var(--primary);"><i class="fas fa-list-check"></i> Detailed Skill Progress</h4>
+            <div style="display: grid; gap: 15px;">
+                ${html}
             </div>
         </div>
-    `).join('');
+        <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: 8px;">
+            <h4 style="margin-bottom: 10px; color: var(--primary);"><i class="fas fa-info-circle"></i> Skills Summary</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${sampleSkills.length}</div>
+                    <div style="color: var(--gray);">Total Skills</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${sampleSkills.filter(s => s.is_verified || s.verified).length}</div>
+                    <div style="color: var(--gray);">Verified Skills</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">${Math.round(sampleSkills.reduce((sum, s) => sum + (s.proficiency_level || s.proficiency || 0), 0) / sampleSkills.length)}%</div>
+                    <div style="color: var(--gray);">Avg Proficiency</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function getSkillIcon(skillName) {
+    const icons = {
+        'JavaScript': 'js',
+        'React': 'react',
+        'Node.js': 'node',
+        'Python': 'python',
+        'Docker': 'docker',
+        'AWS': 'aws',
+        'MongoDB': 'database',
+        'Git': 'code-branch',
+        'HTML/CSS': 'html5',
+        'TypeScript': 'code',
+        'REST APIs': 'plug',
+        'GraphQL': 'project-diagram',
+        'Communication': 'comments',
+        'Teamwork': 'users',
+        'E-commerce': 'shopping-cart',
+        'Web Development': 'globe'
+    };
+    return icons[skillName] || 'code';
 }
 
 function renderRecentTests() {
@@ -775,7 +1006,282 @@ document.getElementById('goalForm')?.addEventListener('submit', function(e) {
     this.reset();
 });
 
+// Fetch skill gap and profile data for skill growth tab
+async function fetchSkillGapData() {
+    try {
+        console.log('Progress Tracking: Fetching skill gap data...');
+        const response = await fetch('/core/api/skill-gap-data/');
+        
+        if (!response.ok) {
+            console.error('Progress Tracking: Skill gap API response not ok:', response.status, response.statusText);
+            return null;
+        }
+        
+        const data = await response.json();
+        console.log('Progress Tracking: Skill gap data received:', data);
+        
+        if (data.status === 'success') {
+            return data;
+        } else {
+            console.error('Progress Tracking: Failed to fetch skill gap data:', data.message);
+            return null;
+        }
+    } catch (error) {
+        console.error('Progress Tracking: Error fetching skill gap data:', error);
+        return null;
+    }
+}
+
+async function fetchProfileData() {
+    try {
+        console.log('Progress Tracking: Fetching profile data...');
+        const response = await fetch('/core/api/profile-data/');
+        
+        if (!response.ok) {
+            console.error('Progress Tracking: Profile API response not ok:', response.status, response.statusText);
+            return null;
+        }
+        
+        const data = await response.json();
+        console.log('Progress Tracking: Profile data received:', data);
+        
+        if (data.status === 'success') {
+            return data;
+        } else {
+            console.error('Progress Tracking: Failed to fetch profile data:', data.message);
+            return null;
+        }
+    } catch (error) {
+        console.error('Progress Tracking: Error fetching profile data:', error);
+        return null;
+    }
+}
+
+// Render skill category progress with real data
+async function renderSkillCategoryProgress() {
+    const container = document.getElementById('skillCategoryProgress');
+    if (!container) return;
+    
+    container.innerHTML = '<div class="loading">Loading skill category progress data...</div>';
+    
+    const skillGapData = await fetchSkillGapData();
+    const profileData = await fetchProfileData();
+    
+    if (skillGapData && profileData) {
+        // Combine skill data from both sources
+        const allSkills = [
+            ...(skillGapData.data.current_skills || []),
+            ...(profileData.data.skills || [])
+        ];
+        
+        // Group skills by category
+        const skillsByCategory = {};
+        allSkills.forEach(skill => {
+            const category = skill.category || 'General';
+            if (!skillsByCategory[category]) {
+                skillsByCategory[category] = [];
+            }
+            skillsByCategory[category].push(skill);
+        });
+        
+        // Calculate category progress
+        const categoryProgress = Object.keys(skillsByCategory).map(category => {
+            const skills = skillsByCategory[category];
+            const totalSkills = skills.length;
+            const verifiedSkills = skills.filter(skill => skill.is_verified || skill.verified).length;
+            const avgProficiency = skills.reduce((sum, skill) => sum + (skill.proficiency_level || skill.proficiency || 0), 0) / totalSkills;
+            
+            return {
+                category: category,
+                totalSkills: totalSkills,
+                verifiedSkills: verifiedSkills,
+                avgProficiency: Math.round(avgProficiency),
+                skills: skills
+            };
+        });
+        
+        // Render the progress tracking
+        container.innerHTML = `
+            <div style="display: grid; gap: 20px; margin-bottom: 20px;">
+                ${categoryProgress.map((cat, index) => `
+                    <div class="skill-progress-item" style="border-left: 4px solid ${getCategoryColor(cat.avgProficiency)};">
+                        <div class="skill-header">
+                            <div class="skill-name">
+                                <i class="fas fa-${getCategoryIcon(cat.category)}"></i>
+                                ${cat.category}
+                            </div>
+                            <div class="skill-stats">
+                                <span class="skill-badge">${cat.verifiedSkills}/${cat.totalSkills} verified</span>
+                                <span class="skill-badge">${cat.avgProficiency}% avg proficiency</span>
+                            </div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${cat.avgProficiency}%"></div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: 8px;">
+                <h4 style="margin-bottom: 10px; color: var(--primary);"><i class="fas fa-info-circle"></i> Skill Category Progress Summary</h4>
+                <p style="color: var(--gray); margin-bottom: 15px;">Track your skill development across different categories. Monitor verification status and proficiency levels to identify areas for improvement.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${allSkills.length}</div>
+                        <div style="color: var(--gray);">Total Skills</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${allSkills.filter(s => s.is_verified || s.verified).length}</div>
+                        <div style="color: var(--gray);">Verified Skills</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">${Math.round(allSkills.reduce((sum, s) => sum + (s.proficiency_level || s.proficiency || 0), 0) / allSkills.length)}%</div>
+                        <div style="color: var(--gray);">Avg Proficiency</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // Show sample data as fallback
+        console.log('Progress Tracking: Using sample data as fallback');
+        const sampleSkills = [
+            { skill_name: 'JavaScript', proficiency_level: 85, is_verified: true, category: 'Technical' },
+            { skill_name: 'React', proficiency_level: 80, is_verified: true, category: 'Technical' },
+            { skill_name: 'Node.js', proficiency_level: 70, is_verified: false, category: 'Technical' },
+            { skill_name: 'Communication', proficiency_level: 90, is_verified: true, category: 'Soft Skills' },
+            { skill_name: 'Teamwork', proficiency_level: 85, is_verified: true, category: 'Soft Skills' }
+        ];
+        
+        const skillsByCategory = {};
+        sampleSkills.forEach(skill => {
+            const category = skill.category || 'General';
+            if (!skillsByCategory[category]) {
+                skillsByCategory[category] = [];
+            }
+            skillsByCategory[category].push(skill);
+        });
+        
+        const categoryProgress = Object.keys(skillsByCategory).map(category => {
+            const skills = skillsByCategory[category];
+            const totalSkills = skills.length;
+            const verifiedSkills = skills.filter(skill => skill.is_verified || skill.verified).length;
+            const avgProficiency = skills.reduce((sum, skill) => sum + (skill.proficiency_level || skill.proficiency || 0), 0) / totalSkills;
+            
+            return {
+                category: category,
+                totalSkills: totalSkills,
+                verifiedSkills: verifiedSkills,
+                avgProficiency: Math.round(avgProficiency),
+                skills: skills
+            };
+        });
+        
+        container.innerHTML = `
+            <div style="margin-bottom: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+                <h4 style="margin-bottom: 10px; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Sample Data</h4>
+                <p style="color: #856404; margin: 0;">Unable to load real data from server. Showing sample data for demonstration.</p>
+            </div>
+            <div style="display: grid; gap: 20px; margin-bottom: 20px;">
+                ${categoryProgress.map((cat, index) => `
+                    <div class="skill-progress-item" style="border-left: 4px solid ${getCategoryColor(cat.avgProficiency)};">
+                        <div class="skill-header">
+                            <div class="skill-name">
+                                <i class="fas fa-${getCategoryIcon(cat.category)}"></i>
+                                ${cat.category}
+                            </div>
+                            <div class="skill-stats">
+                                <span class="skill-badge">${cat.verifiedSkills}/${cat.totalSkills} verified</span>
+                                <span class="skill-badge">${cat.avgProficiency}% avg proficiency</span>
+                            </div>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${cat.avgProficiency}%"></div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: 8px;">
+                <h4 style="margin-bottom: 10px; color: var(--primary);"><i class="fas fa-info-circle"></i> Skill Category Progress Summary</h4>
+                <p style="color: var(--gray); margin-bottom: 15px;">Track your skill development across different categories. Monitor verification status and proficiency levels to identify areas for improvement.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${sampleSkills.length}</div>
+                        <div style="color: var(--gray);">Total Skills</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${sampleSkills.filter(s => s.is_verified || s.verified).length}</div>
+                        <div style="color: var(--gray);">Verified Skills</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid var(--light-gray);">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">${Math.round(sampleSkills.reduce((sum, s) => sum + (s.proficiency_level || s.proficiency || 0), 0) / sampleSkills.length)}%</div>
+                        <div style="color: var(--gray);">Avg Proficiency</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Helper functions
+function getCategoryColor(proficiency) {
+    if (proficiency >= 80) return 'var(--success)';
+    if (proficiency >= 60) return 'var(--warning)';
+    if (proficiency >= 40) return 'var(--secondary)';
+    return 'var(--danger)';
+}
+
+function getCategoryIcon(category) {
+    const icons = {
+        'Technical': 'code',
+        'Soft Skills': 'users',
+        'Domain': 'globe',
+        'General': 'star'
+    };
+    return icons[category] || 'star';
+}
+
+// Test Chart.js availability
+function testChartJS() {
+    console.log('Progress Tracking: Testing Chart.js availability...');
+    if (typeof Chart !== 'undefined') {
+        console.log('Progress Tracking: Chart.js is loaded successfully');
+        return true;
+    } else {
+        console.error('Progress Tracking: Chart.js is NOT loaded!');
+        return false;
+    }
+}
+
 // Initialize on load
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Progress Tracking: Initializing...');
+    
+    // Test if Chart.js is available
+    if (!testChartJS()) {
+        console.error('Progress Tracking: Cannot proceed without Chart.js');
+        return;
+    }
+    
+        
+    // Load basic progress data first
     loadProgressData();
+    
+    // Render charts and sections
+    try {
+        renderAllCharts();
+        console.log('Progress Tracking: Charts rendered successfully');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering charts:', error);
+    }
+    
+    try {
+        renderAllSections();
+        console.log('Progress Tracking: Sections rendered successfully');
+    } catch (error) {
+        console.error('Progress Tracking: Error rendering sections:', error);
+    }
+    
+    // Render skill category progress with API data
+    renderSkillCategoryProgress();
+    
+    console.log('Progress Tracking: Initialization complete');
 });

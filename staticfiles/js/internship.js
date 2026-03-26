@@ -1,5 +1,7 @@
 let saved = 0;
 let savedInternships = new Set();
+let enrolled = 0;
+let enrolledInternships = new Set();
 let currentSearch = "";
 let autoRefreshInterval;
 
@@ -195,9 +197,9 @@ function displayInternships(jobs) {
             <p class="location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(job.location)}</p>
             <p class="source">Source: ${escapeHtml(job.source)}</p>
             <div class="card-buttons">
-                <a href="${job.url}" target="_blank" class="apply-btn">
+                <button class="apply-btn" onclick="applyToInternship('${escapeHtml(job.title)}', '${escapeHtml(job.company)}', '${escapeHtml(job.url)}')">
                     <i class="fas fa-external-link-alt"></i> Apply
-                </a>
+                </button>
                 <button class="save-btn" onclick="saveInternship('${escapeHtml(job.title)}','${escapeHtml(job.company)}')">
                     <i class="fas fa-bookmark"></i> Save
                 </button>
@@ -238,6 +240,29 @@ function saveInternship(title, company) {
     localStorage.setItem('savedCount', saved);
     
     showNotification("Internship saved successfully!", "success");
+}
+
+/* APPLY TO INTERNSHIP */
+function applyToInternship(title, company, url) {
+    const key = title + "-" + company;
+    
+    if (enrolledInternships.has(key)) {
+        showNotification("Already enrolled in this internship!", "warning");
+        return;
+    }
+
+    enrolledInternships.add(key);
+    enrolled++;
+    document.getElementById("enrolledInternships").innerText = enrolled;
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('enrolledInternships', JSON.stringify([...enrolledInternships]));
+    localStorage.setItem('enrolledCount', enrolled);
+    
+    showNotification(`Successfully applied to ${title} at ${company}!`, "success");
+    
+    // Open application page in new tab
+    window.open(url, '_blank');
 }
 
 /* LOAD INTERNSHIPS */

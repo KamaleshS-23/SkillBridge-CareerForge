@@ -5,13 +5,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>AI Mock Interview - Real LLM Powered | SkillBridge & CareerForge</title>
+    <!-- Tailwind CSS CDN for development - will be replaced with build version in production -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Suppress Tailwind CDN warning in development
+        if (typeof window !== 'undefined') {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && args[0].includes && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+                    return; // Suppress this specific warning
+                }
+                return originalWarn.apply(console, args);
+            };
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'core/styles.css' %}?v=1.0">
     </head>
 <body class="min-h-screen">
 
+<div class="ai-mock-interview-container">
 <div class="flex h-screen">
 
     <!-- Sidebar -->
@@ -208,6 +222,7 @@
         </div>
     </main>
 </div>
+</div>
 
 <!-- Toast -->
 <div id="toast" class="hidden fixed bottom-8 right-8 bg-white border border-purple-300 text-purple-700 px-6 py-4 rounded-3xl shadow-2xl flex items-center gap-3 z-50">
@@ -217,11 +232,12 @@
 
 <script>
 // ────────────────────────────────────────────────
-let currentType = null;
-let currentDifficulty = null;
-let conversationHistory = [];
-let userAnswers = [];
-let turnCount = 0;
+(function() {
+    let currentType = null;
+    let currentDifficulty = null;
+    let conversationHistory = [];
+    let userAnswers = [];
+    let turnCount = 0;
 let timerInterval = null;
 let timeLeft = 120;
 
@@ -597,6 +613,8 @@ window.addEventListener("load", () => {
     selectDifficulty("medium");
     showToast("Choose type & difficulty → real AI interview begins!");
 });
+
+})(); // Close IIFE
 </script>
 </body>
 </html>

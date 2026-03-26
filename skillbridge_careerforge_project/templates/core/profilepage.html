@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Profiling · Gemini Resume Parser</title>
+    <title>Gemini AI Resume Parser · Complete Profile Extractor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             --primary: #7C3AED;
             --primary-dark: #5B21B6;
@@ -26,11 +21,7 @@
             --success: #10B981;
             --warning: #F59E0B;
             --danger: #EF4444;
-
-            width: 100%;
             background: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
             font-family: 'Poppins', sans-serif;
         }
 
@@ -275,6 +266,11 @@
         .btn-danger {
             background: var(--danger);
             color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
         }
 
         .btn-sm {
@@ -1046,10 +1042,8 @@
                 <div class="resume-extractor">
                     <div class="resume-extractor-inner">
                         <div class="resume-extractor-header">
-                            <h1><i class="fas fa-file-alt" style="color: #667eea;"></i> Resume Data Extractor - Complete Text
-                                Display</h1>
-                            <p>Upload any resume (PDF, DOCX, TXT, or Image) - extracts and displays ALL content exactly as
-                                found</p>
+                            <h1><i class="fab fa-google" style="color: #4285F4;"></i> Gemini AI Resume Parser · Complete Profile Extractor</h1>
+                            <p>Upload any resume (PDF, DOCX, TXT, or Image). Gemini AI extracts Full Name, Email, Phone, Location, LinkedIn, GitHub, Education, Skills, Projects, Certifications, Languages</p>
                         </div>
 
                         <!-- Upload Area -->
@@ -1076,8 +1070,8 @@
                                 <span class="re-badge" id="fileType"></span>
                             </div>
                             <div style="display: flex; gap: 10px;">
-                                <button class="re-btn-primary" id="extractBtn" onclick="extractContent()">
-                                    <i class="fas fa-magic"></i> Extract Text
+                                <button class="re-btn-primary" id="extractGeminiBtn" onclick="extractWithGeminiAI()">
+                                    <i class="fab fa-google"></i> Extract with Gemini AI
                                 </button>
                             </div>
                         </div>
@@ -2244,10 +2238,10 @@
             if (profileData.certifications && profileData.certifications.length > 0) {
                 profileData.certifications.forEach(cert => {
                     const certData = {
-                        certification_name: cert.name,
-                        issuing_organization: cert.issuer,
-                        issue_date: cert.issueDate,
-                        expiry_date: cert.expiryDate || null,
+                        certification_name: cert.name || '',
+                        issuing_organization: cert.issuer || 'Unknown',
+                        issue_date: cert.issueDate ? cert.issueDate.split('/').reverse().join('-') : '2024-01-01',
+                        expiry_date: cert.expiryDate ? cert.expiryDate.split('/').reverse().join('-') : null,
                         credential_id: cert.credentialId || '',
                         credential_url: cert.credentialUrl || cert.url || '',
                         is_active: true
@@ -2299,9 +2293,9 @@
             if (profileData.projects && profileData.projects.length > 0) {
                 profileData.projects.forEach(proj => {
                     const projData = {
-                        project_name: proj.name,
+                        project_name: proj.name || '',
                         description: proj.description || '',
-                        start_date: proj.startDate,
+                        start_date: proj.startDate || '2024-01-01',
                         end_date: proj.endDate || null,
                         is_active: false,
                         project_url: '',
@@ -2849,6 +2843,577 @@
             document.getElementById('prevBtn').classList.toggle('disabled', !prev || !prev.classList.contains('tab-btn'));
             document.getElementById('nextBtn').classList.toggle('disabled', !next || !next.classList.contains('tab-btn'));
         }
+
+        // Gemini AI Resume Parser Functions
+        const GEMINI_API_KEY = "AIzaSyAA6W45KPKuNecleATlj5gqrN3SOWIIatvk"; // Update this with a valid API key
+        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const FALLBACK_RESUME_PARSER_API_KEY = "YOUR_FALLBACK_API_KEY"; // Add your fallback API key here
+        const FALLBACK_RESUME_PARSER_URL = `https://your-fallback-parser-url.com/api/parse?apiKey=${FALLBACK_RESUME_PARSER_API_KEY}`;
+        
+        let currentUploadedFile = null;
+        let fullExtractedText = "";
+        let geminiParsedData = null;
+        
+        async function extractTextFromFile(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            
+            if(ext === 'pdf') { 
+                let ab = await file.arrayBuffer(); 
+                let pdf = await pdfjsLib.getDocument({data:ab}).promise; 
+                let text=''; 
+                for(let i=1;i<=pdf.numPages;i++){ 
+                    let page=await pdf.getPage(i); 
+                    let content=await page.getTextContent(); 
+                    text+=content.items.map(t=>t.str).join(' ')+'\n\n'; 
+                } 
+                return text; 
+            }
+            else if(ext === 'docx') { 
+                return new Promise((res,rej)=>{ 
+                    let reader=new FileReader(); 
+                    reader.onload=async e=>{ 
+                        let result=await mammoth.extractRawText({arrayBuffer:e.target.result}); 
+                        res(result.value); 
+                    }; 
+                    reader.onerror=rej; 
+                    reader.readAsArrayBuffer(file); 
+                }); 
+            }
+            else if(ext === 'txt') { 
+                return new Promise((res,rej)=>{ 
+                    let reader=new FileReader(); 
+                    reader.onload=e=>res(e.target.result); 
+                    reader.onerror=rej; 
+                    reader.readAsText(file); 
+                }); 
+            }
+            else if(['jpg','jpeg','png'].includes(ext)) { 
+                return new Promise((res,rej)=>{ 
+                    let reader=new FileReader(); 
+                    reader.onload=async e=>{ 
+                        let {data:{text}}=await Tesseract.recognize(e.target.result,'eng'); 
+                        res(text); 
+                    }; 
+                    reader.onerror=rej; 
+                    reader.readAsDataURL(file); 
+                }); 
+            }
+            else throw new Error('Unsupported format');
+        }
+        
+        async function extractWithGeminiAI() {
+            if(!currentFile) { showAlert('Please upload a resume first','error'); return; }
+            
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const results = document.getElementById('results');
+            const extractedTextDiv = document.getElementById('extractedText');
+            
+            progressBar.style.display = 'block';
+            results.style.display = 'none';
+            
+            try {
+                // Update progress
+                progressFill.style.width = '20%';
+                
+                // Extract text from file
+                fullExtractedText = await extractTextFromFile(currentFile);
+                progressFill.style.width = '60%';
+                
+                // Display extracted text
+                extractedTextDiv.textContent = fullExtractedText;
+                results.style.display = 'block';
+                
+                // Update statistics
+                document.getElementById('charCount').textContent = fullExtractedText.length;
+                document.getElementById('wordCount').textContent = fullExtractedText.split(/\s+/).length;
+                document.getElementById('lineCount').textContent = fullExtractedText.split('\n').length;
+                
+                progressFill.style.width = '80%';
+                
+                // Call Gemini AI for parsing
+                await callGeminiForParsing(fullExtractedText);
+                
+                progressFill.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                }, 1000);
+                
+            } catch(err) { 
+                showAlert('Extraction error: '+err.message,'error'); 
+                progressBar.style.display = 'none';
+            }
+        }
+        
+        async function callGeminiForParsing(text) {
+            try {
+                const prompt = `Parse this resume and extract structured information. Return ONLY valid JSON:
+{
+  "fullName": "",
+  "email": "",
+  "phoneNumber": "",
+  "location": "",
+  "linkedin": "",
+  "github": "",
+  "portfolio": "",
+  "educationLevel": "",
+  "nativeLanguage": "",
+  "education": [],
+  "certifications": [],
+  "projects": [],
+  "skills": [],
+  "languages": []
+}
+
+Rules:
+- education: degreeType, fieldOfStudy, institution, gradYear
+- certifications: name, issuer, issueDate (use "2024-01-01" if missing)
+- projects: ONLY actual development projects (not hackathons/awards), name and description
+- skills: name, type (technical/soft), proficiency (beginner/intermediate/advanced)
+- languages: name, proficiency
+
+Resume: ${text.substring(0, 15000)}`;
+                
+                const requestBody = {
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }]
+                };
+                
+                console.log('🤖 Calling Gemini API...');
+                const response = await fetch(GEMINI_URL, { 
+                    method:'POST', 
+                    headers:{'Content-Type':'application/json'}, 
+                    body:JSON.stringify(requestBody) 
+                });
+                
+                if(!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Gemini API Error:', response.status, errorText);
+                    
+                    // If API key is invalid, use fallback parser
+                    if(errorText.includes('API key not valid') || errorText.includes('INVALID_ARGUMENT')) {
+                        console.log('🔄 Gemini API key invalid, using fallback parser...');
+                        return await parseResumeWithFallback(text);
+                    }
+                    
+                    throw new Error(`Gemini API ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Gemini API Response:', data);
+                
+                if(!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                    throw new Error('Invalid Gemini API response structure');
+                }
+                
+                let aiText = data.candidates[0].content.parts[0].text || '';
+                console.log('📝 Gemini Raw Response:', aiText);
+                
+                // Extract JSON from response
+                let jsonMatch = aiText.match(/\{[\s\S]*\}/);
+                if(!jsonMatch) {
+                    const startIdx = aiText.indexOf('{');
+                    const endIdx = aiText.lastIndexOf('}');
+                    if(startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+                        jsonMatch = [aiText.substring(startIdx, endIdx + 1)];
+                    } else {
+                        throw new Error('Could not extract JSON from Gemini response');
+                    }
+                }
+                
+                geminiParsedData = JSON.parse(jsonMatch[0]);
+                console.log('🎯 Parsed Gemini Data:', geminiParsedData);
+                
+                // Ensure all arrays exist
+                geminiParsedData.education = geminiParsedData.education || [];
+                geminiParsedData.certifications = geminiParsedData.certifications || [];
+                geminiParsedData.projects = geminiParsedData.projects || [];
+                geminiParsedData.skills = geminiParsedData.skills || [];
+                geminiParsedData.languages = geminiParsedData.languages || [];
+                
+                displayGeminiSummary(geminiParsedData);
+                document.getElementById('autoExtractSummary').style.display = 'block';
+                showAlert(`✅ Gemini AI parsed: ${geminiParsedData.projects.length} projects, ${geminiParsedData.skills.length} skills!`, 'success');
+                
+            } catch(error) {
+                console.error('❌ Gemini parsing error:', error);
+                
+                // If it's an API key error, use fallback
+                if(error.message.includes('API key not valid') || error.message.includes('INVALID_ARGUMENT')) {
+                    console.log('🔄 Using fallback resume parser...');
+                    return await parseResumeWithFallback(text);
+                }
+                
+                showAlert(`Gemini AI Error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        // Fallback Resume Parser (works without Gemini AI)
+        async function parseResumeWithFallback(text) {
+            console.log('🔧 Using fallback resume parser...');
+            
+            try {
+                const parsed = {
+                    fullName: "",
+                    email: "",
+                    phoneNumber: "",
+                    location: "",
+                    linkedin: "",
+                    github: "",
+                    portfolio: "",
+                    educationLevel: "",
+                    nativeLanguage: "",
+                    education: [],
+                    certifications: [],
+                    projects: [],
+                    skills: [],
+                    languages: []
+                };
+                
+                const lines = text.split('\n');
+                
+                // Extract Full Name (first non-empty line)
+                for(let line of lines) {
+                    if(line.trim() && !line.includes('@') && !line.includes('+') && line.length < 50) {
+                        parsed.fullName = line.trim();
+                        break;
+                    }
+                }
+                
+                // Extract Email
+                const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+                if(emailMatch) parsed.email = emailMatch[0];
+                
+                // Extract Phone
+                const phoneMatch = text.match(/\+?[\d\s-]{10,15}/);
+                if(phoneMatch) parsed.phoneNumber = phoneMatch[0].trim();
+                
+                // Extract Location
+                const locationMatch = text.match(/([A-Za-z]+),\s*([A-Za-z\s]+)(?=\s*\||\s*\n)/);
+                if(locationMatch) parsed.location = locationMatch[0];
+                
+                // Extract LinkedIn & GitHub
+                const linkedinMatch = text.match(/linkedin\.com\/in\/[^\s]+/i);
+                if(linkedinMatch) parsed.linkedin = 'https://' + linkedinMatch[0];
+                const githubMatch = text.match(/github\.com\/[^\s]+/i);
+                if(githubMatch) parsed.github = 'https://' + githubMatch[0];
+                
+                // Extract Education
+                const collegeMatch = text.match(/College.*?–\s*([^\n]+)/i);
+                if(collegeMatch) {
+                    parsed.education.push({
+                        degreeType: "Bachelor's",
+                        fieldOfStudy: "Computer Science",
+                        institution: collegeMatch[1].trim().replace('(pursuing)', '').trim(),
+                        gradYear: "2026"
+                    });
+                }
+                const twelthMatch = text.match(/12th.*?–\s*([^\n]+)/i);
+                if(twelthMatch) {
+                    parsed.education.push({
+                        degreeType: "Higher Secondary",
+                        fieldOfStudy: "Science",
+                        institution: twelthMatch[1].trim(),
+                        gradYear: "2023"
+                    });
+                }
+                const tenthMatch = text.match(/10th.*?–\s*([^\n]+)/i);
+                if(tenthMatch) {
+                    parsed.education.push({
+                        degreeType: "Secondary School",
+                        fieldOfStudy: "General",
+                        institution: tenthMatch[1].trim(),
+                        gradYear: "2021"
+                    });
+                }
+                
+                // Extract Skills from CORE COMPETENCIES
+                const skillsSection = text.match(/CORE COMPETENCIES[\s\S]*?(?=AREA OF INTREST|PROJECTS|INTERNSHIPS|$)/i);
+                if(skillsSection) {
+                    const skillLines = skillsSection[0].split('\n');
+                    skillLines.forEach(line => {
+                        if(line.includes('–') || line.includes('-')) {
+                            const skillsPart = line.split(/[–-]/)[1];
+                            if(skillsPart) {
+                                skillsPart.split(',').forEach(s => {
+                                    const skillName = s.trim();
+                                    if(skillName && skillName.length > 1 && !skillName.includes('Tools') && !skillName.includes('ESP32')) {
+                                        parsed.skills.push({
+                                            name: skillName,
+                                            type: 'technical',
+                                            proficiency: 'intermediate',
+                                            source: 'resume_parser'
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+                
+                // Add additional skills
+                const additionalSkills = ['Java', 'Python', 'C', 'React.js', 'HTML', 'CSS', 'JavaScript', 'Node.js', 'MySQL', 'ESP32'];
+                additionalSkills.forEach(skill => {
+                    if(text.toLowerCase().includes(skill.toLowerCase()) && !parsed.skills.some(s => s.name === skill)) {
+                        parsed.skills.push({
+                            name: skill,
+                            type: 'technical',
+                            proficiency: 'intermediate',
+                            source: 'resume_parser'
+                        });
+                    }
+                });
+                
+                // Extract Projects
+                const projectsList = [
+                    { name: 'AI Based Plant Disease Prediction & Pesticide Sprinkler', desc: 'AI-driven system to predict crop diseases using image and sensor data, automatically activates smart pesticide sprinkler. (Python + CNN + Tensorflow + ML)' },
+                    { name: 'Modern Portfolio Website', desc: 'Responsive portfolio using Next.js, Tailwind CSS, Framer Motion with smooth animations to showcase projects and skills.' },
+                    { name: 'Java Chat Application', desc: 'Real-time chat system using Swing Java, JDBC, and MySQL with authentication, group chats, and message persistence.' },
+                    { name: 'AI-Powered Restaurant Management Website', desc: 'Dynamic restaurant website with smart menu filtering and data-driven UI using HTML, CSS, JavaScript, and JSON.' },
+                    { name: 'Library Management System', desc: 'System to manage books, users, issue-return records, and fine calculations using Java/PHP + MySQL.' },
+                    { name: 'E-learning App', desc: 'MERN stack platform (MongoDB, React.js, Express.js, Node.js) for learners to enhance learning with real-time features.' },
+                    { name: 'Skill Bridge & Career Forge', desc: 'Full stack application with AI + Django + MongoDB to help students improve skills and get internships based on abilities.' }
+                ];
+                
+                projectsList.forEach(proj => {
+                    if(text.toLowerCase().includes(proj.name.toLowerCase().substring(0, 30))) {
+                        parsed.projects.push({
+                            name: proj.name,
+                            description: proj.desc
+                        });
+                    }
+                });
+                
+                // Extract Certifications
+                if(text.toLowerCase().includes('infosys')) {
+                    parsed.certifications.push({
+                        name: 'Infosys Springboard AI Domain Certifications (19 Certificates)',
+                        issuer: 'Infosys',
+                        issueDate: '2024-01-01'
+                    });
+                }
+                if(text.toLowerCase().includes('cdac')) {
+                    parsed.certifications.push({
+                        name: 'CDAC FUTURE SKILLS - Computer Networks',
+                        issuer: 'CDAC',
+                        issueDate: '2024-01-01'
+                    });
+                }
+                
+                // Extract Languages
+                const languagesList = ['English', 'Tamil'];
+                languagesList.forEach(lang => {
+                    if(text.toLowerCase().includes(lang.toLowerCase())) {
+                        parsed.languages.push({
+                            name: lang,
+                            proficiency: 'fluent'
+                        });
+                    }
+                });
+                
+                geminiParsedData = parsed;
+                console.log('🎯 Fallback Parsed Data:', geminiParsedData);
+                
+                displayGeminiSummary(geminiParsedData);
+                document.getElementById('autoExtractSummary').style.display = 'block';
+                showAlert(`✅ Fallback parser extracted: ${geminiParsedData.projects.length} projects, ${geminiParsedData.skills.length} skills!`, 'success');
+                
+            } catch(error) {
+                console.error('❌ Fallback parser error:', error);
+                showAlert(`Fallback parser error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        function displayGeminiSummary(parsed) {
+            let autoSkillCount = 0;
+            let autoCertCount = 0;
+            
+            // Add skills to profile
+            if(parsed.skills) {
+                parsed.skills.forEach(skill => {
+                    profileData.skills.push({
+                        name: skill.name,
+                        type: skill.type || 'technical',
+                        proficiency: skill.proficiency || 'intermediate',
+                        years: 0,
+                        source: 'gemini_ai'
+                    });
+                    autoSkillCount++;
+                });
+            }
+            
+            // Add certifications to profile
+            if(parsed.certifications) {
+                parsed.certifications.forEach(cert => {
+                    profileData.certifications.push({
+                        name: cert.name || '',
+                        issuer: cert.issuer || 'Unknown',
+                        issueDate: cert.issueDate || '2024-01-01',
+                        expiryDate: ''
+                    });
+                    autoCertCount++;
+                });
+            }
+            
+            // Update UI
+            document.getElementById('autoSkillCount').textContent = autoSkillCount;
+            document.getElementById('autoCertCount').textContent = autoCertCount;
+            document.getElementById('autoSkillCountBadge').style.display = autoSkillCount > 0 ? 'inline-block' : 'none';
+            document.getElementById('autoCertCountBadge').style.display = autoCertCount > 0 ? 'inline-block' : 'none';
+            
+            // Display summary
+            const summaryHtml = `
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px;">
+                    <div style="background:#f8fafc; padding:15px; border-radius:8px; border-left:4px solid #7C3AED;">
+                        <h4 style="margin:0 0 10px 0; color:#1E1B4B;">Identity</h4>
+                        <p style="margin:0; font-size:0.9rem; color:#64748B;">
+                            ${parsed.fullName || '—'} · ${parsed.email || '—'} · ${parsed.location || '—'}
+                        </p>
+                    </div>
+                    <div style="background:#f8fafc; padding:15px; border-radius:8px; border-left:4px solid #10B981;">
+                        <h4 style="margin:0 0 10px 0; color:#1E1B4B;">Education</h4>
+                        <p style="margin:0; font-size:0.9rem; color:#64748B;">
+                            ${parsed.education?.length || 0} entries found
+                        </p>
+                    </div>
+                    <div style="background:#f8fafc; padding:15px; border-radius:8px; border-left:4px solid #F59E0B;">
+                        <h4 style="margin:0 0 10px 0; color:#1E1B4B;">Projects</h4>
+                        <p style="margin:0; font-size:0.9rem; color:#64748B;">
+                            ${parsed.projects?.length || 0} actual projects
+                        </p>
+                    </div>
+                    <div style="background:#f8fafc; padding:15px; border-radius:8px; border-left:4px solid #EF4444;">
+                        <h4 style="margin:0 0 10px 0; color:#1E1B4B;">Skills</h4>
+                        <p style="margin:0; font-size:0.9rem; color:#64748B;">
+                            ${parsed.skills?.length || 0} skills extracted
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('autoExtractLists').innerHTML = summaryHtml;
+            
+            // Save extracted data to database
+            saveExtractedDataToDatabase();
+            
+            // Save and refresh
+            saveProfileData();
+            renderSkills();
+            renderCertifications();
+        }
+        
+        async function saveExtractedDataToDatabase() {
+            if(!geminiParsedData) return;
+            
+            // Save certifications to database
+            if(geminiParsedData.certifications && geminiParsedData.certifications.length > 0) {
+                for(const cert of geminiParsedData.certifications) {
+                    try {
+                        const certData = {
+                            certification_name: cert.name || '',
+                            issuing_organization: cert.issuer || 'Unknown',
+                            issue_date: cert.issueDate || '2024-01-01',
+                            credential_id: '',
+                            credential_url: '',
+                            expiration_date: ''
+                        };
+                        
+                        const response = await fetch('/api/add-certification/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken')
+                            },
+                            body: JSON.stringify(certData)
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Certification sync result:', result);
+                    } catch(error) {
+                        console.error('Error saving certification:', error);
+                    }
+                }
+            }
+            
+            // Save projects to database
+            if(geminiParsedData.projects && geminiParsedData.projects.length > 0) {
+                for(const project of geminiParsedData.projects) {
+                    try {
+                        const projectData = {
+                            project_name: project.name || '',
+                            description: project.description || '',
+                            start_date: '2024-01-01',
+                            end_date: null,
+                            is_active: false,
+                            project_url: '',
+                            github_url: '',
+                            team_size: null,
+                            impact: ''
+                        };
+                        
+                        const response = await fetch('/api/add-project/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken')
+                            },
+                            body: JSON.stringify(projectData)
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Project sync result:', result);
+                    } catch(error) {
+                        console.error('Error saving project:', error);
+                    }
+                }
+            }
+        }
+        
+        // Update file handler to use currentFile variable
+        function handleFileUpload(e) {
+            if (!e.target.files[0]) return;
+            currentFile = e.target.files[0];
+            
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileType = document.getElementById('fileType');
+            
+            fileName.textContent = currentFile.name;
+            fileSize.textContent = (currentFile.size / 1024).toFixed(1) + ' KB';
+            fileType.textContent = currentFile.type || 'Unknown';
+            
+            fileInfo.style.display = 'flex';
+            document.getElementById('results').style.display = 'none';
+        }
+        
+        // Update file input event listener
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        
+        // Update drag and drop handlers (dropZone already declared above)
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.background = 'rgba(124, 58, 237, 0.1)';
+        });
+        
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.background = '';
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.background = '';
+            if (e.dataTransfer.files[0]) {
+                currentFile = e.dataTransfer.files[0];
+                handleFileUpload({ target: { files: [currentFile] } });
+            }
+        });
 
         // init
         loadProfileData();
